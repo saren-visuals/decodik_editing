@@ -1,0 +1,64 @@
+# CLAUDE.md · DECODIK Edición con IA
+
+Lee esto antes de trabajar en este repositorio.
+
+## Qué es
+DECODIK acompaña a **talentos apasionados del deporte** (no solo deportistas: fans, analistas, humor, fitness, lifestyle, coleccionistas, noticias…) a profesionalizarse como creadores y **colaborar con marcas**. Este repo es el **Módulo de Edición con IA** de la formación DECODIK: skills + guiones de lecciones.
+
+Responsable: Santiago (contenido de marca personal y edición en DECODIK). Habla con él en español, tuteando.
+
+## Principios (no negociables)
+1. **Propiedad intelectual.** Material de formaciones de terceros se usa solo como referencia de investigación. Nunca copies sus SKILL.md, prompts, catálogos, scripts ni textos aquí. Analiza el concepto y escribe una implementación original. `referencias/` y `_investigacion/` están en `.gitignore`.
+2. **Cero experiencia.** El talento no sabe editar ni usar IA. Una frase para empezar, preguntas cortas, un paso cada vez.
+3. **Cada lección responde:** qué podrá hacer · cómo lo aplica a su contenido · cómo mejora su trabajo con marcas.
+4. **Marcas:** señalización de publicidad siempre; no inventar datos de producto; nada de música, logos o imágenes de terceros sin permiso.
+5. **Cada skill en 3 usos:** alumno (lista para usar) · aprendizaje (comentada) · producción interna.
+
+## Estado (v0.1.0)
+- `skills/decodik-perfil` — entrevista → `perfil-talento.md`
+- `skills/decodik-edicion` — idea → plantilla → guion + 3 ganchos → lista de tomas → guía CapCut → Sello DECODIK. Referencias: contexto, catálogo de 9 plantillas, estándar de calidad, guía CapCut.
+- `skills/decodik-marca` — brief → revisión contra brief → mensaje de entrega
+- `modulo/` — mapa de 3 niveles + 7 guiones Loom del nivel 1
+
+## Siguiente objetivo: `decodik-editor` (v0.2)
+El talento deja una carpeta y la IA le devuelve el vídeo editado.
+
+**Decisión:** UNA skill de entrada (`decodik-editor`) con **3 modos** — marca personal · colaboración orgánica con marca · anuncio. Por dentro, un archivo de referencia por modo y por fase. `decodik-edicion` y `decodik-marca` se integran en ella; se mantiene la ruta sin edición automática (guion + guía CapCut).
+
+**Carpeta estándar del talento:**
+```
+01_brief/      brief de la marca (pdf, docx, txt, captura)
+02_brutos/     clips del móvil (mp4, mov)
+03_recursos/   fotos, capturas, b-roll
+04_marca/      logos, guía de marca
+05_musica/     música con licencia
+06_entrega/    lo que genera la IA
+perfil-talento.md
+```
+
+**Flujo:**
+1. Comprobar la carpeta y pedir lo que falte.
+2. Preguntar modo, plataforma, duración y plantilla (o recomendar 2).
+3. Leer el brief → ficha de brief.
+4. Transcribir los brutos con marcas de tiempo e inventariar tomas (calidad, mejores tomas).
+5. Guion **a partir de lo grabado** (no inventar frases) + 3 ganchos + validación contra brief.
+6. **Aprobación del talento** antes de editar.
+7. Edición: corte de silencios/muletillas/repeticiones → montaje según plantilla → subtítulos → gancho y CTA en pantalla → render MP4 1080p 9:16.
+8. Revisión: estándar de calidad + brief → Sello DECODIK.
+9. Entrega en `06_entrega/`: MP4, SRT, guion, notas + mensaje para la marca.
+
+**Día 1:** 3 plantillas montadas automáticamente (Lista rápida, Ranking por niveles, Integración de marca). Las 9, en v1.
+**Modo anuncio (v1):** variantes de gancho, 15/30 s, 9:16 · 4:5 · 1:1, zonas seguras, afirmaciones verificables.
+
+**Stack previsto:** ffmpeg + whisper (transcripción con marcas de tiempo) + Remotion (montaje y subtítulos). Scripts dentro de la skill (`scripts/`), sin claves de API obligatorias para el modo básico.
+
+## Pendiente de decidir (preguntar a Santiago)
+- Disponibilidad de la app de escritorio de Claude con carpeta conectada en el plan de los talentos, y límites de tamaño de los brutos.
+- Si la entrega incluye un proyecto editable además del MP4.
+- Repo público → privado.
+
+## Convenciones
+- Todo en español neutro, tuteando. Nombres de skills en minúsculas con guiones, prefijo `decodik-`.
+- `SKILL.md` con `name` y `description` (qué hace + frases que la activan). Referencias en `references/`, scripts en `scripts/`.
+- Commits pequeños y descriptivos; versión en `.claude-plugin/plugin.json`.
+- Probar cada cambio con un caso real antes de darlo por bueno.
