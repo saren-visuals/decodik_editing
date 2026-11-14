@@ -1,0 +1,11 @@
+{
+  "name": "decodik",
+  "owner": { "name": "DECODIK" },
+  "plugins": [
+    {
+      "name": "decodik",
+      "source": "./",
+      "description": "Skills DECODIK de edición con IA para talentos."
+    }
+  ]
+}

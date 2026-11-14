@@ -1,0 +1,8 @@
+# Material de terceros usado solo como referencia de investigación: nunca entra al repo
+referencias/
+_investigacion/
+# Sistema y builds
+.DS_Store
+dist/
+*.zip
+*.skill
