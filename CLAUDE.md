@@ -57,6 +57,16 @@ perfil-talento.md
 - Si la entrega incluye un proyecto editable además del MP4.
 - Repo público → privado.
 
+## Protocolo de trabajo (obligatorio)
+1. **Antes de cada tarea:** di qué tarea de `docs/checklist-v0.2.md` vas a hacer (por su número), qué archivos vas a crear o cambiar y cómo se comprobará que funciona. **Espera el «ok» de Santiago.**
+2. **Una tarea cada vez.** No empieces la siguiente sin cerrar la anterior.
+3. **Al terminar cada tarea:**
+   - pruébala con el caso de `docs/casos-de-prueba.md` que corresponda y enseña el resultado (archivo generado, captura o salida);
+   - marca la tarea con `[x]` en `docs/checklist-v0.2.md` y anota la prueba en una línea;
+   - haz un commit con el número de tarea en el mensaje (ej. `#25 corte automático de silencios`).
+4. **Si algo no se puede hacer como dice este archivo, para y pregunta.** No cambies decisiones de diseño por tu cuenta.
+5. **Al final de cada sesión:** resumen de 5 líneas: qué se hizo, qué se probó, qué falla, siguiente tarea.
+
 ## Convenciones
 - Todo en español neutro, tuteando. Nombres de skills en minúsculas con guiones, prefijo `decodik-`.
 - `SKILL.md` con `name` y `description` (qué hace + frases que la activan). Referencias en `references/`, scripts en `scripts/`.
