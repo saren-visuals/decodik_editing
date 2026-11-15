@@ -2,7 +2,7 @@
 
 El talento deja sus clips en `02_brutos/` de la carpeta del vídeo y recibe `06_entrega/video-vN.mp4`: cortado (sin silencios, muletillas ni tomas repetidas), con subtítulos, con el volumen de las redes y con el color tal como lo grabó.
 
-Es la versión mínima: todavía **sin** gancho ni CTA en pantalla, música ni formatos. Esos llegan después.
+Lleva gancho, cifras grandes y CTA en pantalla. Todavía **sin** recursos (B-roll), música ni formatos: llegan después.
 
 ## Antes de empezar
 
@@ -54,6 +54,13 @@ uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --estilo clave --si
 ```
 Lee `06_entrega/trabajo/subtitulos.srt` por encima: nombres bien escritos, nada raro.
 
+### 6 bis. Gancho, cifras y CTA
+- Propón el gancho, las cifras que cuentan la historia y el CTA en `06_entrega/trabajo/textos.json` y enséñaselos al talento en 3 líneas. Con su «ok»:
+```
+uv run "$SKILL/scripts/textos.py" "<carpeta del vídeo>"
+```
+- Cómo elegirlos: `references/textos-pantalla.md`.
+
 ### 7. Render y revisión
 ```
 uv run "$SKILL/scripts/render.py" "<carpeta del vídeo>"
@@ -72,4 +79,4 @@ Mensaje corto:
 - Los subtítulos sueltos están en `06_entrega/subtitulos-vN.srt`, por si su red le deja subirlos aparte.
 
 ## Lo que esta versión no hace (todavía)
-Gancho y CTA en pantalla, ritmo de cortes, música, B-roll o fotos, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.
+Ritmo de cortes (cambio de encuadre), música, B-roll o fotos, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.

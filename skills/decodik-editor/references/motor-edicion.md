@@ -82,6 +82,16 @@ uv run scripts/subtitulos.py <carpeta del vídeo> [--estilo clave] [--claves cla
 - **Letras:** Inter, Inter Display y Figtree (OFL), que se descargan de su repositorio oficial la primera vez en `~/.cache/decodik/fuentes/` (`scripts/fuentes.py`; Inter viene en un zip de ~34 MB). `serif` usa de momento Georgia, del sistema. Ver `CREDITOS.md`.
 - Los nombres salen como quedaron corregidos en la transcripción (`--nombres` de `transcribir.py`).
 
+## Gancho, cifras y CTA
+
+```
+uv run scripts/textos.py <carpeta del vídeo> [--color-clave HEX]
+```
+
+- Lee `textos.json` (lo propone Claude y lo aprueba el talento; ver `references/textos-pantalla.md`) y escribe `textos.ass` y `textos-huecos.json`.
+- **Gancho** arriba (12 % de la altura, sin tapar los ojos) desde el fotograma 0 hasta el final de la primera frase; **cifras** de 380 px debajo de la cara con un golpe de escala al decirlas (mientras se ven, el subtítulo se aparta); **CTA** arriba los últimos 2,5 s con un fundido.
+- `render.py` los pinta encima de los subtítulos si existe `textos.ass`.
+
 ## Render final y revisión
 
 ```

@@ -107,6 +107,53 @@ def cadenas_audio(segmentos: list[dict]) -> str:
     return "".join(partes)
 
 
+def subtitulos_con_huecos(ass: Path) -> Path:
+    """Si textos.py dejó huecos (cifras grandes), devuelve una copia de los subtítulos sin texto
+    en esos momentos; si no, los subtítulos tal cual."""
+    huecos_f = ass.with_name("textos-huecos.json")
+    if not huecos_f.exists() or not ass.with_name("textos.ass").exists():
+        return ass
+    huecos = json.loads(huecos_f.read_text(encoding="utf-8")).get("sin_subtitulos", [])
+    if not huecos:
+        return ass
+
+    def seg(t: str) -> float:
+        h, m, s = t.split(":")
+        return int(h) * 3600 + int(m) * 60 + float(s)
+
+    def ts(x: float) -> str:
+        cs = round(x * 100)
+        return f"{cs // 360000}:{cs // 6000 % 60:02d}:{cs // 100 % 60:02d}.{cs % 100:02d}"
+
+    lineas = []
+    for linea in ass.read_text(encoding="utf-8").splitlines():
+        if not linea.startswith("Dialogue:"):
+            lineas.append(linea)
+            continue
+        cab, resto = linea.split(":", 1)
+        p = resto.split(",", 9)
+        ini, fin = seg(p[1]), seg(p[2])
+        trozos = [(ini, fin)]
+        for a, b in huecos:
+            nuevos = []
+            for x, y in trozos:
+                if y <= a or x >= b:
+                    nuevos.append((x, y))
+                    continue
+                if x < a:
+                    nuevos.append((x, a))
+                if y > b:
+                    nuevos.append((b, y))
+            trozos = nuevos
+        for x, y in trozos:
+            if y - x >= 0.1:
+                p[1], p[2] = ts(x), ts(y)
+                lineas.append(cab + ":" + ",".join(p))
+    copia = ass.with_name("subtitulos-render.ass")
+    copia.write_text("\n".join(lineas) + "\n", encoding="utf-8")
+    return copia
+
+
 def grafo_completo(segmentos: list[dict], brutos: Path, decision: dict, ass: Path, fuentes: Path, volumen: str) -> str:
     partes = []
     for k, s in enumerate(segmentos):
@@ -115,7 +162,11 @@ def grafo_completo(segmentos: list[dict], brutos: Path, decision: dict, ass: Pat
     union = "".join(f"[v{k}][a{k}]" for k in range(len(segmentos)))
     return ("".join(partes) + cadenas_audio(segmentos)
             + f"{union}concat=n={len(segmentos)}:v=1:a=1[vc][ac];"
-            + f"[vc]subtitles=filename='{ruta_filtro(ass)}':fontsdir='{ruta_filtro(fuentes)}'[v];"
+            + f"[vc]subtitles=filename='{ruta_filtro(subtitulos_con_huecos(ass))}':fontsdir='{ruta_filtro(fuentes)}'"
+            # Gancho, cifras y CTA (textos.py), encima de los subtítulos, si los hay.
+            + (f",subtitles=filename='{ruta_filtro(ass.with_name('textos.ass'))}':fontsdir='{ruta_filtro(fuentes)}'"
+               if ass.with_name("textos.ass").exists() else "")
+            + "[v];"
             + f"[ac]{volumen},aresample=48000[a]")
 
 
