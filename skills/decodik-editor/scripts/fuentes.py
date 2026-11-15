@@ -17,6 +17,7 @@ CARPETA = Path.home() / ".cache" / "decodik" / "fuentes"
 
 INTER_ZIP = "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip"
 FIGTREE = "https://raw.githubusercontent.com/erikdkennedy/figtree/master/fonts/ttf/{}"
+GOOGLE = "https://raw.githubusercontent.com/google/fonts/main/ofl/{}"
 
 # archivo → de dónde sale
 ORIGEN = {
@@ -28,10 +29,15 @@ ORIGEN = {
     **{f: ("figtree", FIGTREE.format(f)) for f in (
         "Figtree-Medium.ttf", "Figtree-SemiBold.ttf", "Figtree-Bold.ttf", "Figtree-ExtraBold.ttf",
         "Figtree-Black.ttf", "Figtree-BlackItalic.ttf")},
+    # Marca DECODIK: Anton para ganchos y textos grandes, Bebas Neue para etiquetas.
+    "Anton-Regular.ttf": ("anton", GOOGLE.format("anton/Anton-Regular.ttf")),
+    "BebasNeue-Regular.ttf": ("bebasneue", GOOGLE.format("bebasneue/BebasNeue-Regular.ttf")),
 }
 LICENCIAS = {
     "inter": ("Inter-OFL.txt", None),  # viene dentro del zip (LICENSE.txt)
     "figtree": ("Figtree-OFL.txt", "https://raw.githubusercontent.com/erikdkennedy/figtree/master/OFL.txt"),
+    "anton": ("Anton-OFL.txt", GOOGLE.format("anton/OFL.txt")),
+    "bebasneue": ("BebasNeue-OFL.txt", GOOGLE.format("bebasneue/OFL.txt")),
 }
 
 
@@ -54,9 +60,9 @@ def asegurar(archivos: list[str]) -> Path:
             (CARPETA / LICENCIAS["inter"][0]).write_bytes(z.read("LICENSE.txt"))
         for a in faltan:
             src, url = ORIGEN[a]
-            if src == "figtree" and not (CARPETA / a).exists():
+            if src != "inter" and not (CARPETA / a).exists():
                 urllib.request.urlretrieve(url, CARPETA / a)
-                nombre, url_lic = LICENCIAS["figtree"]
+                nombre, url_lic = LICENCIAS[src]
                 if not (CARPETA / nombre).exists():
                     urllib.request.urlretrieve(url_lic, CARPETA / nombre)
     except (OSError, KeyError, zipfile.BadZipFile) as e:

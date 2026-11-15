@@ -36,6 +36,8 @@ Abre solo el archivo del modo elegido. Los demás archivos de `references/` se a
 
 ## Reglas en todos los modos
 
+- **Marca:** todo lo que generes (subtítulos, textos, gráficos, portadas) usa por defecto la marca DECODIK: `references/marca-decodik.md` (colores, letras y orden de preferencia: lo que pida el talento → la marca del cliente en UGC → la identidad del talento → DECODIK).
+
 - **Señalización de publicidad siempre.** Nunca la ocultes ni la suavices.
 - **No inventes datos** de producto, cifras ni frases que la marca no haya dado. Si falta algo, pregúntalo.
 - **Nada de terceros sin permiso:** música, logos, escudos, imágenes de jugadores o retransmisiones.

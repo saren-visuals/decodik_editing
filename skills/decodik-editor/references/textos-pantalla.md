@@ -39,4 +39,6 @@ Después de cortar, lee `06_entrega/trabajo/transcripcion.md` y propón `06_entr
 uv run "$SKILL/scripts/textos.py" "<carpeta del vídeo>" [--color-clave HEX]
 ```
 
-Escribe `textos.ass` y `textos-huecos.json`; `render.py` los pinta solo encima de los subtítulos. Si no hay `textos.json`, el vídeo sale sin estos textos. El color de lo resaltado es amarillo por defecto (el mismo que la palabra clave de los subtítulos); con color de marca, usa `--color-clave`.
+Escribe `textos.ass` y `textos-huecos.json`; `render.py` los pinta solo encima de los subtítulos. Si no hay `textos.json`, el vídeo sale sin estos textos.
+
+**Marca:** gancho, CTA y cifra en **Anton** (mayúsculas), etiqueta de la cifra en **Bebas Neue**; texto Crema con contorno Tinta y lo resaltado en Amarillo Decodik (ver `references/marca-decodik.md`). Con otra marca, `marca.json` o `--color-clave`.

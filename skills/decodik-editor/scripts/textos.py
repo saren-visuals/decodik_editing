@@ -32,13 +32,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import color  # noqa: E402
+import marca  # noqa: E402
 from subtitulos import ALTO, ANCHO, SIGNOS_FIN, norm, palabras_en_corte, t_ass  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-LETRA = "Inter Display Black"
-ARCHIVOS = ["InterDisplay-Black.ttf"]
+# Marca DECODIK: Anton (en mayúsculas) para ganchos y textos grandes, Bebas Neue para etiquetas.
+LETRA = marca.FUENTES["grande"][0]
+LETRA_ETIQUETA = marca.FUENTES["etiqueta"][0]
 Y_ARRIBA = round(ALTO * 0.12)    # gancho y CTA: justo por debajo de la barra de arriba de TikTok/Reels, sin tapar los ojos
 Y_CIFRA = round(ALTO * 0.58)     # cifra: debajo de la cara, donde van los subtítulos (que se apartan mientras se ve)
 GANCHO_MIN, GANCHO_MAX = 2.0, 4.0
@@ -85,7 +87,7 @@ def fin_primera_frase(palabras: list[dict]) -> float:
 def main() -> int:
     p = argparse.ArgumentParser(description="Gancho, cifras grandes y CTA del reel.")
     p.add_argument("carpeta", type=Path, help="carpeta del vídeo")
-    p.add_argument("--color-clave", default="FFD400", help="color HEX de lo resaltado (por defecto FFD400)")
+    p.add_argument("--color-clave", help="color HEX de lo resaltado (por defecto, el de la marca: Amarillo Decodik)")
     args = p.parse_args()
 
     trabajo = args.carpeta.resolve() / "06_entrega" / "trabajo"
@@ -104,14 +106,17 @@ def main() -> int:
     palabras = palabras_en_corte(json.loads((trabajo / "transcripcion.json").read_text(encoding="utf-8")), cortes)
     duracion = cortes["segmentos"][-1]["salida_fin"]
     modo = cortes.get("color", {}).get("modo", "sdr")
-    blanco = color.color_texto("FFFFFF", modo)
-    c_clave = color.color_texto(args.color_clave.lstrip("#"), modo)
+    colores = marca.cargar(trabajo)
+    claro = color.color_texto(colores["texto"], modo)
+    tinta = color.color_texto(colores["contorno"], modo)
+    sombra = "&H70" + tinta[4:]
+    c_clave = color.color_texto((args.color_clave or colores["clave"]).lstrip("#"), modo)
 
     estilos = [
         # Arriba, centrado, 2 líneas como mucho.
-        f"Style: Arriba,{LETRA},76,{blanco},{blanco},&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,0,6,8,90,90,{Y_ARRIBA},1",
-        f"Style: Cifra,{LETRA},380,{c_clave},{c_clave},&H00000000,&H90000000,0,0,0,0,100,100,-4,0,1,0,8,5,60,60,0,1",
-        f"Style: Detalle,{LETRA},64,{blanco},{blanco},&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,0,5,5,60,60,0,1",
+        f"Style: Arriba,{LETRA},124,{claro},{claro},{tinta},{sombra},0,0,0,0,100,100,1,0,1,3,4,8,90,90,{Y_ARRIBA},1",
+        f"Style: Cifra,{LETRA},400,{c_clave},{c_clave},{tinta},{sombra},0,0,0,0,100,100,0,0,1,4,8,5,60,60,0,1",
+        f"Style: Detalle,{LETRA_ETIQUETA},84,{claro},{claro},{tinta},{sombra},0,0,0,0,100,100,2,0,1,2,4,5,60,60,0,1",
     ]
     eventos, resumen, errores, huecos = [], [], 0, []
 
@@ -158,7 +163,7 @@ def main() -> int:
     (trabajo / "textos.ass").write_text("\n".join(ass) + "\n", encoding="utf-8")
     # Mientras se ve una cifra, el subtítulo se aparta: render.py lee estos huecos.
     (trabajo / "textos-huecos.json").write_text(json.dumps({"sin_subtitulos": huecos}), encoding="utf-8")
-    print(f"{len(resumen)} textos en pantalla:")
+    print(f"{len(resumen)} textos en pantalla ({marca.origen(trabajo)}):")
     for r in resumen:
         print(f"  · {r}")
     print(f"  {trabajo / 'textos.ass'}")

@@ -20,7 +20,8 @@ Lee 06_entrega/trabajo/transcripcion.json y cortes.json (de cortar.py) y escribe
     subtitulos.srt        los bloques sin estilo, para entregar o subir a la red
     subtitulado.mp4       corte.mp4 con los subtítulos pintados, para revisarlo (salvo --sin-video)
 
-Las letras (Inter, Inter Display, Figtree; licencia OFL) se descargan de su repositorio oficial
+Colores y letras de la marca DECODIK por defecto (ver marca.py y references/marca-decodik.md). Las
+letras (Figtree, Anton, Bebas Neue, Inter, Inter Display; licencia OFL) se descargan de su repositorio oficial
 la primera vez (ver fuentes.py). Códigos: 0 bien · 1 error · 2 falta algo · 3 sin red.
 """
 
@@ -37,6 +38,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import color  # noqa: E402
 import fuentes  # noqa: E402
+import marca  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -54,37 +56,39 @@ ENLACES = {"y", "e", "o", "u", "ni", "de", "del", "a", "al", "en", "con", "por",
 # Los 8 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
 # la descripción de abajo y de los botones de la derecha); «minimo» va centrado.
 ESTILOS = {
+    # Estilo por defecto = estilo de subtítulos de la marca DECODIK: Figtree ExtraBold, Crema,
+    # contorno fino Tinta y la palabra clave en Amarillo Decodik.
     "clave": {
-        "fuente": "Inter Display Black", "archivos": ["InterDisplay-Black.ttf"], "tam": 86,
-        "sombra": 5, "max": 3, "clave": {"color": "FFD400", "escala": 112},
+        "fuente": "Figtree ExtraBold", "archivos": ["Figtree-ExtraBold.ttf"], "tam": 82,
+        "contorno": 3, "sombra": 2, "max": 3, "clave": {"rol": "clave", "escala": 108},
     },
     "serif": {
-        "fuente": "Georgia", "archivos": [], "tam": 68, "cursiva": 1, "sombra": 4, "max": 4,
+        "fuente": "Georgia", "archivos": [], "tam": 68, "cursiva": 1, "contorno": 2, "sombra": 3, "max": 4,
         "clave": {"escala": 160, "cursiva": 0, "negrita": 1},
     },
     "frase": {
-        "fuente": "Inter SemiBold", "archivos": ["Inter-SemiBold.ttf"], "tam": 50, "sombra": 3, "max": 8,
-        "margen": 150, "clave": None,
+        "fuente": "Figtree SemiBold", "archivos": ["Figtree-SemiBold.ttf"], "tam": 52, "contorno": 2, "sombra": 2,
+        "max": 8, "margen": 150, "clave": None,
     },
     "impacto": {
         "fuente": "Inter Display Black", "archivos": ["InterDisplay-BlackItalic.ttf"], "tam": 92, "cursiva": 1,
-        "contorno": 6, "mayus": True, "max": 3, "margen": 110, "clave": {"color": "3DDC5A"},
+        "contorno": 6, "mayus": True, "max": 3, "margen": 110, "clave": {"rol": "acento2"},
     },
     "caja": {
-        "fuente": "Figtree", "archivos": ["Figtree-Bold.ttf"], "tam": 58, "negrita": 1, "texto": "000000",
-        "caja": "FFFFFF", "contorno": 14, "max": 4, "margen": 150, "clave": None,
+        "fuente": "Figtree", "archivos": ["Figtree-Bold.ttf"], "tam": 58, "negrita": 1, "rol_texto": "texto_caja",
+        "rol_caja": "caja", "contorno": 14, "max": 4, "margen": 150, "clave": None,
     },
     "condensada": {
-        "fuente": "Inter Display Black", "archivos": ["InterDisplay-Black.ttf"], "tam": 104, "escala_x": 74,
-        "espaciado": -2, "sombra": 5, "mayus": True, "max": 3, "clave": {"color": "FFD400"},
+        "fuente": "Anton", "archivos": ["Anton-Regular.ttf"], "tam": 104, "contorno": 3, "sombra": 3,
+        "mayus": True, "max": 3, "clave": {"rol": "clave"},
     },
     "mixta": {
         "fuente": "Figtree Medium", "archivos": ["Figtree-Medium.ttf", "Figtree-Black.ttf"], "tam": 54,
-        "sombra": 3, "max": 8, "margen": 150, "clave": {"fuente": "Figtree Black"},
+        "contorno": 2, "sombra": 2, "max": 8, "margen": 150, "clave": {"fuente": "Figtree Black"},
     },
     "minimo": {
-        "fuente": "Inter Medium", "archivos": ["Inter-Medium.ttf"], "tam": 40, "sombra": 2, "max": 10,
-        "margen": 200, "centrado": True, "clave": None,
+        "fuente": "Figtree Medium", "archivos": ["Figtree-Medium.ttf"], "tam": 40, "contorno": 1, "sombra": 2,
+        "max": 10, "margen": 200, "centrado": True, "clave": None,
     },
 }
 BASE_Y = 0.66
@@ -214,17 +218,23 @@ def t_srt(seg: float) -> str:
     return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
 
 
-def estilo_ass(nombre: str, e: dict, modo: str, max_override: int | None) -> tuple[str, dict]:
-    """Devuelve la línea Style del ASS y los datos del estilo ya resueltos."""
+def sombra_ass(hexrgb: str, modo: str, alfa: str = "60") -> str:
+    """Color de sombra (con transparencia) en formato ASS."""
+    return "&H" + alfa + color.color_texto(hexrgb, modo)[4:]
+
+
+def estilo_ass(nombre: str, e: dict, modo: str, max_override: int | None, colores: dict) -> tuple[str, dict]:
+    """Devuelve la línea Style del ASS y los datos del estilo ya resueltos, con los colores de la
+    marca (DECODIK por defecto; ver marca.py): nunca blanco ni negro puros."""
     margen = e.get("margen", 120)
     centrado = e.get("centrado", False)
-    texto = color.color_texto(e.get("texto", "FFFFFF"), modo)
-    if "caja" in e:
+    texto = color.color_texto(colores[e.get("rol_texto", "texto")], modo)
+    if "rol_caja" in e:
         # Caja opaca (BorderStyle 3): el color de la caja va en OutlineColour.
-        borde = fondo = color.color_texto(e["caja"], modo)
+        borde = fondo = color.color_texto(colores[e["rol_caja"]], modo)
         estilo_borde = 3
     else:
-        borde, fondo, estilo_borde = "&H00000000", "&H80000000", 1
+        borde, fondo, estilo_borde = color.color_texto(colores["contorno"], modo), sombra_ass(colores["contorno"], modo), 1
     linea = (f"Style: {nombre},{e['fuente']},{e['tam']},{texto},{texto},{borde},{fondo},"
              f"{-1 if e.get('negrita') else 0},{-1 if e.get('cursiva') else 0},0,0,"
              f"{e.get('escala_x', 100)},100,{e.get('espaciado', 0)},0,{estilo_borde},"
@@ -233,18 +243,25 @@ def estilo_ass(nombre: str, e: dict, modo: str, max_override: int | None) -> tup
     return linea, {**e, "max": max_override or e["max"]}
 
 
-def texto_bloque(g: list[dict], nombre: str, e: dict, modo: str, color_clave: str | None) -> str:
-    """Texto ASS del bloque, con las palabras clave resaltadas según el estilo."""
+def texto_bloque(g: list[dict], nombre: str, e: dict, modo: str, colores: dict, color_clave: str | None) -> str:
+    """Texto ASS del bloque, con la palabra clave resaltada según el estilo. Regla de la marca:
+    una sola palabra (o grupo seguido de palabras) destacada por subtítulo."""
     clave = e.get("clave")
     partes = []
+    estado = "antes"          # antes → dentro (resaltando) → despues (ya hubo una)
     for w in g:
         t = limpiar(w["p"], nombre)
         if e.get("mayus"):
             t = t.upper()
         t = t.replace("{", "(").replace("}", ")")
-        if w.get("clave") and clave:
+        es_clave = bool(w.get("clave")) and clave is not None and estado != "despues"
+        if estado == "dentro" and not w.get("clave"):
+            estado = "despues"
+            es_clave = False
+        if es_clave:
+            estado = "dentro"
             tags = ""
-            c = color_clave or clave.get("color")
+            c = color_clave or (colores[clave["rol"]] if clave.get("rol") else None)
             if c:
                 tags += f"\\c{color.color_texto(c, modo)}&"
             if clave.get("escala"):
@@ -261,7 +278,7 @@ def texto_bloque(g: list[dict], nombre: str, e: dict, modo: str, color_clave: st
 
 
 def escribir(grupos: list[list[dict]], duracion: float, fps: int, trabajo: Path, modo: str,
-             nombre: str, e: dict, linea_estilo: str, color_clave: str | None) -> None:
+             nombre: str, e: dict, linea_estilo: str, color_clave: str | None, colores: dict) -> None:
     minimo = MIN_CUADROS / fps
     # Cada bloque se ve desde su primera palabra hasta que empieza el siguiente (o un poco
     # después de su última palabra si hay pausa), y nunca menos de 4 cuadros.
@@ -285,7 +302,7 @@ def escribir(grupos: list[list[dict]], duracion: float, fps: int, trabajo: Path,
     srt = []
     for k, (g, (ini, fin)) in enumerate(zip(grupos, tiempos), 1):
         srt += [str(k), f"{t_srt(ini)} --> {t_srt(fin)}", " ".join(limpiar(w["p"], nombre) for w in g), ""]
-        ass.append(f"Dialogue: 0,{t_ass(ini)},{t_ass(fin)},{nombre},,0,0,0,,{texto_bloque(g, nombre, e, modo, color_clave)}")
+        ass.append(f"Dialogue: 0,{t_ass(ini)},{t_ass(fin)},{nombre},,0,0,0,,{texto_bloque(g, nombre, e, modo, colores, color_clave)}")
 
     (trabajo / "subtitulos.ass").write_text("\n".join(ass) + "\n", encoding="utf-8")
     (trabajo / "subtitulos.srt").write_text("\n".join(srt), encoding="utf-8")
@@ -298,7 +315,8 @@ def ruta_filtro(ruta: Path) -> str:
 
 def todas_las_letras() -> list[str]:
     """Todas las letras de los estilos, más la de la hoja de revisión."""
-    return sorted({a for e in ESTILOS.values() for a in e["archivos"]} | {"InterDisplay-Bold.ttf"})
+    return sorted({a for e in ESTILOS.values() for a in e["archivos"]}
+                  | {"InterDisplay-Bold.ttf", "Anton-Regular.ttf", "BebasNeue-Regular.ttf"})
 
 
 def main() -> int:
@@ -306,7 +324,7 @@ def main() -> int:
     p.add_argument("carpeta", type=Path, help="carpeta del vídeo")
     p.add_argument("--estilo", default="clave", choices=list(ESTILOS), help="estilo de subtítulos (por defecto clave)")
     p.add_argument("--claves", type=Path, help="JSON con las palabras clave (por defecto 06_entrega/trabajo/claves.json)")
-    p.add_argument("--color-clave", help="color HEX de la palabra clave (por defecto, el del estilo)")
+    p.add_argument("--color-clave", help="color HEX de la palabra clave (por defecto, el de la marca)")
     p.add_argument("--max-palabras", type=int, help="palabras por bloque (por defecto, las del estilo)")
     p.add_argument("--sin-video", action="store_true", help="solo escribe .ass y .srt")
     args = p.parse_args()
@@ -324,7 +342,8 @@ def main() -> int:
 
     nombre = args.estilo
     modo = cortes.get("color", {}).get("modo", "sdr")
-    linea, e = estilo_ass(nombre, ESTILOS[nombre], modo, args.max_palabras)
+    colores = marca.cargar(trabajo)
+    linea, e = estilo_ass(nombre, ESTILOS[nombre], modo, args.max_palabras, colores)
     fps = cortes.get("fps", 30)
     palabras = palabras_en_corte(transcripcion, cortes)
 
@@ -340,7 +359,8 @@ def main() -> int:
     grupos = bloques(palabras, e["max"])
     duracion = cortes["segmentos"][-1]["salida_fin"]
     color_clave = args.color_clave.lstrip("#") if args.color_clave else None
-    escribir(grupos, duracion, fps, trabajo, modo, nombre, e, linea, color_clave)
+    escribir(grupos, duracion, fps, trabajo, modo, nombre, e, linea, color_clave, colores)
+    print(f"Marca: {marca.origen(trabajo)}.")
     print(f"Estilo «{nombre}»: {len(palabras)} palabras en {len(grupos)} bloques "
           f"(máximo {max(sum(len(w['p'].split()) for w in g) for g in grupos)} palabras visibles por bloque).")
     if e.get("clave"):
