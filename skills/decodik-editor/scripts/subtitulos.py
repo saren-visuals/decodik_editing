@@ -26,6 +26,9 @@ import sys
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import color  # noqa: E402
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -133,12 +136,8 @@ def t_srt(seg: float) -> str:
     return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
 
 
-def color_ass(hexrgb: str) -> str:
-    r, g, b = hexrgb[0:2], hexrgb[2:4], hexrgb[4:6]
-    return f"&H00{b}{g}{r}".upper()
-
-
-def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, trabajo: Path) -> None:
+def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, trabajo: Path, modo: str) -> None:
+    """modo = "hdr" o "sdr" (de cortes.json): en HDR el texto se pone al blanco de referencia."""
     minimo = MIN_CUADROS / fps
     # Cada bloque se ve desde su primera palabra hasta que empieza el siguiente (o un poco
     # después de su última palabra si hay pausa), y nunca menos de 4 cuadros.
@@ -151,18 +150,19 @@ def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, t
         tiempos.append((ini, fin))
 
     margen_v = round(ALTO * (1 - BASE_Y))
+    blanco = color.color_texto("FFFFFF", modo)
     ass = [
         "[Script Info]", "ScriptType: v4.00+", f"PlayResX: {ANCHO}", f"PlayResY: {ALTO}",
         "WrapStyle: 0", "ScaledBorderAndShadow: yes", "",
         "[V4+ Styles]",
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, "
         "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-        f"Style: Nativo,{FUENTE['familia']},{TAMANO},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,"
+        f"Style: Nativo,{FUENTE['familia']},{TAMANO},{blanco},{blanco},&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,"
         f"{CONTORNO},0,2,{MARGEN_LATERAL},{MARGEN_LATERAL},{margen_v},1",
         "", "[Events]", "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
     ]
     srt = []
-    c_activa = color_ass(activa)
+    c_activa = color.color_texto(activa, modo)
     for k, (g, (ini, fin)) in enumerate(zip(grupos, tiempos), 1):
         textos = [limpiar(w["p"]) for w in g]
         srt += [str(k), f"{t_srt(ini)} --> {t_srt(fin)}", " ".join(textos), ""]
@@ -172,7 +172,7 @@ def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, t
             w_fin = g[j + 1]["inicio"] if j + 1 < len(g) else fin
             if w_fin - w_ini <= 0:
                 continue
-            partes = [(f"{{\\c{c_activa}}}{t}{{\\c&H00FFFFFF&}}" if i == j else t) for i, t in enumerate(textos)]
+            partes = [(f"{{\\c{c_activa}&}}{t}{{\\c{blanco}&}}" if i == j else t) for i, t in enumerate(textos)]
             ass.append(f"Dialogue: 0,{t_ass(w_ini)},{t_ass(w_fin)},Nativo,,0,0,0,,{' '.join(partes)}")
 
     (trabajo / "subtitulos.ass").write_text("\n".join(ass) + "\n", encoding="utf-8")
@@ -207,7 +207,8 @@ def main() -> int:
     palabras = palabras_en_corte(transcripcion, cortes)
     grupos = bloques(palabras, args.max_palabras)
     duracion = cortes["segmentos"][-1]["salida_fin"]
-    escribir(grupos, duracion, fps, args.color_activa.lstrip("#"), trabajo)
+    modo = cortes.get("color", {}).get("modo", "sdr")
+    escribir(grupos, duracion, fps, args.color_activa.lstrip("#"), trabajo, modo)
     print(f"{len(palabras)} palabras en {len(grupos)} bloques "
           f"(máximo {max(sum(len(w['p'].split()) for w in g) for g in grupos)} palabras visibles por bloque).")
     print(f"  {trabajo / 'subtitulos.ass'}")
@@ -223,8 +224,8 @@ def main() -> int:
         filtro = f"subtitles='{ruta_filtro(trabajo / 'subtitulos.ass')}':fontsdir='{ruta_filtro(fuentes)}'"
         r = subprocess.run(
             ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-nostdin", "-i", str(corte), "-vf", filtro,
-             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-             "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
+             *color.codec_cpu({"modo": modo, "transferencia": cortes.get("color", {}).get("transferencia", "bt709")}, True),
+             *color.etiquetas_salida({"modo": modo, "transferencia": cortes.get("color", {}).get("transferencia", "bt709")}),
              "-c:a", "copy", "-movflags", "+faststart", str(salida)],
             capture_output=True, text=True, encoding="utf-8", errors="replace",
         )

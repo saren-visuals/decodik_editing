@@ -16,7 +16,8 @@ Lee 06_entrega/trabajo/transcripcion.json (de transcribir.py) y:
 Escribe en 06_entrega/trabajo/:
     cortes.json   tramos que se quedan (clip, inicio, fin, texto) y lo que se quitó con su motivo
     cortes.md     lo mismo para leerlo
-    corte.mp4     borrador vertical 1080×1920 sin subtítulos, para escucharlo (salvo --sin-video)
+    corte.mp4     borrador vertical 1080×1920 sin subtítulos, para escucharlo (salvo --sin-video),
+                  con el color tal como se grabó (HDR o SDR; ver color.py)
 
 Solo usa la biblioteca estándar de Python y ffmpeg. Códigos: 0 bien · 1 error · 2 falta algo.
 """
@@ -31,6 +32,9 @@ import sys
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import color  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -213,32 +217,17 @@ def ajustar_a_silencios(tramos: list[dict], silencios: list[list[float]], pausa_
 
 # ---------- vídeo ----------
 
-def filtro_video(hdr: bool, transfer: str = "arib-std-b67") -> str:
-    base = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920"
-    if hdr:
-        # Los iPhone graban en HDR (HLG). Se pasa a color normal (SDR, BT.709) para que no salga lavado.
-        base += (f",zscale=tin={transfer}:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,format=gbrpf32le,"
-                 "zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv")
-    return base + ",setsar=1,fps=30,format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv"
-
-
-def render(segmentos: list[dict], brutos: Path, salida: Path, rapido: bool) -> None:
-    hdr = {}
+def render(segmentos: list[dict], brutos: Path, salida: Path, rapido: bool, decision: dict) -> None:
+    """Borrador del corte. El color sale como se grabó (ver color.py)."""
     entradas, partes = [], []
     for k, s in enumerate(segmentos):
         ruta = brutos / s["clip"]
-        if s["clip"] not in hdr:
-            r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
-                                "stream=color_transfer", "-of", "csv=p=0", str(ruta)], capture_output=True, text=True)
-            t = r.stdout.strip()
-            hdr[s["clip"]] = t if t in ("arib-std-b67", "smpte2084") else ""
         n = s["cuadros"]
         d = n / FPS
         entradas += ["-ss", f"{s['inicio']:.3f}", "-t", f"{d + 0.2:.3f}", "-i", str(ruta)]
-        t = hdr[s["clip"]]
         # Vídeo y audio de cada tramo se recortan al mismo número exacto de cuadros, así la
         # posición de cada tramo en el corte (salida_inicio) es exacta para los subtítulos.
-        partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{filtro_video(bool(t), t or 'arib-std-b67')},"
+        partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{color.filtro_clip(ruta, decision, FPS)},"
                       f"trim=end_frame={n},setpts=PTS-STARTPTS[v{k}];"
                       f"[{k}:a:0]asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,"
                       f"atrim=end={d:.6f},apad=whole_dur={d:.6f},"
@@ -249,8 +238,7 @@ def render(segmentos: list[dict], brutos: Path, salida: Path, rapido: bool) -> N
     script.write_text(grafo, encoding="utf-8")
     cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-nostdin", *entradas,
            "-/filter_complex", str(script), "-map", "[v]", "-map", "[a]",
-           "-c:v", "libx264", "-preset", "veryfast" if rapido else "medium", "-crf", "23" if rapido else "18",
-           "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
+           *color.codec_cpu(decision, rapido), *color.etiquetas_salida(decision),
            "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(salida)]
     r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     script.unlink(missing_ok=True)
@@ -321,7 +309,10 @@ def main() -> int:
 
     bruto_total = sum(c["video"].get("duracion", 0) for c in datos["clips"])
     final_total = cursor / FPS
+    clips = sorted({s["clip"] for s in segmentos})
+    decision = color.decidir([brutos / c for c in clips])
     resultado = {
+        "color": {"modo": decision["modo"], "transferencia": decision["transferencia"]},
         "version": 2,
         "fps": FPS,
         "pausa_max": args.pausa_max,
@@ -348,7 +339,10 @@ def main() -> int:
     if not args.sin_video:
         salida = trabajo / "corte.mp4"
         print("Renderizando el borrador del corte…")
-        render(segmentos, brutos, salida, args.rapido)
+        if decision["aviso"]:
+            print(f"  · {decision['aviso']}")
+        print(f"  · Color: {'HDR (' + decision['transferencia'] + '), como se grabó' if decision['modo'] == 'hdr' else 'SDR, como se grabó'}")
+        render(segmentos, brutos, salida, args.rapido, decision)
         print(f"  {salida}")
     print(f"  {trabajo / 'cortes.md'}")
     return 0
