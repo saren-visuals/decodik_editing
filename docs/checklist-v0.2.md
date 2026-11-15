@@ -49,7 +49,7 @@ Las tareas de abajo siguen valiendo para las fases 5-7.
 
 ## Edición
 - [x] #24 Motor (ffmpeg + whisper) instalado y documentado · **Hecho cuando:** un comando de prueba renderiza un MP4 de 5 s · Prueba: 2026-11-15, `uv run scripts/revisar_equipo.py --whisper --prueba …` en Windows → ffmpeg 9.0.2 con libx264 y libass, faster-whisper 1.2.1 listo, `prueba-motor.mp4` 1080×1920, 30 fps, AAC, 5,00 s; sin ffmpeg en el PATH da ✗ con `winget install Gyan.FFmpeg` y sale con 1. Documentado en `references/motor-edicion.md`.
-- [ ] #25 Corte automático · **Hecho cuando:** el vídeo empieza en la primera palabra y no hay silencios > 0,3 s ni sílabas cortadas (escuchado)
+- [x] #25 Corte automático · **Hecho cuando:** el vídeo empieza en la primera palabra y no hay silencios > 0,3 s ni sílabas cortadas (escuchado) · Prueba: 2026-11-15, caso A: 97,9 s de brutos → `corte.mp4` de 62,8 s en 20 tramos; la voz suena a los 0,06 s; silencio más largo 0,298 s (silencedetect -35 dB); los 30 ms de entrada y salida de los 20 tramos por debajo de -30 dB; del Clip 8 (frase dicha dos veces) se queda la mejor toma (nota 0,99 frente a 0,95); HDR del iPhone pasado a BT.709. Escuchado por Santiago: «suena bien». Decisión de Santiago: con tomas repetidas, la mejor toma (no la última).
 - [ ] #26 Montaje de 3 plantillas (Lista rápida, Ranking, Integración de marca) · **Hecho cuando:** cada una renderizada con un caso de prueba
 - [ ] #28 Subtítulos · **Hecho cuando:** 1-4 palabras por bloque, sincronizados, en zona segura, nombres bien escritos
 - [ ] #29 Gancho y CTA en pantalla · **Hecho cuando:** gancho visible desde el frame 0, CTA al final

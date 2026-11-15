@@ -56,3 +56,16 @@ uv run scripts/transcribir.py <carpeta del talento> --nombres "Nombre Propio, Ma
 - Whisper suele adelantar la primera palabra después de una pausa. Esos inicios se corrigen con la detección de silencios de ffmpeg; el valor original queda en `inicio_whisper`.
 - Si un clip no ha cambiado, no se vuelve a transcribir. `--forzar` lo obliga.
 - Tarda unos 5 s por clip corto en un portátil sin tarjeta gráfica; la primera vez descarga el modelo `large-v3-turbo` (~1,6 GB).
+
+## Corte automático
+
+```
+uv run scripts/cortar.py <carpeta del talento> [--pausa-max 0.3] [--sin-video] [--rapido]
+```
+
+- Lee `06_entrega/trabajo/transcripcion.json` y escribe `cortes.json`, `cortes.md` (qué se queda y qué se quita, con el motivo) y `corte.mp4` (borrador vertical 1080×1920 sin subtítulos).
+- Quita muletillas («eh», «em», «mmm»), la primera de dos palabras iguales seguidas y el silencio de principio y final de cada frase, y acorta las pausas de más de `--pausa-max` segundos.
+- **Tomas repetidas:** si una frase se dice más de una vez (o hay un arranque en falso), se queda la **mejor toma**: la que Whisper oye con más claridad y está más completa, con menos pausas largas y muletillas. Las notas de cada toma quedan en `cortes.json`.
+- Las uniones se anclan al sonido real (silencios de ffmpeg desde 50 ms): unos 60 ms de aire antes de que empiece la voz y después de que acabe, para no cortar sílabas.
+- Los vídeos HDR del iPhone (HLG) se pasan a color normal (SDR, BT.709) para que no salgan lavados.
+- Antes de dar el corte por bueno, el talento lo escucha.
