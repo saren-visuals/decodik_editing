@@ -35,6 +35,7 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+FPS = 30
 MARGEN_ANTES = 0.08      # s de aire antes de la primera palabra de un tramo
 MARGEN_DESPUES = 0.12    # s de aire después de la última palabra de un tramo
 ALARGAR_HASTA = 0.35     # si el silencio empieza hasta 0,35 s después del fin de Whisper, la voz sigue hasta ahí
@@ -231,12 +232,17 @@ def render(segmentos: list[dict], brutos: Path, salida: Path, rapido: bool) -> N
                                 "stream=color_transfer", "-of", "csv=p=0", str(ruta)], capture_output=True, text=True)
             t = r.stdout.strip()
             hdr[s["clip"]] = t if t in ("arib-std-b67", "smpte2084") else ""
-        d = s["fin"] - s["inicio"]
-        entradas += ["-ss", f"{s['inicio']:.3f}", "-t", f"{d:.3f}", "-i", str(ruta)]
+        n = s["cuadros"]
+        d = n / FPS
+        entradas += ["-ss", f"{s['inicio']:.3f}", "-t", f"{d + 0.2:.3f}", "-i", str(ruta)]
         t = hdr[s["clip"]]
-        partes.append(f"[{k}:v:0]{filtro_video(bool(t), t or 'arib-std-b67')}[v{k}];"
-                      f"[{k}:a:0]aformat=sample_rates=48000:channel_layouts=stereo,"
-                      f"afade=t=in:d=0.01,afade=t=out:st={max(d - 0.01, 0):.3f}:d=0.01[a{k}];")
+        # Vídeo y audio de cada tramo se recortan al mismo número exacto de cuadros, así la
+        # posición de cada tramo en el corte (salida_inicio) es exacta para los subtítulos.
+        partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{filtro_video(bool(t), t or 'arib-std-b67')},"
+                      f"trim=end_frame={n},setpts=PTS-STARTPTS[v{k}];"
+                      f"[{k}:a:0]asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,"
+                      f"atrim=end={d:.6f},apad=whole_dur={d:.6f},"
+                      f"afade=t=in:d=0.01,afade=t=out:st={max(d - 0.01, 0):.6f}:d=0.01[a{k}];")
     union = "".join(f"[v{k}][a{k}]" for k in range(len(segmentos)))
     grafo = "".join(partes) + f"{union}concat=n={len(segmentos)}:v=1:a=1[v][a]"
     script = salida.with_suffix(".filtro.txt")
@@ -305,10 +311,19 @@ def main() -> int:
             unidos.append(dict(s))
     segmentos = unidos
 
+    # Posición de cada tramo en el vídeo cortado, en cuadros exactos.
+    cursor = 0
+    for s in segmentos:
+        s["cuadros"] = max(1, round((s["fin"] - s["inicio"]) * FPS))
+        s["salida_inicio"] = round(cursor / FPS, 4)
+        cursor += s["cuadros"]
+        s["salida_fin"] = round(cursor / FPS, 4)
+
     bruto_total = sum(c["video"].get("duracion", 0) for c in datos["clips"])
-    final_total = sum(s["fin"] - s["inicio"] for s in segmentos)
+    final_total = cursor / FPS
     resultado = {
-        "version": 1,
+        "version": 2,
+        "fps": FPS,
         "pausa_max": args.pausa_max,
         "duracion_brutos": round(bruto_total, 2),
         "duracion_corte": round(final_total, 2),

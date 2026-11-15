@@ -40,7 +40,7 @@ os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 
 EXTENSIONES = {".mp4", ".mov", ".m4v", ".mkv", ".webm", ".avi", ".3gp"}
 MODELO_POR_DEFECTO = "large-v3-turbo"
-VERSION_FORMATO = 5
+VERSION_FORMATO = 6
 
 
 def orden_natural(ruta: Path) -> list:
@@ -101,7 +101,7 @@ def audio_16k(ruta: Path):
 
 
 UMBRAL_SILENCIO_DB = -35
-SILENCIO_MIN_S = 0.25
+SILENCIO_MIN_S = 0.1
 
 
 def silencios(ruta: Path) -> list[tuple[float, float]]:
@@ -127,17 +127,16 @@ def silencios(ruta: Path) -> list[tuple[float, float]]:
 
 
 def ajustar_inicios(frases: list[dict], tramos: list[tuple[float, float]]) -> int:
-    """Whisper suele adelantar la primera palabra que llega después de una pausa y la coloca
-    dentro del silencio. Si una palabra empieza dentro de un silencio y al menos la mitad de
-    ella es silencio, su inicio pasa al final de ese silencio. Devuelve cuántas se movieron."""
+    """Whisper a veces coloca el inicio de una palabra dentro de una pausa (sobre todo la que
+    llega después de la pausa). Si una palabra empieza dentro de un silencio real, su inicio
+    pasa al final de ese silencio, que es cuando vuelve a sonar la voz. Devuelve cuántas se movieron."""
     movidas = 0
     palabras = [w for f in frases for w in f["palabras"]]
     for i, w in enumerate(palabras):
         dur = max(w["fin"] - w["inicio"], 1e-3)
         for a, b in tramos:
             if a <= w["inicio"] < b:
-                solape = min(w["fin"], b) - w["inicio"]
-                if solape / dur >= 0.5:
+                if b - w["inicio"] > 0.02:
                     siguiente = palabras[i + 1]["inicio"] if i + 1 < len(palabras) else None
                     nuevo = round(b, 3)
                     if siguiente is not None and nuevo >= siguiente:

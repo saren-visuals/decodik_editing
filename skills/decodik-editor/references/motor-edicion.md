@@ -69,3 +69,16 @@ uv run scripts/cortar.py <carpeta del talento> [--pausa-max 0.3] [--sin-video] [
 - Las uniones se anclan al sonido real (silencios de ffmpeg desde 50 ms): unos 60 ms de aire antes de que empiece la voz y después de que acabe, para no cortar sílabas.
 - Los vídeos HDR del iPhone (HLG) se pasan a color normal (SDR, BT.709) para que no salgan lavados.
 - Antes de dar el corte por bueno, el talento lo escucha.
+
+## Subtítulos
+
+```
+uv run scripts/subtitulos.py <carpeta del talento> [--max-palabras 4] [--color-activa FFD400] [--sin-video]
+```
+
+- Lee `transcripcion.json` y `cortes.json`, pasa cada palabra al tiempo del vídeo cortado y escribe `subtitulos.ass` (con estilo), `subtitulos.srt` (para entregar) y `subtitulado.mp4` (el corte con los subtítulos pintados, para revisarlo).
+- **Estilo «nativo + palabra a palabra»:** blanco en negrita con contorno negro, la palabra que suena en amarillo (`--color-activa`), sin puntos ni comas al final.
+- **Bloques de 1 a 4 palabras visibles** («Eileen Gu» cuenta como dos). Se abre bloque nuevo en la puntuación y en las pausas. Ningún bloque dura menos de 4 cuadros.
+- **Posición:** centrado, con la base al 66 % de la altura y 130 px de margen a cada lado: dentro de la zona segura de TikTok y Reels (fuera de la descripción de abajo y de los botones de la derecha).
+- **Letra:** Montserrat ExtraBold (OFL). Se descarga del repositorio oficial la primera vez en `~/.cache/decodik/fuentes/`. Ver `CREDITOS.md`.
+- Los nombres salen como quedaron corregidos en la transcripción (`--nombres` de `transcribir.py`).
