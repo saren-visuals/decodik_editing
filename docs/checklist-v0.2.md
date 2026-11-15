@@ -2,6 +2,8 @@
 
 Los números coinciden con la checklist general de Santiago. Marca `[x]` solo cuando se cumple el **criterio de hecho** y añade la prueba en «Prueba».
 
+**Orden (cambiado por Santiago el 2026-11-15):** primero la edición básica de bruto a editado (#24 → #15 → #25 → #28 → #34); después U3–U5 y lo complejo.
+
 ## 0 · Diseño
 - [x] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño · Prueba: ok de Santiago el 2026-11-15
 
@@ -46,7 +48,7 @@ Las tareas de abajo siguen valiendo para las fases 5-7.
 - [ ] #23 Aprobación · **Hecho cuando:** la skill se detiene y no edita sin «ok»
 
 ## Edición
-- [ ] #24 Motor (ffmpeg + whisper + Remotion) instalado y documentado · **Hecho cuando:** un comando de prueba renderiza un MP4 de 5 s
+- [x] #24 Motor (ffmpeg + whisper) instalado y documentado · **Hecho cuando:** un comando de prueba renderiza un MP4 de 5 s · Prueba: 2026-11-15, `uv run scripts/revisar_equipo.py --whisper --prueba …` en Windows → ffmpeg 9.0.2 con libx264 y libass, faster-whisper 1.2.1 listo, `prueba-motor.mp4` 1080×1920, 30 fps, AAC, 5,00 s; sin ffmpeg en el PATH da ✗ con `winget install Gyan.FFmpeg` y sale con 1. Documentado en `references/motor-edicion.md`.
 - [ ] #25 Corte automático · **Hecho cuando:** el vídeo empieza en la primera palabra y no hay silencios > 0,3 s ni sílabas cortadas (escuchado)
 - [ ] #26 Montaje de 3 plantillas (Lista rápida, Ranking, Integración de marca) · **Hecho cuando:** cada una renderizada con un caso de prueba
 - [ ] #28 Subtítulos · **Hecho cuando:** 1-4 palabras por bloque, sincronizados, en zona segura, nombres bien escritos
