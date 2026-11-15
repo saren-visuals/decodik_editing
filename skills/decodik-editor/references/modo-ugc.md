@@ -9,7 +9,7 @@ Vídeo que una marca le encarga al talento. La marca da **el brief y el guion**.
 | Fase | Qué entregas | Estado |
 |---|---|---|
 | 1 · Brief y guion de la marca | Ficha de campaña con huecos | lista |
-| 2 · Dudas | Respuestas citando el brief + mensaje para la marca | en construcción (U3) |
+| 2 · Dudas | Respuestas citando el brief + mensaje para la marca | lista |
 | 3 · Plan de grabación | Lista de tomas por escena + checklist del día | en construcción (U4) |
 | 4 · Estilo de edición | Ficha de estilo | en construcción (U5) |
 | 5 · Brutos y cobertura del guion | Tabla de cobertura | pendiente (v0.2, fase de vídeo) |
@@ -51,3 +51,33 @@ Después pide el brief y el guion de la marca en un solo mensaje corto:
 > ¿Lo ves bien? Dime «ok» y pasamos a tus dudas sobre el brief y al mensaje con las preguntas para la marca.
 
 7. **Espera el «ok».** Si el talento corrige algo de la ficha (por ejemplo, «la marca me dijo por WhatsApp que sí lleva música»), apúntalo en la ficha con su fuente: `(dicho por el talento, <fecha>)`.
+
+## Fase 2 · Dudas sobre el brief
+
+**Entrada:** la ficha de campaña y el brief. **Salida:** respuestas al talento y `06_entrega/mensaje-dudas-marca.md`.
+
+Abre la fase así, en un mensaje corto:
+
+> ¿Tienes alguna duda sobre el brief? Pregúntame lo que quieras («¿puedo decirlo con mis palabras?», «¿sale el logo?», «¿qué ropa llevo?»). Cuando no tengas más, preparo el mensaje con las preguntas para la marca.
+
+### Cómo respondes cada duda
+1. **Busca la respuesta solo en el brief, el guion y lo que el talento haya dicho que le dijo la marca** (anotado en la ficha con su fuente). Nada de «lo normal en UGC», ni de lo que suele pedir otra marca, ni de tu criterio sobre lo que le gustaría a la marca.
+2. **Si el brief lo dice:** responde en una o dos frases y **cita la parte**, entre comillas y con la sección: «Sí: el brief dice "Cuenta lo que te pasó de verdad, con tus palabras" (sección Sí)».
+3. **Si el brief no lo dice:** dilo así, sin deducir ni inventar: «El brief no lo dice. Lo añado a las preguntas para la marca.» Y añádelo a la lista de preguntas.
+4. **Si el brief lo deja a medias** (lo insinúa un ejemplo, o dos partes se contradicen): di lo que sí dice, cita las dos partes y añade la pregunta para confirmarlo.
+5. **Si la duda es de oficio, no de la marca** (cómo grabar con buena luz, cómo quitar ruido): respóndela como DECODIK, aclarando que no es del brief.
+6. **Precios, condiciones y contrato:** no los negocias; remite a DECODIK.
+
+### El mensaje para la marca
+Cuando el talento diga que no tiene más dudas:
+1. Junta **los huecos de la ficha** y **las preguntas que salieron en las dudas**, sin repetir. Ordénalas de más a menos importante para poder grabar (lo que bloquea la grabación primero: guion, redacción obligatoria, producto, fechas).
+2. Escribe un mensaje **corto, educado y en la voz del talento**, listo para copiar, con las preguntas numeradas (como mucho 8; si hay más, agrupa las parecidas). Sin pedir dinero ni condiciones.
+3. Guárdalo en `06_entrega/mensaje-dudas-marca.md` y enséñaselo entero.
+
+> Hola, <nombre o equipo de la marca>: gracias por el brief de <producto>. Antes de grabar me gustaría confirmar unas cosas:
+> 1. …
+> ¡Gracias! En cuanto me lo confirméis, me pongo a grabar.
+
+4. Dile que lo copie y lo mande por donde hable con la marca (no lo mandes tú). Cuando tenga respuestas, que te las pegue: las apuntas en la ficha con su fuente `(respuesta de la marca, <fecha>)` y quitas esos huecos.
+
+**Espera el «ok»** para pasar al plan de grabación. Puede pasar aunque la marca aún no haya contestado: el plan marca lo que dependa de esas respuestas.
