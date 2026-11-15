@@ -50,7 +50,7 @@ perfil-talento.md
 **Día 1:** 3 plantillas montadas automáticamente (Lista rápida, Ranking por niveles, Integración de marca). Las 9, en v1.
 **Modo anuncio (v1):** variantes de gancho, 15/30 s, 9:16 · 4:5 · 1:1, zonas seguras, afirmaciones verificables.
 
-**Stack previsto:** ffmpeg + whisper (transcripción con marcas de tiempo) + Remotion (montaje y subtítulos). Scripts dentro de la skill (`scripts/`), sin claves de API obligatorias para el modo básico.
+**Stack (actualizado 2026-11-15):** **ffmpeg + whisper** (transcripción con marcas de tiempo; subtítulos y textos con ffmpeg). **No usar Remotion por ahora:** su licencia es de pago para empresas de 4 personas o más; se decidirá cuando haga falta motion graphics. Scripts dentro de la skill (`scripts/`), sin claves de API obligatorias para el modo básico.
 
 ## Pendiente de decidir (preguntar a Santiago)
 - Disponibilidad de la app de escritorio de Claude con carpeta conectada en el plan de los talentos, y límites de tamaño de los brutos.

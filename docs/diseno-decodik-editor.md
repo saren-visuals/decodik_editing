@@ -88,7 +88,7 @@ skills/decodik-editor/
     transcribir.py             whisper → transcripcion.json con tiempos
     cobertura.py               tabla escena ↔ toma
     cortar.py                  silencios, muletillas, repeticiones
-    montar/                    proyecto Remotion: escenas, subtítulos, textos
+    montar.py                  montaje con ffmpeg: escenas, subtítulos, textos (sin Remotion por ahora)
     render.py                  render y extracción de fotogramas de revisión
 plantilla-carpeta/             carpeta vacía 01-06 + LEEME.md para el talento
 ```
