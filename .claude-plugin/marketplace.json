@@ -1,6 +1,7 @@
 {
   "name": "decodik",
   "owner": { "name": "DECODIK" },
+  "description": "Skills de DECODIK para talentos del deporte: perfil, edición de vídeo con IA (marca personal y UGC para marcas), formatos y colaboraciones con marcas.",
   "plugins": [
     {
       "name": "decodik",
