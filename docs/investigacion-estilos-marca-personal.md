@@ -7,7 +7,10 @@ _2026-11-15 · Fuente: bancos de vídeos de DECODIK («Banco de vídeos de marca
 ## 1. Método
 
 1. **Recuento:** los 108 reels clasificados del banco de marca personal (hojas «Ideas por tema» e «Ideas por formato»: 93 de Instagram y 15 de TikTok), agrupados por formato y familia.
-2. **Muestra:** 27 reels, de 2 a 5 por familia, más 3 de Jesús Tortosa (los más vistos) y 2 de clientes de la comunidad. 3 enlaces no se pudieron descargar y se sustituyeron por otro de la misma familia.
+2. **Muestra (80 reels):**
+   - 1.ª tanda: 27 reels, de 2 a 5 por familia, más 3 de Jesús Tortosa y 2 de clientes.
+   - 2.ª tanda: **un reel de cada formato que faltaba** (30), un 2.º ejemplo de «Esencia visual» y de «Voz en off», **todos los reels de «Hablar a cámara» del banco** (prioridad de Santiago), 5 más de Jesús y 5 más de clientes: 53 reels.
+   - No se pudieron ver 3 (no disponibles en España o bloqueados): «La vida de un deportista», «POV + voz en off» y un «Cuerpo entero + pizarra». Son formatos con un solo ejemplo en el banco.
 3. **Medidas por reel** (ffmpeg + whisper): duración, cambios de plano, duración media de plano, palabras por minuto, % del tiempo con voz y segundo de la primera palabra.
 4. **Revisión visual:** 12 fotogramas por reel (0,1 s, 1 s y 10 repartidos), anotando subtítulos, textos fijos, B-roll, gráficos y cierre.
 
@@ -168,3 +171,81 @@ En orden de cuántos formatos lo usan:
 | C03 | Cliente DECODIK | Hablando a cámara | 61 s | 6,1 s | 208 | 90 % |
 
 Los números de id son los de las hojas del banco (I = «Ideas por tema», M = «Ideas por formato», J = «Ejemplos de Jesús», C = «Clientes Decodik»).
+
+---
+
+# Ampliación · Hablar a cámara en detalle
+
+_21 reels: los 16 de la familia «Hablar a cámara» del banco + 5 de clientes, que también son hablados a cámara. Más los 3 de Jesús hablados (dos con pantalla partida y uno contando su historia con fotos)._
+
+## A. Cómo se monta (6 maneras)
+
+| Montaje | Cómo es | Reels | Cuándo usarlo |
+|---|---|---|---|
+| **Cortes a recursos** | Tú a cámara y, cada 3-8 s, un recurso a pantalla completa mientras sigue tu voz | 10 (la mitad) | La opción por defecto: da ritmo sin cambiar de formato |
+| **Tarjeta flotante** | Foto, captura, producto recortado o portada encima de ti, en la mitad superior o en el centro | 6 | Historias, datos, productos, noticias |
+| **Pantalla partida** | Recurso arriba y tú abajo (a veces con tu fondo cambiado) | 4 · **es el estilo de Jesús** | Contar algo que pasó en tu deporte con imágenes |
+| **Plano único** | Un solo plano, sin recursos; solo subtítulos | 3 | Opinión directa, reflexión |
+| **Pizarra** | Cuerpo entero escribiendo; la pizarra es el recurso | 2 | Explicar un concepto paso a paso |
+| **Dos personas** | Conversación o pódcast; cortes a planos de ambiente | 2 | Relaciones, entrevistas cortas |
+
+Ritmo medido: 140-250 palabras/min (la mayoría 190-210), voz el 85-96 % del tiempo y primera palabra en el segundo 0. Los montajes con recursos cambian de plano cada **1,5-8 s**; los de plano único, nunca.
+
+## B. Subtítulos en hablar a cámara
+
+| Estilo | Reels | Cómo es |
+|---|---|---|
+| **Clave** | 7 | 1-3 palabras, blanco grueso, palabra fuerte en amarillo, naranja, rojo o verde (y más grande) |
+| **Serif** | 6 | Letra con remate (serif) blanca, pequeña o mediana, a veces en cursiva; la palabra fuerte, grande y sola en pantalla. Tono de historia o reflexión. **La usa Jesús** |
+| **Frase** | 4 | Frase entera pequeña, blanca con sombra |
+| **Condensada** | 2 | Mayúsculas estrechas y altas (tipo cartel), blancas, 1-3 palabras |
+| **Mixta** | 2 | Frase pequeña con la palabra clave en negrita |
+| **Cinética** | 2 | Las palabras aparecen repartidas alrededor de la cabeza, en sitios distintos |
+
+Lo que más se repite **para resaltar**: cambiar el color de la palabra clave (sobre todo amarillo o naranja), agrandarla y, en los estilos más cuidados, **cambiar de letra** en esa palabra (de sans gruesa a serif cursiva o a manuscrita). También: tachar una palabra al corregirse, y cifras gigantes con degradado («85 %», «95 %», «2008»).
+
+## C. Gancho y cierre en hablar a cámara
+
+- **Gancho (0-2 s):** cifra gigante sobre ti (2 clientes) · objeto lanzado a cámara · título en mayúsculas con brillo o degradado · pregunta en pantalla · tu primera frase subtitulada en grande. En **todos**, voz desde el segundo 0.
+- **Cierre:** «escribe la palabra X» con la palabra destacada (a veces con un globo de comentario simulado) · pregunta · tarjeta con tu @ · «lee la descripción».
+
+## D. Receta propuesta · formato «Hablando a cámara» (versión completa)
+
+1. **Corte** como ahora (sin aire, mejor toma).
+2. **Subtítulos** en el estilo elegido (por defecto **Clave**; **Serif** para historias y reflexión), con **la palabra clave de cada frase** en el color de acento. La elige Claude leyendo la transcripción: cifras, nombres, verbos fuertes, la promesa.
+3. **Gancho:** título de 1-2 líneas los primeros 2-3 s; si la primera frase tiene una cifra, **cifra gigante**.
+4. **Recursos:** cada vez que nombres algo que tengas en `03_recursos/` (foto, clip, captura, producto), **corte a pantalla completa** de 1-3 s o **tarjeta flotante**. Si no hay recursos, **cambio de encuadre** (acercamiento) cada 3-6 s.
+5. **Cierre:** CTA en pantalla los últimos 2-3 s, con la palabra para comentar destacada.
+6. **Variante «Estilo Jesús»:** pantalla partida (clip arriba, tú abajo) + subtítulo Serif + cifras grandes.
+
+**Avisos (de lo visto en el banco):**
+- Varios reels usan clips de películas, retransmisiones o fotos de famosos. En DECODIK **solo** material propio o con permiso (`CLAUDE.md`), así que los recursos salen de `03_recursos/` y la skill no busca ni descarga clips de terceros.
+- Algunos pasan su vídeo a blanco y negro u otro look. Como el color no se toca por defecto (decisión de Santiago), un look así sería una opción que el talento pide expresamente.
+
+# Ampliación · resto de formatos (1 ejemplo por formato)
+
+| Formato | Lo propio de su edición |
+|---|---|
+| Pantalla verde sobre una situación | Tú en selfie recortado abajo, el recurso detrás a pantalla completa; subtítulo pequeño |
+| Pantalla dividida (técnica / tendencia) | Tú arriba y el clip abajo (o al revés); subtítulos en **mayúsculas cursivas** con la 2.ª línea en amarillo o rojo |
+| Pantalla dividida con pizarra | Tú arriba, abajo diapositivas o un dibujo que se va construyendo con anotaciones a mano en rojo |
+| Top 5 / puntuación | Columna de círculos numerados que se van rellenando con iconos |
+| Top ejercicios | Etiqueta «Ejercicio 1, 2…» con el número grande en rojo; sin voz |
+| Bueno o malo | Cabecera con dos iconos y sus etiquetas («Nefasto / Recomendado»); lo malo en blanco y negro y lo bueno en color; tarjeta con imagen del ejemplo |
+| Clon / sketch comparativo | Dos etiquetas de color arriba (rojo / verde) con emoji, una imagen o meme por personaje, «VS» |
+| Sketch educativo | Iconos o emojis que aparecen al nombrar algo; pregunta en caja naranja |
+| Sketch de reflexión / actuación | Frases cortas en blanco grueso con palabra en naranja; planos cinematográficos; tarjeta negra con frase |
+| Contenido sobre contenido | Subtítulo Frase; selfie |
+| Entrevista 1 persona / charla | Mayúsculas cursivas de 1-2 palabras; en charla, títulos en amarillo |
+| Encuesta a experto (puntuación) | Título fijo arriba con la especialidad + elemento con emoji + nota gigante «0/10» en degradado naranja |
+| Voz en off | Subtítulo pequeño blanco o serif; título amarillo arriba («Mensaje para…»); cortes cada 2-4 s |
+| Vlog, rutina, primer día, miniserie | Subtítulo pequeño (a veces serif); título de serie en serif grande al principio; lista manuscrita como recurso; cortes cada 2-4 s con voz o ~1 s sin voz |
+| Esencia visual | Frases sobre fondo negro en mayúsculas espaciadas; cortes al ritmo de la música |
+| Vídeo de frase (Jesús) | Frase pequeña arriba con emoji sobre sus combates; cierre «Lee la descripción» |
+
+## Cambios en las conclusiones
+
+- **Estilos de subtítulos:** pasan a **8**: Clave, **Serif** (sube: es el 2.º en hablar a cámara y el de Jesús), Frase, Impacto (mayúsculas cursivas), Caja, **Condensada**, **Mixta** y Mínimo. La «Cinética» queda para más adelante.
+- **Pantalla partida** sube de prioridad: la usan Jesús, la pantalla dividida y la puntuación.
+- **Iconos, emojis y etiquetas de color** son muy comunes en listas y sketches: van al motor después de recursos y cifras.
+- El orden del punto 6 se mantiene, empezando por **todo lo que necesita «Hablando a cámara»**: estilos de subtítulos con palabra clave → gancho, cifra y CTA → recursos (corte y tarjeta) → pantalla partida (estilo Jesús).
