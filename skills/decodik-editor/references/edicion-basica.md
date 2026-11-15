@@ -39,6 +39,9 @@ uv run "$SKILL/scripts/transcribir.py" "<carpeta del vídeo>" --nombres "<nombre
 - La primera vez descarga el modelo de voz (~1,6 GB). Tarda alrededor de 1 s por cada segundo de vídeo.
 - Lee `06_entrega/trabajo/transcripcion.md` entero. Si ves un nombre mal escrito que no te dio, pregúntale cómo se escribe y repite con `--nombres`.
 
+### 4 bis. Formato
+Con la transcripción, elige el formato (p. ej. «Hablando a cámara») y abre su skill: `references/formatos.md`. Comprueba sus **requisitos** (sobre todo los recursos de `03_recursos/`) y usa su **receta** en los pasos 6 a 6 quater.
+
 ### 5. Corta
 ```
 uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --sin-video

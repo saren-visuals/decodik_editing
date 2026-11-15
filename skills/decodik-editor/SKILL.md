@@ -32,6 +32,8 @@ Si contesta algo que no encaja (por ejemplo «no sé»), explícalo con un ejemp
 
 Después de elegir el modo, elige o crea la **carpeta de este vídeo** con `references/carpetas.md` (un vídeo, una carpeta, con fecha y nombre).
 
+Cada vídeo se edita con un **formato** (una skill `decodik-formato-*` con su receta y requisitos): `references/formatos.md`.
+
 Abre solo el archivo del modo elegido. Los demás archivos de `references/` se abren cuando la fase lo pide.
 
 ## Reglas en todos los modos

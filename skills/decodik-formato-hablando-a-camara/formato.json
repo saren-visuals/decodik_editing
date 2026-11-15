@@ -1,0 +1,17 @@
+{
+ "nombre": "Hablando a cámara",
+ "familia": "Hablar a cámara",
+ "duracion_recomendada_s": [30, 90],
+ "subtitulos": {"estilo": "clave", "alternativas": ["serif", "frase"]},
+ "textos": {"gancho": true, "cifras": true, "cta": true},
+ "recursos": {
+  "requisito": "minimo",
+  "minimo": 3,
+  "recomendados": [5, 8],
+  "cada_s": [6, 8],
+  "modos": ["partida", "completo", "tarjeta"],
+  "partida_minimo_s": 3.0
+ },
+ "encuadre": {"alterno": true, "zoom": 1.12},
+ "musica": false
+}

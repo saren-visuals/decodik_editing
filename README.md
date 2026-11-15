@@ -8,6 +8,8 @@ Skills y recursos del **Módulo de Edición con IA** de DECODIK, para talentos a
 |---|---|---|
 | `decodik-perfil` | Crea tu perfil (quién eres, cómo hablas, tu audiencia, tus marcas) para que todo suene a ti | «crea mi perfil» |
 | `decodik-edicion` | De la idea al vídeo: plantilla, guion, 3 ganchos, qué grabar, edición paso a paso en CapCut y revisión con el Sello DECODIK | «quiero hacer un vídeo sobre…» |
+| `decodik-editor` | Edita el vídeo: «edita mi vídeo» → corte, subtítulos, textos, recursos y MP4 con la marca DECODIK | «edita mi vídeo» |
+| `decodik-formato-hablando-a-camara` | Formato «Hablando a cámara» (receta y requisitos que usa `decodik-editor`) | lo elige `decodik-editor` |
 | `decodik-marca` | Colaboraciones: ordena el brief, revisa que lo cumples y prepara la entrega a la marca | «tengo un brief de…» |
 
 **Plantillas de vídeo (v1):** Reacción · Ranking por niveles · Explicación con pizarra · Lista rápida · Debate · Historia o curiosidad · Antes y ahora · Vlog de experiencia · Integración de marca.
