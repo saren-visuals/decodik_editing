@@ -30,6 +30,8 @@ Si contesta algo que no encaja (por ejemplo «no sé»), explícalo con un ejemp
 | 1 · Marca personal | `references/modo-marca-personal.md` (con clips grabados: edición básica de `references/edicion-basica.md`) |
 | 2 · UGC para una marca | `references/modo-ugc.md` |
 
+Después de elegir el modo, elige o crea la **carpeta de este vídeo** con `references/carpetas.md` (un vídeo, una carpeta, con fecha y nombre).
+
 Abre solo el archivo del modo elegido. Los demás archivos de `references/` se abren cuando la fase lo pide.
 
 ## Reglas en todos los modos

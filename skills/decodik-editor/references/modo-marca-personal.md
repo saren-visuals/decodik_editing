@@ -4,7 +4,7 @@ Vídeo para la cuenta del propio talento, sin marca que encargue.
 
 ## ¿Tiene clips grabados?
 
-Mira si la carpeta del talento tiene vídeos en `02_brutos/`.
+Primero elige o crea la carpeta de este vídeo con `references/carpetas.md` (un vídeo, una carpeta). Luego mira si su `02_brutos/` tiene clips.
 
 | Situación | Qué haces |
 |---|---|

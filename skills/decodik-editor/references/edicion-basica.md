@@ -1,13 +1,13 @@
 # Edición básica · de los clips del móvil al vídeo listo
 
-El talento deja sus clips en `02_brutos/` y recibe `06_entrega/video-vN.mp4`: cortado (sin silencios, muletillas ni tomas repetidas), con subtítulos, con el volumen de las redes y con el color tal como lo grabó.
+El talento deja sus clips en `02_brutos/` de la carpeta del vídeo y recibe `06_entrega/video-vN.mp4`: cortado (sin silencios, muletillas ni tomas repetidas), con subtítulos, con el volumen de las redes y con el color tal como lo grabó.
 
 Es la versión mínima: todavía **sin** gancho ni CTA en pantalla, música ni formatos. Esos llegan después.
 
 ## Antes de empezar
 
 - **`$SKILL`** = la carpeta de esta skill (la que contiene `SKILL.md`). Los scripts están en `$SKILL/scripts/`. Usa siempre la ruta real, no la supongas.
-- **Carpeta del talento** = la carpeta que tiene `02_brutos/`. Si la carpeta de trabajo la tiene, es esa. Si no, pregúntale: «¿En qué carpeta están tus clips?».
+- **Carpeta del vídeo** = la carpeta `AAAA-MM-DD Nombre` de este vídeo, dentro de la carpeta del talento. Se elige o se crea antes de empezar, con `references/carpetas.md`. En los comandos de abajo, `<carpeta del vídeo>` es su ruta completa.
 - **Necesitas poder ejecutar comandos** (Claude Code o la app de escritorio con la carpeta conectada). Si no puedes, díselo en una línea y sigue con la ruta sin edición automática (guion + guía CapCut de `decodik-edicion`).
 - Cada script dice al final qué ha hecho. Códigos de salida: 0 bien · 1 error · 2 falta algo del talento · 3 sin conexión. Si algo falla, explícalo en una frase sencilla y da el siguiente paso; no le enseñes la salida técnica.
 
@@ -15,9 +15,10 @@ Es la versión mínima: todavía **sin** gancho ni CTA en pantalla, música ni f
 
 Un paso cada vez. Antes de los pasos largos, avisa de cuánto va a tardar para que no piense que se ha colgado.
 
-### 1. Mira la carpeta
-- Comprueba que `02_brutos/` tiene vídeos (`.mp4`, `.mov`…), también dentro de subcarpetas.
-- Si está vacía: «Sube a `02_brutos/` los clips del móvil, tal cual salen, y dime "listo"». Para hasta que lo haga.
+### 1. Mira la carpeta del vídeo
+- Si todavía no hay carpeta del vídeo, créala o elígela con `references/carpetas.md`.
+- Comprueba que su `02_brutos/` tiene vídeos (`.mp4`, `.mov`…), también dentro de subcarpetas.
+- Si está vacía: «Deja en `<nombre de la carpeta>/02_brutos/` los clips del móvil, tal cual salen, y dime "listo"». Para hasta que lo haga.
 - Dile cuántos clips has encontrado y que se ordenan por su nombre (Clip 1, Clip 2… Clip 10).
 
 ### 2. Revisa el equipo (solo la primera vez, o si algo falla)
@@ -32,7 +33,7 @@ En una sola pregunta: «¿Sale algún nombre propio, marca o producto en el víd
 
 ### 4. Transcribe
 ```
-uv run "$SKILL/scripts/transcribir.py" "<carpeta del talento>" --nombres "<nombres separados por comas>"
+uv run "$SKILL/scripts/transcribir.py" "<carpeta del vídeo>" --nombres "<nombres separados por comas>"
 ```
 - Sin nombres, quita `--nombres`.
 - La primera vez descarga el modelo de voz (~1,6 GB). Tarda alrededor de 1 s por cada segundo de vídeo.
@@ -40,20 +41,20 @@ uv run "$SKILL/scripts/transcribir.py" "<carpeta del talento>" --nombres "<nombr
 
 ### 5. Corta
 ```
-uv run "$SKILL/scripts/cortar.py" "<carpeta del talento>" --sin-video
+uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --sin-video
 ```
 - Lee `06_entrega/trabajo/cortes.md` y cuéntale en 2-3 líneas qué ha pasado: duración antes → después y qué se quitó, sobre todo las **tomas repetidas** («Dijiste dos veces lo de la periodista; me quedo con la segunda, que se oye más clara»).
 - Si el corte dura mucho más o mucho menos de lo que pide su formato o su plataforma, díselo, pero no quites frases por tu cuenta.
 
 ### 6. Subtítulos
 ```
-uv run "$SKILL/scripts/subtitulos.py" "<carpeta del talento>" --sin-video
+uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --sin-video
 ```
 Lee `06_entrega/trabajo/subtitulos.srt` por encima: nombres bien escritos, nada raro.
 
 ### 7. Render y revisión
 ```
-uv run "$SKILL/scripts/render.py" "<carpeta del talento>"
+uv run "$SKILL/scripts/render.py" "<carpeta del vídeo>"
 ```
 - Tarda entre 1 y 2 veces la duración del vídeo (más si el móvil grabó en HDR).
 - **Mira tú la hoja de contacto** `06_entrega/trabajo/revision/hoja.png` antes de decir nada: subtítulo legible, sin tapar la cara, nada raro en la imagen.
@@ -62,7 +63,7 @@ uv run "$SKILL/scripts/render.py" "<carpeta del talento>"
 ### 8. Entrega
 Mensaje corto:
 
-> ¡Listo! Tu vídeo está en `06_entrega/video-v1.mp4` (de 1:38 a 1:01). He quitado los silencios y la toma repetida, y le he puesto subtítulos.
+> ¡Listo! Tu vídeo está en `2026-11-15 Eileen Gu/06_entrega/video-v1.mp4` (de 1:38 a 1:01). He quitado los silencios y la toma repetida, y le he puesto subtítulos.
 > Míralo en el móvil. Si algo no te convence (un corte, una palabra mal escrita…), dime el segundo y lo cambio.
 
 - Si pide cambios, haz el cambio y renderiza otra vez: sale `video-v2.mp4` y la v1 se queda como estaba.

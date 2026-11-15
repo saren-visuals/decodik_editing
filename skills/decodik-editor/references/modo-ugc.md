@@ -20,7 +20,9 @@ Si el talento llega a una fase pendiente, díselo en una línea y ofrécele lo q
 
 ## Primer paso al entrar en este modo
 
-Pide el brief y el guion de la marca en un solo mensaje corto:
+Cada encargo es un vídeo con su propia carpeta: elígela o créala con `references/carpetas.md` (el nombre suele ser la marca o el producto, p. ej. «Zancada Brisa 3»). Todas las rutas de abajo (`01_brief/`, `06_entrega/`…) son de esa carpeta.
+
+Después pide el brief y el guion de la marca en un solo mensaje corto:
 
 > Perfecto. Sube a la carpeta `01_brief/` el brief y el guion que te ha mandado la marca (PDF, Word, captura o texto pegado aquí mismo). Cuando estén, dime «listo».
 
