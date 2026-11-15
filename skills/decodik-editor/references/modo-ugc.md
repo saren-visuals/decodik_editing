@@ -11,7 +11,7 @@ Vídeo que una marca le encarga al talento. La marca da **el brief y el guion**.
 | 1 · Brief y guion de la marca | Ficha de campaña con huecos | lista |
 | 2 · Dudas | Respuestas citando el brief + mensaje para la marca | lista |
 | 3 · Plan de grabación | Lista de tomas por escena + checklist del día | lista |
-| 4 · Estilo de edición | Ficha de estilo | en construcción (U5) |
+| 4 · Estilo de edición | Ficha de estilo | lista |
 | 5 · Brutos y cobertura del guion | Tabla de cobertura | pendiente (v0.2, fase de vídeo) |
 | 6 · Edición | Vídeo editado | pendiente (v0.2, fase de vídeo) |
 | 7 · Revisión y entrega | Sello DECODIK + mensaje de entrega | pendiente (v0.2, fase de vídeo) |
@@ -101,3 +101,15 @@ Cuando el talento diga que no tiene más dudas:
 4. **Checklist del día** (casillas para marcar): el producto, cargado y limpio · el embalaje si sale · la app abierta con tus datos reales en la pantalla que toca · el guion o las frases a mano · ropa sin marcas de otros · batería y espacio en el móvil · la luz · decir «#publi» no hace falta en el vídeo, pero ten la etiqueta lista al publicar.
 5. **Lo que no puede salir** (los prohibidos de la ficha, en una lista corta que el talento lea antes de grabar).
 6. Guárdalo en `06_entrega/plan-grabacion.md` y enséñale un resumen: número de tomas, las que hay que repetir, las ⚠ pendientes y la lista de lo que no puede salir. **Espera el «ok»** para pasar a la ficha de estilo.
+
+## Fase 4 · Estilo de edición
+
+**Entrada:** ficha de campaña, brief y, si existe, la guía de marca de `04_marca/`. **Salida:** `06_entrega/ficha-estilo.md` (plantilla en `references/ficha-estilo.md`) y, si hay guía de marca, `06_entrega/trabajo/marca.json`.
+
+1. **Lee `04_marca/`** si existe (guía de marca, logo). Si hay colores de la marca, escribe `06_entrega/trabajo/marca.json` con ellos (claves `texto`, `contorno`, `clave`…; ver `references/marca-decodik.md`): en UGC **la marca del cliente manda sobre DECODIK**. Respeta lo que diga la guía (p. ej. «logo solo sobre fondo claro»).
+2. **Propón un estilo** con el orden de `references/ficha-estilo.md`: lo que diga el brief → la guía de marca → lo que pida el talento → **UGC natural**. Si el brief da vídeos de ejemplo, quédate con su estructura y ritmo, y deja fuera lo que el propio brief prohíba.
+3. **Rellena la ficha de estilo**: cada decisión con su fuente; lo que dependa de la marca (música, logo, versiones) como pendiente, nunca decidido por ti.
+4. **Traduce la ficha a valores del motor** (estilo de subtítulos, `marca.json`, qué va en `textos.json` y `recursos.json`, encuadre): así la fase 6 no tiene que volver a decidir nada.
+5. Guárdala y enséñale un resumen de 4-5 líneas («Estilo UGC natural: subtítulos Crema con la clave en el verde de Zancada, código TALENTO10 escrito al final, sin logo, música pendiente de la marca»). **Espera su aprobación o sus cambios**; si cambia algo, apúntalo con `(pedido por el talento, <fecha>)`.
+
+Con la ficha de estilo aprobada termina la parte de texto. La fase 5 empieza cuando el talento sube los clips a `02_brutos/`.
