@@ -154,15 +154,70 @@ def subtitulos_con_huecos(ass: Path) -> Path:
     return copia
 
 
+def plan_recursos(ass: Path) -> list[dict]:
+    """Recursos en pantalla preparados por recursos.py (vacío si no hay)."""
+    f = ass.with_name("recursos-plan.json")
+    if not f.exists():
+        return []
+    return json.loads(f.read_text(encoding="utf-8")).get("recursos", [])
+
+
+def entradas_recursos(plan: list[dict]) -> list[str]:
+    args = []
+    for r in plan:
+        dura = r["fin"] - r["inicio"] + 0.3
+        if r["tipo"] == "imagen":
+            args += ["-loop", "1", "-framerate", str(FPS), "-t", f"{dura:.3f}", "-i", r["preparado"]]
+        else:
+            args += ["-ss", "0", "-t", f"{dura:.3f}", "-i", r["archivo"]]
+    return args
+
+
+def capas_recursos(plan: list[dict], primera: int, decision: dict, entrada: str) -> tuple[str, str]:
+    """Filtros que ponen cada recurso encima del vídeo (en orden de tiempo). Devuelve el grafo y la
+    etiqueta de salida. Tarjeta: entra subiendo 40 px y con un fundido de 0,18 s; sale con fundido."""
+    hdr = decision["modo"] == "hdr"
+    matriz, formato = ("bt2020", "yuva420p10le") if hdr else ("bt709", "yuva420p")
+    partes, actual = [], entrada
+    y_tarjeta = round(1920 * 0.38)
+    for k, r in enumerate(plan):
+        i = primera + k
+        ini, fin = r["inicio"], r["fin"]
+        if r["tipo"] == "imagen":
+            # PNG ya escalado (y en HLG si el vídeo es HDR): solo se pasa a YUV con la matriz correcta.
+            base = f"[{i}:v:0]scale=out_color_matrix={matriz}:out_range=tv,format={formato}"
+        else:
+            if r["modo"] == "completo":
+                caja = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920"
+            else:
+                caja = "scale=820:440:force_original_aspect_ratio=decrease:flags=lanczos"
+            base = f"[{i}:v:0]{caja},setsar=1,fps={FPS},format={formato}"
+        base += f",setpts=PTS-STARTPTS+{ini:.3f}/TB"
+        if r["modo"] == "tarjeta":
+            base += (f",fade=t=in:st={ini:.3f}:d=0.18:alpha=1,"
+                     f"fade=t=out:st={max(fin - 0.18, ini):.3f}:d=0.18:alpha=1")
+            pos = f"x=(W-w)/2:y={y_tarjeta}+40*max(0\\,1-(t-{ini:.3f})/0.2)"
+        else:
+            pos = "x=0:y=0"
+        partes.append(f"{base}[r{k}];")
+        partes.append(f"[{actual}][r{k}]overlay={pos}:enable='between(t\\,{ini:.3f}\\,{fin:.3f})':"
+                      f"eof_action=pass:format={'yuv420p10' if hdr else 'yuv420'}[o{k}];")
+        actual = f"o{k}"
+    return "".join(partes), actual
+
+
 def grafo_completo(segmentos: list[dict], brutos: Path, decision: dict, ass: Path, fuentes: Path, volumen: str) -> str:
     partes = []
     for k, s in enumerate(segmentos):
         partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{color.filtro_clip(brutos / s['clip'], decision, FPS)},"
                       f"trim=end_frame={s['cuadros']},setpts=PTS-STARTPTS[v{k}];")
     union = "".join(f"[v{k}][a{k}]" for k in range(len(segmentos)))
+    # Recursos (recursos.py) encima del vídeo; subtítulos y textos, encima de todo.
+    capas, salida_capas = capas_recursos(plan_recursos(ass), len(segmentos), decision, "vc")
     return ("".join(partes) + cadenas_audio(segmentos)
             + f"{union}concat=n={len(segmentos)}:v=1:a=1[vc][ac];"
-            + f"[vc]subtitles=filename='{ruta_filtro(subtitulos_con_huecos(ass))}':fontsdir='{ruta_filtro(fuentes)}'"
+            + capas
+            + f"[{salida_capas}]subtitles=filename='{ruta_filtro(subtitulos_con_huecos(ass))}':fontsdir='{ruta_filtro(fuentes)}'"
             # Gancho, cifras y CTA (textos.py), encima de los subtítulos, si los hay.
             + (f",subtitles=filename='{ruta_filtro(ass.with_name('textos.ass'))}':fontsdir='{ruta_filtro(fuentes)}'"
                if ass.with_name("textos.ass").exists() else "")
@@ -350,7 +405,7 @@ def main() -> int:
         print(f"  … Renderizando con {intento['nombre']}")
         t1 = time.time()
         r = ejecutar(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-nostdin",
-                      *entradas(segmentos, brutos, intento["entrada"]),
+                      *entradas(segmentos, brutos, intento["entrada"]), *entradas_recursos(plan_recursos(ass)),
                       "-/filter_complex", str(script), "-map", "[v]", "-map", "[a]",
                       *intento["codec"], *color.etiquetas_salida(decision),
                       "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(salida)])

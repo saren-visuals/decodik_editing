@@ -2,7 +2,7 @@
 
 El talento deja sus clips en `02_brutos/` de la carpeta del vídeo y recibe `06_entrega/video-vN.mp4`: cortado (sin silencios, muletillas ni tomas repetidas), con subtítulos, con el volumen de las redes y con el color tal como lo grabó.
 
-Lleva gancho, cifras grandes y CTA en pantalla. Todavía **sin** recursos (B-roll), música ni formatos: llegan después.
+Lleva gancho, cifras grandes, CTA y recursos del talento (B-roll y tarjetas) en pantalla. Todavía **sin** música ni formatos: llegan después.
 
 ## Antes de empezar
 
@@ -61,6 +61,13 @@ uv run "$SKILL/scripts/textos.py" "<carpeta del vídeo>"
 ```
 - Cómo elegirlos: `references/textos-pantalla.md`.
 
+### 6 ter. Recursos en pantalla
+- Si hay fotos, capturas o clips en `03_recursos/`, empareja cada uno con la palabra en que el talento lo nombra, escribe `06_entrega/trabajo/recursos.json` y enséñaselo en una lista corta. Con su «ok»:
+```
+uv run "$SKILL/scripts/recursos.py" "<carpeta del vídeo>"
+```
+- Cómo elegir modo (pantalla completa o tarjeta) y momento: `references/recursos-pantalla.md`. Solo material del talento o con permiso.
+
 ### 7. Render y revisión
 ```
 uv run "$SKILL/scripts/render.py" "<carpeta del vídeo>"
@@ -79,4 +86,4 @@ Mensaje corto:
 - Los subtítulos sueltos están en `06_entrega/subtitulos-vN.srt`, por si su red le deja subirlos aparte.
 
 ## Lo que esta versión no hace (todavía)
-Ritmo de cortes (cambio de encuadre), música, B-roll o fotos, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.
+Ritmo de cortes (cambio de encuadre), pantalla partida, música, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.

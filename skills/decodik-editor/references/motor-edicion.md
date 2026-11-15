@@ -92,6 +92,17 @@ uv run scripts/textos.py <carpeta del vídeo> [--color-clave HEX]
 - **Gancho** arriba (12 % de la altura, sin tapar los ojos) desde el fotograma 0 hasta el final de la primera frase; **cifras** de 380 px debajo de la cara con un golpe de escala al decirlas (mientras se ven, el subtítulo se aparta); **CTA** arriba los últimos 2,5 s con un fundido.
 - `render.py` los pinta encima de los subtítulos si existe `textos.ass`.
 
+## Recursos en pantalla
+
+```
+uv run scripts/recursos.py <carpeta del vídeo>
+```
+
+- Lee `recursos.json` (propuesto por Claude, aprobado por el talento; ver `references/recursos-pantalla.md`), ancla cada recurso de `03_recursos/` a la palabra en que se nombra y escribe `recursos-plan.json`.
+- **Completo:** el recurso cubre los 1080×1920. **Tarjeta:** como mucho 820×440 px, esquinas redondeadas, arriba al 38 % de la altura; entra subiendo 40 px con fundido de 0,18 s y sale con fundido.
+- Las imágenes se preparan con numpy (dependencia de `uv run`): escala, esquinas con transparencia y, si el vídeo es HDR, paso a BT.2020 + HLG con el blanco de referencia. Los clips se usan sin sonido y tienen que tener el mismo color que el vídeo.
+- `render.py` pone los recursos encima del vídeo y, encima de todo, subtítulos y textos.
+
 ## Render final y revisión
 
 ```
