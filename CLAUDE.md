@@ -11,7 +11,7 @@ Responsable: Santiago (contenido de marca personal y edición en DECODIK). Habla
 1. **Propiedad intelectual.** Material de formaciones de terceros se usa solo como referencia de investigación. Nunca copies sus SKILL.md, prompts, catálogos, scripts ni textos aquí. Analiza el concepto y escribe una implementación original. `referencias/` y `_investigacion/` están en `.gitignore`.
 2. **Cero experiencia.** El talento no sabe editar ni usar IA. Una frase para empezar, preguntas cortas, un paso cada vez.
 3. **Cada lección responde:** qué podrá hacer · cómo lo aplica a su contenido · cómo mejora su trabajo con marcas.
-4. **Marcas:** señalización de publicidad siempre; no inventar datos de producto; nada de música, logos o imágenes de terceros sin permiso.
+4. **Marcas:** señalización de publicidad siempre; no inventar datos de producto.
 5. **Cada skill en 3 usos:** alumno (lista para usar) · aprendizaje (comentada) · producción interna.
 
 ## Estado (v0.1.0)
