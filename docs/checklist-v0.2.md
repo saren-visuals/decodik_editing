@@ -40,7 +40,7 @@ Las tareas de abajo siguen valiendo para las fases 5-7.
 
 ## Análisis y guion
 - [ ] #14 Ficha de brief · **Hecho cuando:** caso B genera la ficha con mensajes clave, prohibidos y CTA
-- [ ] #15 Transcripción con marcas de tiempo · **Hecho cuando:** `transcripcion.json` con tiempos por palabra o frase para cada bruto
+- [x] #15 Transcripción con marcas de tiempo · **Hecho cuando:** `transcripcion.json` con tiempos por palabra o frase para cada bruto · Prueba: 2026-11-15, caso A (15 clips .mov 4K HEVC del iPhone, 107 s) → `transcripcion.json` con 210 palabras con inicio y fin, en 84 s; texto revisado clip a clip; «Eileen Gu» corregido con `--nombres`; la toma repetida del Clip 8 aparece dos veces; 10 inicios adelantados por Whisper corregidos con los silencios de ffmpeg (p. ej. Clip 2 «Se» 1,34 → 3,23 s, donde empieza la voz); segunda ejecución sin cambios en 0,3 s.
 - [ ] #16 Inventario de tomas · **Hecho cuando:** tabla con clip, contenido, calidad y mejores tomas
 - [ ] #19 Guion a partir de lo grabado · **Hecho cuando:** cada frase del guion apunta a un clip y segundo reales
 - [ ] #21 3 ganchos · **Hecho cuando:** 3 opciones (verbal, texto, visual) usando tomas reales

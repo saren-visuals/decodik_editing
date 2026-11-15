@@ -43,3 +43,16 @@ uv run scripts/revisar_equipo.py --whisper --prueba 06_entrega
 - uv: MIT / Apache-2.0.
 
 Se instalan desde sus fuentes oficiales; el repo no incluye ninguno.
+
+## Transcribir los brutos
+
+```
+uv run scripts/transcribir.py <carpeta del talento> --nombres "Nombre Propio, Marca, Producto"
+```
+
+- Busca los vídeos en `02_brutos/` (también en subcarpetas) en orden natural: «Clip 2» va antes que «Clip 10».
+- Escribe `06_entrega/trabajo/transcripcion.json` (tiempos por palabra) y `transcripcion.md` (para leer).
+- `--nombres`: pon los nombres propios, marcas y productos del vídeo. Se corrigen después de transcribir («Eilengu» → «Eileen Gu») y lo que oyó Whisper queda en `p_whisper`. No se le pasan a Whisper como pista porque así a veces se salta una toma repetida.
+- Whisper suele adelantar la primera palabra después de una pausa. Esos inicios se corrigen con la detección de silencios de ffmpeg; el valor original queda en `inicio_whisper`.
+- Si un clip no ha cambiado, no se vuelve a transcribir. `--forzar` lo obliga.
+- Tarda unos 5 s por clip corto en un portátil sin tarjeta gráfica; la primera vez descarga el modelo `large-v3-turbo` (~1,6 GB).
