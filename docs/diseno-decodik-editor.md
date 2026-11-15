@@ -1,6 +1,6 @@
 # Diseño · decodik-editor v0.2
 
-_Estado: **propuesta, pendiente del «ok» de Santiago**_
+_Estado: **aprobado por Santiago el 2026-11-15**_
 
 ## Entrada
 El talento escribe **«edita mi vídeo»** (o algo parecido). La skill pregunta una sola cosa:

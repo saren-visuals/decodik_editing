@@ -3,7 +3,7 @@
 Los números coinciden con la checklist general de Santiago. Marca `[x]` solo cuando se cumple el **criterio de hecho** y añade la prueba en «Prueba».
 
 ## 0 · Diseño
-- [ ] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño
+- [x] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño · Prueba: ok de Santiago el 2026-11-15
 
 ## UGC para marcas · fases 1-4 (primero, sin vídeo)
 - [ ] U1 Elección de modo (marca personal / UGC para marcas) · **Hecho cuando:** «edita mi vídeo» lleva a esa pregunta y a nada más
