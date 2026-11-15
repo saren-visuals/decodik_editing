@@ -180,7 +180,7 @@ def entradas_recursos(plan: list[dict]) -> list[str]:
         if r["tipo"] == "imagen":
             args += ["-loop", "1", "-framerate", str(FPS), "-t", f"{dura:.3f}", "-i", r["preparado"]]
         else:
-            args += ["-ss", "0", "-t", f"{dura:.3f}", "-i", r["archivo"]]
+            args += ["-ss", f"{r.get('desde', 0):.3f}", "-t", f"{dura:.3f}", "-i", r["archivo"]]
     return args
 
 
@@ -213,6 +213,15 @@ def capas_recursos(plan: list[dict], primera: int, decision: dict, entrada: str)
                 d = max(fin - ini, 0.1)
                 base += (f",scale=w='1080*(1+0.05*t/{d:.3f})':h='{alto_rec}*(1+0.05*t/{d:.3f})':eval=frame:flags=bicubic,"
                          f"crop=1080:{alto_rec}:(iw-1080)/2:(ih-{alto_rec})/2")
+        elif r["modo"] == "completo" and r.get("horizontal"):
+            # Clip horizontal a pantalla completa: entero y centrado, con una copia suya ampliada y
+            # desenfocada de fondo (como hacen las apps). El color no se toca.
+            partes.append(f"[{i}:v:0]setsar=1,fps={FPS},split[hf{k}][hc{k}];"
+                          f"[hf{k}]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+                          f"boxblur=luma_radius=40:luma_power=2[hb{k}];"
+                          f"[hc{k}]scale=1080:-2:flags=lanczos[hn{k}];"
+                          f"[hb{k}][hn{k}]overlay=x=0:y=(H-h)/2[hx{k}];")
+            base = f"[hx{k}]format={formato}"
         else:
             if r["modo"] in ("completo", "partida"):
                 caja = f"scale=1080:{alto_rec}:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:{alto_rec}"

@@ -1,9 +1,10 @@
-"""Color: el vídeo sale con el mismo color con el que se grabó.
+"""Color: el vídeo sale con el mismo color con el que se grabó. Nunca se convierte el color de
+ningún clip ni recurso (decisión de Santiago): todo entra con sus valores originales.
 
 - Si todos los clips son HDR (los iPhone graban en HLG), sale HDR: HEVC 10 bits con las mismas
   etiquetas de color. No se convierte nada.
 - Si todos son SDR (la mayoría de Android, cámaras), sale SDR: H.264 8 bits, BT.709.
-- Solo si se mezclan HDR y SDR hay que convertir los HDR a SDR para poder unirlos; se avisa.
+- Si se mezclan, el vídeo sale con la etiqueta de la mayoría y los otros entran sin convertir (se avisa).
 
 Lo usan cortar.py, subtitulos.py y render.py. Solo biblioteca estándar y ffprobe.
 """
@@ -35,31 +36,33 @@ def es_hdr(datos: dict) -> bool:
 
 
 def decidir(clips: list[Path]) -> dict:
-    """Decide el color de salida para un conjunto de clips."""
+    """Decide con qué etiqueta de color sale el vídeo. NUNCA se convierte el color de ningún clip
+    (decisión de Santiago): todos entran con sus valores originales.
+    - Todos HDR del mismo tipo → sale HDR (HEVC 10 bits) con esas etiquetas.
+    - Todos SDR → sale SDR (H.264, BT.709).
+    - Mezclados → sale con la etiqueta de la mayoría (en duración no se mira: en número de clips);
+      los otros entran sin convertir y se avisa de que pueden verse algo distintos."""
     por_clip = {str(c): datos_color(c) for c in clips}
     hdr = [c for c, d in por_clip.items() if es_hdr(d)]
-    if hdr and len(hdr) == len(por_clip):
-        ref = por_clip[hdr[0]]
-        transferencias = {por_clip[c]["transferencia"] for c in hdr}
-        if len(transferencias) == 1:
-            return {"modo": "hdr", "transferencia": ref["transferencia"], "por_clip": por_clip, "aviso": ""}
-        aviso = "Hay clips HDR de dos tipos (HLG y PQ): se pasan a SDR para poder unirlos."
-        return {"modo": "sdr", "transferencia": "bt709", "por_clip": por_clip, "aviso": aviso}
-    aviso = "Hay clips HDR y SDR mezclados: los HDR se pasan a SDR para poder unirlos." if hdr else ""
+    tipos = {por_clip[c]["transferencia"] for c in hdr}
+    if hdr and len(hdr) * 2 >= len(por_clip):
+        transferencia = max(tipos, key=lambda t: sum(1 for c in hdr if por_clip[c]["transferencia"] == t))
+        aviso = ("" if len(hdr) == len(por_clip) and len(tipos) == 1 else
+                 "Hay clips con color distinto (HDR y normal, o dos tipos de HDR). No se convierten: el vídeo "
+                 "sale en HDR y los otros clips pueden verse algo distintos.")
+        return {"modo": "hdr", "transferencia": transferencia, "por_clip": por_clip, "aviso": aviso}
+    aviso = ("Hay clips HDR y normales mezclados. No se convierten: el vídeo sale en color normal y los clips "
+             "HDR pueden verse algo distintos.") if hdr else ""
     return {"modo": "sdr", "transferencia": "bt709", "por_clip": por_clip, "aviso": aviso}
 
 
 def filtro_clip(clip: Path, decision: dict, fps: int) -> str:
-    """Filtro de vídeo de un clip: tamaño vertical 1080×1920 y, solo si hace falta, conversión."""
+    """Filtro de vídeo de un clip: solo tamaño vertical 1080×1920 y etiquetas de salida. El color
+    del clip no se toca (sus valores entran tal cual)."""
     base = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920,setsar=1," + f"fps={fps}"
-    datos = decision["por_clip"][str(clip)]
     if decision["modo"] == "hdr":
         return base + (f",format=yuv420p10le,setparams=color_primaries=bt2020:color_trc={decision['transferencia']}"
                        ":colorspace=bt2020nc:range=tv")
-    if es_hdr(datos):
-        # Solo en el caso mixto: HDR → SDR para poder unirlo con clips SDR.
-        base += (f",zscale=tin={datos['transferencia']}:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,"
-                 "format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv")
     return base + ",format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv"
 
 
@@ -117,3 +120,4 @@ def filtro_vista_previa(modo: str, transferencia: str) -> str:
         return "null"
     return (f"zscale=tin={transferencia}:min=bt2020nc:pin=bt2020:rin=tv:t=linear:npl=203,format=gbrpf32le,"
             "zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=rgb24")
+

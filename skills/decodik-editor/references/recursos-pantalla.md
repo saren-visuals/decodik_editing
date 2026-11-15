@@ -2,7 +2,7 @@
 
 Las fotos, capturas y clips del talento (en `03_recursos/`) aparecen **cuando los nombra**: es lo que más ritmo da a un vídeo hablado a cámara (la mitad de los reels de referencia lo hacen; ver `docs/investigacion-estilos-marca-personal.md`).
 
-**Solo material del talento o con permiso** (`CLAUDE.md`): la skill no busca, descarga ni genera imágenes de terceros (jugadas, retransmisiones, fotos de famosos, logos). Si el talento quiere un recurso que no tiene, díselo y propón grabarlo o hacer una captura propia.
+**Material de otros:** la skill usa lo que el talento ponga en `03_recursos/`. Si algo es de otros (un documental, una retransmisión, fotos de un famoso, un logo), avísale en una línea: la red puede silenciar, quitar alcance o bloquear el vídeo, y en vídeos para marcas la marca suele pedir derechos. La decisión es suya. La skill no busca ni descarga material por su cuenta.
 
 ## Regla: la cara del talento no se tapa nunca
 
@@ -37,6 +37,17 @@ Ningún recurso se pone encima de su cara. El script lo garantiza solo:
 - `en`: la palabra de la transcripción del vídeo cortado (admite «palabra#2» y varias palabras).
 - `dura`: segundos (por defecto 2). Que no se solapen dos recursos ni una tarjeta con una cifra grande (`textos.json`): el script avisa.
 - Los clips se usan **sin su sonido**: la voz del talento sigue.
+- `desde`: en clips, el segundo del clip en que empieza el fragmento («83» o «1:23»). Por defecto, desde el principio.
+
+## Vídeos largos (reportajes, partidos, directos)
+
+Para sacar fragmentos de un vídeo largo, primero explóralo:
+
+```
+uv run "$SKILL/scripts/explorar_recurso.py" "<carpeta del vídeo>" "<archivo de 03_recursos>" [--cada 20] [--sin-voz]
+```
+
+Deja en `06_entrega/trabajo/explorar/` hojas de fotogramas (uno cada 20 s, con su minuto:segundo) y la transcripción con tiempos. Míralas, elige los momentos que casan con lo que dice el talento y ponlos en `recursos.json` con `desde`. Lo ideal para estos fragmentos es la **pantalla partida** (estilo Jesús).
 
 ## Comando
 
@@ -48,5 +59,5 @@ Prepara las imágenes (tamaño, esquinas, color) en `06_entrega/trabajo/recursos
 
 ## Color
 
-- Fotos y capturas (siempre «normales», SDR) se convierten para que se vean igual dentro de un vídeo HDR: blanco al nivel de referencia, colores en BT.2020 + HLG (como los textos).
-- Los clips tienen que estar grabados igual que el vídeo (HDR con HDR del mismo tipo, o normal con normal). Si no, el script lo dice y propone usar una foto o captura de ese momento.
+- **El color de los recursos no se toca nunca** (decisión de Santiago): fotos, capturas y clips entran con sus valores originales, aunque el vídeo sea HDR y el recurso no (o al revés). En ese caso pueden verse algo distintos; se acepta.
+- Se admiten clips de cualquier orientación. Uno **horizontal a pantalla completa** se pone entero y centrado, con una copia suya ampliada y desenfocada de fondo. En pantalla partida, se recorta al centro.

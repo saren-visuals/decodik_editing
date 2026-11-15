@@ -66,7 +66,7 @@ uv run "$SKILL/scripts/textos.py" "<carpeta del vídeo>"
 ```
 uv run "$SKILL/scripts/recursos.py" "<carpeta del vídeo>"
 ```
-- Cómo elegir modo (pantalla completa o tarjeta) y momento: `references/recursos-pantalla.md`. Solo material del talento o con permiso.
+- Cómo elegir modo (pantalla completa o tarjeta) y momento: `references/recursos-pantalla.md`. Si algo es material de otros, avísale de los derechos en una línea.
 
 ### 6 quater. Cambio de encuadre
 Por defecto, en los vídeos hablados a cámara, alterna plano normal y plano un 12 % más cerrado en cada corte, centrado en la cara:

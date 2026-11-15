@@ -22,10 +22,12 @@ modo «tarjeta»:  el recurso aparece en una tarjeta con esquinas redondeadas, e
                  legible, el recurso pasa a pantalla completa.
 "en": palabra de la transcripción en que aparece (admite «palabra#2» y varias palabras).
 "dura": segundos (por defecto 2). Los clips se usan sin su sonido; la voz del talento sigue.
+"desde": en clips, segundo del clip en que empieza el fragmento («83» o «1:23»; por defecto 0).
+Para elegir fragmentos de un vídeo largo: explorar_recurso.py.
 
 Escribe 06_entrega/trabajo/recursos-plan.json (lo usa render.py) y prepara las tarjetas de
 imagen en 06_entrega/trabajo/recursos/. Solo se usan archivos de 03_recursos/: material del
-talento o con permiso. Códigos: 0 bien · 2 falta un archivo o una palabra.
+talento; si son de otros, Claude avisa de los derechos. Códigos: 0 bien · 2 falta un archivo o una palabra.
 """
 
 from __future__ import annotations
@@ -58,13 +60,23 @@ def ejecutar(cmd: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
 
 
+def segundos(valor) -> float:
+    """«83», 83.5, «1:23» o «1:23.5» → segundos."""
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    partes = [float(x) for x in str(valor).strip().split(":")]
+    total = 0.0
+    for x in partes:
+        total = total * 60 + x
+    return total
+
+
 def preparar_imagen(origen: Path, destino: Path, modo_color: str, completo: bool = False,
                     caja: tuple[int, int] = (TARJETA_ANCHO, TARJETA_ALTO),
                     tam: tuple[int, int] = (ANCHO, ALTO)) -> tuple[int, int]:
-    """Escala la imagen a la tarjeta, redondea las esquinas (con transparencia) y, si el vídeo es
-    HDR, la convierte a BT.2020 + HLG con el blanco en el blanco de referencia (como los textos,
-    ver color.py). Se guarda como PNG de 16 bits con alfa. La cuenta se hace con numpy: el filtro
-    geq de ffmpeg trabaja en 8 bits y satura la curva HLG."""
+    """Escala la imagen y, en las tarjetas, redondea las esquinas (con transparencia). Se guarda
+    como PNG de 16 bits con alfa. El color NO se convierte: la imagen entra con sus valores
+    originales, también en vídeos HDR (decisión de Santiago)."""
     import numpy as np
 
     r = ejecutar(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
@@ -86,13 +98,7 @@ def preparar_imagen(origen: Path, destino: Path, modo_color: str, completo: bool
     px = np.frombuffer(lectura.stdout, dtype="<u2").reshape(th, tw, 4).astype(np.float64) / 65535.0
     rgb, alfa = px[..., :3], px[..., 3]
 
-    if modo_color == "hdr":
-        lineal = np.where(rgb <= 0.04045, rgb / 12.92, ((rgb + 0.055) / 1.055) ** 2.4)
-        m = np.array([[0.6274, 0.3293, 0.0433], [0.0691, 0.9195, 0.0114], [0.0164, 0.0880, 0.8956]])
-        e = np.clip(0.2647 * (lineal @ m.T), 0.0, 1.0)
-        a, b, c = 0.17883277, 0.28466892, 0.55991073
-        rgb = np.where(e <= 1 / 12, np.sqrt(3 * e), a * np.log(np.maximum(12 * e - b, 1e-12)) + c)
-
+    # El color de la imagen no se toca (decisión de Santiago): sus valores entran tal cual.
     if not completo:
         # Esquinas redondeadas (con un píxel de suavizado en el borde).
         yy, xx = np.mgrid[0:th, 0:tw] + 0.5
@@ -232,15 +238,19 @@ def main() -> int:
             continue
         entrada = {"archivo": str(archivo), "modo": modo, "tipo": tipo, "inicio": round(cuando, 3), "fin": round(fin, 3)}
         if tipo == "video":
+            # Cualquier color y orientación: render.py lo adapta (color.filtro_convertir y fondo
+            # desenfocado si es horizontal a pantalla completa). "desde" elige el fragmento.
             entrada["color"] = color.datos_color(archivo)
-        if tipo == "video":
-            hdr_recurso = color.es_hdr(entrada["color"])
-            if hdr_recurso != (modo_color == "hdr") or (hdr_recurso and entrada["color"]["transferencia"] != cortes["color"]["transferencia"]):
-                print(f"  ✗ {archivo.name}: su color ({entrada['color']['transferencia']}) no es el del vídeo "
-                      f"({cortes['color']['transferencia']}). De momento solo se mezclan clips grabados igual "
-                      "(HDR con HDR o normal con normal); usa una foto o una captura de ese momento.")
+            info = json.loads(ejecutar(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                        "stream=width,height:format=duration", "-of", "json", str(archivo)]).stdout)
+            dur_rec = float(info["format"]["duration"])
+            entrada["horizontal"] = info["streams"][0]["width"] > info["streams"][0]["height"]
+            desde = segundos(r.get("desde", 0))
+            if desde + (fin - cuando) > dur_rec:
+                print(f"  ✗ {archivo.name}: «desde» {r.get('desde')} + {fin - cuando:.1f} s se pasa del final del clip ({dur_rec:.1f} s).")
                 errores += 1
                 continue
+            entrada["desde"] = round(desde, 3)
         if modo == "tarjeta":
             # Regla: un recurso nunca tapa la cara del talento. La tarjeta va en el hueco libre
             # más alto (debajo o encima de la cara); si no cabe legible, pasa a pantalla completa.
@@ -278,7 +288,8 @@ def main() -> int:
         plan.append(entrada)
         sitio = (f" (y={entrada['y']}–{entrada['y'] + entrada['alto']} px, cara libre)" if modo == "tarjeta"
                  else f" (talento abajo desde y={entrada['corte_y']} px)" if modo == "partida" else "")
-        print(f"  · {modo} {cuando:.1f}–{fin:.1f} s: {archivo.name}{sitio}")
+        frag = f" [desde {entrada['desde']:.1f} s]" if entrada.get("desde") else ""
+        print(f"  · {modo} {cuando:.1f}–{fin:.1f} s: {archivo.name}{frag}{sitio}")
 
     # Dos recursos a la vez se tapan: se avisa (el segundo se queda, por orden de tiempo).
     plan.sort(key=lambda e: e["inicio"])
