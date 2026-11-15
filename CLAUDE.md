@@ -23,7 +23,7 @@ Responsable: Santiago (contenido de marca personal y edición en DECODIK). Habla
 ## Siguiente objetivo: `decodik-editor` (v0.2)
 El talento deja una carpeta y la IA le devuelve el vídeo editado.
 
-**Decisión:** UNA skill de entrada (`decodik-editor`) con **3 modos** — marca personal · colaboración orgánica con marca · anuncio. Por dentro, un archivo de referencia por modo y por fase. `decodik-edicion` y `decodik-marca` se integran en ella; se mantiene la ruta sin edición automática (guion + guía CapCut).
+**Decisión (actualizada 2026-11-15):** UNA skill de entrada (`decodik-editor`) con **2 modos** — **marca personal** · **UGC para marcas**. Se construye primero **UGC para marcas**: la marca da el brief **y el guion**; la IA explica el brief y responde dudas, planifica la grabación, propone el estilo de edición, revisa los brutos contra el guion, edita y entrega. Diseño completo: `docs/diseno-decodik-editor.md` (manda sobre el flujo de abajo si hay diferencias). Por dentro, un archivo de referencia por modo y por fase. `decodik-edicion` y `decodik-marca` se integran en ella; se mantiene la ruta sin edición automática (guion + guía CapCut).
 
 **Carpeta estándar del talento:**
 ```

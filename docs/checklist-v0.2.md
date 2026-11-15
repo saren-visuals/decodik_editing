@@ -2,6 +2,23 @@
 
 Los números coinciden con la checklist general de Santiago. Marca `[x]` solo cuando se cumple el **criterio de hecho** y añade la prueba en «Prueba».
 
+## 0 · Diseño
+- [ ] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño
+
+## UGC para marcas · fases 1-4 (primero, sin vídeo)
+- [ ] U1 Elección de modo (marca personal / UGC para marcas) · **Hecho cuando:** «edita mi vídeo» lleva a esa pregunta y a nada más
+- [ ] U2 Ficha de campaña desde brief + guion de la marca · **Hecho cuando:** en caso B salen todas las secciones de `ficha-campana.md` y los huecos
+- [ ] U3 Dudas respondidas solo con el brief · **Hecho cuando:** a una pregunta cuya respuesta no está en el brief, contesta que no lo dice y la añade al mensaje para la marca
+- [ ] U4 Plan de grabación por escenas · **Hecho cuando:** cada escena del guion tiene sus tomas y la checklist del día
+- [ ] U5 Ficha de estilo · **Hecho cuando:** propone estilo a partir del brief y la guía de marca y espera aprobación
+
+## UGC para marcas · fases 5-7 (vídeo)
+- [ ] U6 Tabla de cobertura del guion · **Hecho cuando:** en caso B cada escena apunta a clip + segundo y detecta la palabra prohibida
+- [ ] U7 Montaje escena a escena con la ficha de estilo · **Hecho cuando:** el orden y los textos siguen el guion de la marca
+- [ ] U8 Cambios de la marca → nueva versión · **Hecho cuando:** pegando comentarios de ejemplo sale v2 con los cambios y nada más
+
+Las tareas de abajo siguen valiendo para las fases 5-7.
+
 ## Decisiones (Santiago)
 - [ ] #2 Dónde trabaja el talento (app de escritorio con carpeta / chat sin carpeta) · **Hecho cuando:** decidido y escrito en CLAUDE.md
 - [ ] #3 Límites de los brutos · **Hecho cuando:** probado con un bruto 4K y uno 1080p de 1-3 min; tiempos anotados
