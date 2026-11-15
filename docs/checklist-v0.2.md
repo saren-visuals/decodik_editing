@@ -6,7 +6,7 @@ Los números coinciden con la checklist general de Santiago. Marca `[x]` solo cu
 - [x] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño · Prueba: ok de Santiago el 2026-11-15
 
 ## UGC para marcas · fases 1-4 (primero, sin vídeo)
-- [ ] U1 Elección de modo (marca personal / UGC para marcas) · **Hecho cuando:** «edita mi vídeo» lleva a esa pregunta y a nada más
+- [x] U1 Elección de modo (marca personal / UGC para marcas) · **Hecho cuando:** «edita mi vídeo» lleva a esa pregunta y a nada más · Prueba: 2026-11-15, a mano siguiendo `SKILL.md` (sin sesión nueva con el plugin): «edita mi vídeo» → solo la pregunta de modo, sin herramientas; «no sé» → ejemplo por opción y misma pregunta; modo ya dicho → confirma y sigue. Repetir en sesión real con `claude --plugin-dir .`
 - [ ] U2 Ficha de campaña desde brief + guion de la marca · **Hecho cuando:** en caso B salen todas las secciones de `ficha-campana.md` y los huecos
 - [ ] U3 Dudas respondidas solo con el brief · **Hecho cuando:** a una pregunta cuya respuesta no está en el brief, contesta que no lo dice y la añade al mensaje para la marca
 - [ ] U4 Plan de grabación por escenas · **Hecho cuando:** cada escena del guion tiene sus tomas y la checklist del día
