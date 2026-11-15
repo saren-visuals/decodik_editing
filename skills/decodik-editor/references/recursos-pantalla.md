@@ -13,6 +13,13 @@ Ningún recurso se pone encima de su cara. El script lo garantiza solo:
 - La **pantalla partida** tampoco tapa la cara: el talento pasa a la mitad de abajo, recortado para que su cara quede entera.
 - El **corte a pantalla completa sí está permitido** (Santiago, 2026-11-15): no se pone encima de la cara, cambia de plano 1-3 s mientras sigue la voz.
 
+## Regla: sin cambios bruscos
+
+- Un recurso **no entra ni sale cuando cambia la imagen del talento** (un corte entre tramos): al menos 0,4 s de separación. El script lo mueve hasta 0,8 s respecto a la palabra para cumplirlo.
+- La **pantalla partida dura al menos 2,5 s** y ocurre **dentro de un solo tramo** (sin saltos abajo mientras se ve). Pantalla completa y tarjeta, al menos 1,2 s.
+- No se pisa con cifras grandes ni con otro recurso.
+- Si no hay hueco que cumpla todo, el script no lo pone y lo dice: elige otra palabra, otro modo (en tramos cortos, pantalla completa) o menos duración.
+
 ## Tres maneras
 
 | Modo | Cómo se ve | Cuándo |

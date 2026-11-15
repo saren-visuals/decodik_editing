@@ -55,6 +55,11 @@ TARJETA_Y = round(ALTO * 0.38)
 RADIO = 28
 MITAD = ALTO // 2      # alto de cada mitad en la pantalla partida
 DURA = 2.0
+# Regla de Santiago: un recurso no entra ni sale cuando cambia la imagen del talento (un corte
+# entre tramos): se verían dos saltos seguidos. Y la pantalla partida dura lo bastante para verse.
+MARGEN_CORTE = 0.4     # s libres entre un corte y la entrada o salida de un recurso
+DESPLAZAMIENTO = 0.8   # cuánto se puede mover un recurso respecto a su palabra para cumplirlo
+MINIMO = {"partida": 2.5, "completo": 1.2, "tarjeta": 1.2}
 
 def ejecutar(cmd: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -193,6 +198,34 @@ def hueco_para_tarjeta(cara: tuple[int, int] | None) -> tuple[int, int] | None:
     return mejor if mejor[1] - mejor[0] >= TARJETA_MIN_ALTO else None
 
 
+def colocar(modo: str, cuando: float, dura: float, cortes: dict, prohibidos: list[tuple[float, float]],
+            duracion: float) -> tuple[float, float] | None:
+    """Busca el momento más cercano a la palabra (como mucho ±DESPLAZAMIENTO) en que el recurso
+    cumple las reglas: entrada y salida a más de MARGEN_CORTE de un corte; la pantalla partida,
+    entera dentro de un tramo y al menos MINIMO s; nada encima de una cifra grande ni de otro
+    recurso ya colocado. None si no hay sitio."""
+    dura = max(dura, MINIMO[modo])
+    tramos = [(sg["salida_inicio"], sg["salida_fin"]) for sg in cortes["segmentos"]]
+    corte_t = [a for a, _ in tramos[1:]]
+
+    def vale(a: float) -> bool:
+        b = a + dura
+        if a < 0 or b > duracion:
+            return False
+        if any(abs(a - c) < MARGEN_CORTE or abs(b - c) < MARGEN_CORTE for c in corte_t):
+            return False
+        if modo == "partida" and not any(x <= a and b <= y for x, y in tramos):
+            return False
+        return not any(a < y and b > x for x, y in prohibidos)
+
+    pasos = [i * 0.05 for i in range(int(DESPLAZAMIENTO / 0.05) + 1)]
+    for d in pasos:                      # primero lo más cerca de la palabra; a igual distancia, después
+        for a in (cuando + d, cuando - d):
+            if vale(a):
+                return round(a, 3), round(a + dura, 3)
+    return None
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Recursos en pantalla (B-roll y tarjetas) anclados a palabras.")
     p.add_argument("carpeta", type=Path, help="carpeta del vídeo")
@@ -214,6 +247,9 @@ def main() -> int:
     carpeta_tarjetas.mkdir(exist_ok=True)
 
     plan, errores = [], 0
+    # Momentos ocupados: cifras grandes (textos.py) y, según se colocan, los propios recursos.
+    huecos_f = trabajo / "textos-huecos.json"
+    ocupados = [tuple(h) for h in json.loads(huecos_f.read_text(encoding="utf-8")).get("sin_subtitulos", [])]         if huecos_f.exists() else []
     for k, r in enumerate(json.loads(origen.read_text(encoding="utf-8")).get("recursos", [])):
         archivo = video / "03_recursos" / r["archivo"]
         if not archivo.exists():
@@ -230,7 +266,17 @@ def main() -> int:
             print(f"  ✗ Modo «{modo}» no existe: usa completo, tarjeta o partida.")
             errores += 1
             continue
-        fin = min(cuando + float(r.get("dura", DURA)), duracion)
+        sitio_t = colocar(r.get("modo", "tarjeta") if r.get("modo") in MINIMO else "tarjeta", cuando,
+                          float(r.get("dura", DURA)), cortes, ocupados, duracion)
+        if sitio_t is None:
+            print(f"  ✗ {archivo.name} en «{r['en']}»: no hay hueco que cumpla las reglas (no entrar ni salir "
+                  f"junto a un corte, partida de {MINIMO['partida']} s dentro de un tramo, sin pisar cifras ni "
+                  "otros recursos). Elige otra palabra, otro modo o menos duración.")
+            errores += 1
+            continue
+        if abs(sitio_t[0] - cuando) > 0.01:
+            print(f"  · {archivo.name}: movido {sitio_t[0] - cuando:+.2f} s para no coincidir con un corte.")
+        cuando, fin = sitio_t
         tipo = "imagen" if archivo.suffix.lower() in IMAGENES else "video" if archivo.suffix.lower() in VIDEOS else None
         if tipo is None:
             print(f"  ✗ {archivo.name}: formato no admitido (usa jpg, png, mp4 o mov).")
@@ -286,6 +332,7 @@ def main() -> int:
             # Centrada en vertical dentro del hueco.
             entrada["y"] = hueco[0] + (hueco[1] - hueco[0] - entrada["alto"]) // 2
         plan.append(entrada)
+        ocupados.append((entrada["inicio"], entrada["fin"]))
         sitio = (f" (y={entrada['y']}–{entrada['y'] + entrada['alto']} px, cara libre)" if modo == "tarjeta"
                  else f" (talento abajo desde y={entrada['corte_y']} px)" if modo == "partida" else "")
         frag = f" [desde {entrada['desde']:.1f} s]" if entrada.get("desde") else ""
