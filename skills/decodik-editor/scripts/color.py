@@ -95,8 +95,11 @@ def _hlg(e: float) -> float:
 
 # Paso de colores BT.709 (sRGB) a BT.2020, en luz lineal.
 _709_A_2020 = ((0.6274, 0.3293, 0.0433), (0.0691, 0.9195, 0.0114), (0.0164, 0.0880, 0.8956))
-# Luz lineal de escena que la curva HLG convierte en el blanco de referencia (75 % de señal).
-_BLANCO_LINEAL = 0.2647
+# Luz lineal de escena a la que va el blanco del texto en HLG. Con 0.2647 (blanco de referencia,
+# 75 % de la señal) los subtítulos se veían grises y apagados junto a los brillos del vídeo
+# (Santiago, 2026-11-15); con 0.582 el blanco queda al 90 % de la señal: más brillante que el
+# blanco del vídeo, limpio, sin llegar al pico.
+_BLANCO_LINEAL = 0.582
 
 
 def color_texto(hexrgb: str, decision_modo: str) -> str:
@@ -104,7 +107,7 @@ def color_texto(hexrgb: str, decision_modo: str) -> str:
 
     En SDR se usa tal cual. En HDR (HLG) el vídeo va en gama BT.2020 con curva HLG, así que el
     color sRGB se convierte para que se vea igual: a luz lineal, a primarios BT.2020, escalado al
-    blanco de referencia (el blanco queda al 75 % de la señal, no al 100 %) y con la curva HLG."""
+    nivel de _BLANCO_LINEAL (el blanco queda al 90 % de la señal) y con la curva HLG."""
     r, g, b = (int(hexrgb[i:i + 2], 16) / 255 for i in (0, 2, 4))
     if decision_modo == "hdr":
         lin = [_srgb_a_lineal(x) for x in (r, g, b)]
