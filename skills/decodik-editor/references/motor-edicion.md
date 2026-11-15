@@ -102,7 +102,18 @@ uv run scripts/recursos.py <carpeta del vídeo>
 - **Completo:** el recurso cubre los 1080×1920; las fotos con un acercamiento lento del 5 %. **Tarjeta:** como mucho 820×440 px, esquinas redondeadas, en el hueco libre que deja la cara (debajo o encima); entra deslizándose 40 px con fundido de 0,18 s y sale con fundido.
 - **La cara no se tapa nunca:** detección de cara con OpenCV (clasificador Haar, local) en 5 fotogramas de cada tarjeta. Si no cabe una tarjeta de al menos 200 px fuera de la cara, el recurso pasa a pantalla completa.
 - Las imágenes se preparan con numpy y la cara se detecta con OpenCV 4 (dependencias de `uv run`; la primera vez descarga ~40 MB): escala, esquinas con transparencia y, si el vídeo es HDR, paso a BT.2020 + HLG con el blanco de referencia. Los clips se usan sin sonido y tienen que tener el mismo color que el vídeo.
+- **Partida:** recurso en la mitad de arriba (1080×960) y el propio vídeo recortado alrededor de la cara en la de abajo; los subtítulos de ese tramo suben a la unión (y = 945 px).
 - `render.py` pone los recursos encima del vídeo y, encima de todo, subtítulos y textos.
+
+## Cambio de encuadre
+
+```
+uv run scripts/encuadre.py <carpeta del vídeo> [--zoom 1.12] [--quitar]
+```
+
+- Alterna en los cortes un tramo en plano normal y el siguiente en plano cerrado (×1,12), para que los saltos de un plano fijo parezcan dos cámaras. Los tramos de menos de 0,8 s no cambian.
+- El acercamiento va **hacia la cara** (detectada en cada tramo con OpenCV): la cara queda donde estaba pero más grande y nunca se corta la cabeza. Escribe `encuadre.json`; `render.py` recorta y vuelve a 1080×1920.
+- En los tramos con pantalla partida no se aplica (el talento ya va recortado).
 
 ## Render final y revisión
 

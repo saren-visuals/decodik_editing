@@ -68,6 +68,13 @@ uv run "$SKILL/scripts/recursos.py" "<carpeta del vídeo>"
 ```
 - Cómo elegir modo (pantalla completa o tarjeta) y momento: `references/recursos-pantalla.md`. Solo material del talento o con permiso.
 
+### 6 quater. Cambio de encuadre
+Por defecto, en los vídeos hablados a cámara, alterna plano normal y plano un 12 % más cerrado en cada corte, centrado en la cara:
+```
+uv run "$SKILL/scripts/encuadre.py" "<carpeta del vídeo>"
+```
+Si el talento no lo quiere, `--quitar`. En los tramos con pantalla partida no se aplica.
+
 ### 7. Render y revisión
 ```
 uv run "$SKILL/scripts/render.py" "<carpeta del vídeo>"
@@ -86,4 +93,4 @@ Mensaje corto:
 - Los subtítulos sueltos están en `06_entrega/subtitulos-vN.srt`, por si su red le deja subirlos aparte.
 
 ## Lo que esta versión no hace (todavía)
-Ritmo de cortes (cambio de encuadre), pantalla partida, música, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.
+Música, formatos (lista, ranking…), versiones para otras redes. Si lo pide, díselo en una línea y ofrécele la guía de CapCut (`decodik-edicion`, paso 5) para añadirlo a mano.

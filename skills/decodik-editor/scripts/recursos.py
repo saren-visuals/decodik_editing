@@ -14,6 +14,8 @@ Lee 06_entrega/trabajo/recursos.json (lo propone Claude y lo aprueba el talento)
     ]}
 
 modo «completo»: el recurso ocupa toda la pantalla mientras sigue la voz (corte a B-roll).
+modo «partida»:  pantalla partida: el recurso arriba y el talento abajo (recortado alrededor de su
+                 cara); los subtítulos suben a la unión de las dos mitades. Es el estilo de Jesús.
 modo «tarjeta»:  el recurso aparece en una tarjeta con esquinas redondeadas, entrando con un
                  deslizamiento y un fundido. REGLA: nunca tapa la cara del talento: se detecta la
                  cara en esos segundos y la tarjeta va debajo o encima de ella; si no cabe
@@ -49,6 +51,7 @@ VIDEOS = {".mp4", ".mov", ".m4v", ".mkv", ".webm"}
 TARJETA_ANCHO, TARJETA_ALTO = 820, 440
 TARJETA_Y = round(ALTO * 0.38)
 RADIO = 28
+MITAD = ALTO // 2      # alto de cada mitad en la pantalla partida
 DURA = 2.0
 
 def ejecutar(cmd: list[str]) -> subprocess.CompletedProcess:
@@ -56,7 +59,8 @@ def ejecutar(cmd: list[str]) -> subprocess.CompletedProcess:
 
 
 def preparar_imagen(origen: Path, destino: Path, modo_color: str, completo: bool = False,
-                    caja: tuple[int, int] = (TARJETA_ANCHO, TARJETA_ALTO)) -> tuple[int, int]:
+                    caja: tuple[int, int] = (TARJETA_ANCHO, TARJETA_ALTO),
+                    tam: tuple[int, int] = (ANCHO, ALTO)) -> tuple[int, int]:
     """Escala la imagen a la tarjeta, redondea las esquinas (con transparencia) y, si el vídeo es
     HDR, la convierte a BT.2020 + HLG con el blanco en el blanco de referencia (como los textos,
     ver color.py). Se guarda como PNG de 16 bits con alfa. La cuenta se hace con numpy: el filtro
@@ -68,7 +72,7 @@ def preparar_imagen(origen: Path, destino: Path, modo_color: str, completo: bool
     w, h = (int(x) for x in r.stdout.strip().split(",")[:2])
     if completo:
         # Pantalla completa: cubre los 1080×1920 y se recorta el centro, sin esquinas redondeadas.
-        tw, th = ANCHO, ALTO
+        tw, th = tam
         escalado = f"scale={tw}:{th}:force_original_aspect_ratio=increase:flags=lanczos,crop={tw}:{th}"
     else:
         escala = min(caja[0] / w, caja[1] / h)
@@ -133,23 +137,37 @@ def fotograma_gris(cortes: dict, brutos: Path, t: float):
     return None
 
 
-def zona_de_la_cara(cortes: dict, brutos: Path, ini: float, fin: float) -> tuple[int, int] | None:
-    """Franja vertical (arriba, abajo) en px de 1920 que ocupa la cara mientras dura la tarjeta,
-    con margen para el pelo y la barbilla. None si no se ve ninguna cara."""
+_DETECTOR = None
+
+
+def cara_en(cortes: dict, brutos: Path, t: float) -> tuple[int, int, int, int] | None:
+    """Cara del talento en el segundo t del vídeo cortado: (x, y, ancho, alto) en px de 1080×1920
+    (la más grande del fotograma). None si no se ve ninguna."""
+    global _DETECTOR
     import cv2
 
-    detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    if _DETECTOR is None:
+        _DETECTOR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    gris = fotograma_gris(cortes, brutos, t)
+    if gris is None:
+        return None
+    caras = _DETECTOR.detectMultiScale(gris, scaleFactor=1.1, minNeighbors=5, minSize=(60, 60))
+    if len(caras) == 0:
+        return None
+    x, y, w, h = max(caras, key=lambda c: c[2] * c[3])
+    return int(x) * 2, int(y) * 2, int(w) * 2, int(h) * 2   # ×2: de 540×960 a 1080×1920
+
+
+def zona_de_la_cara(cortes: dict, brutos: Path, ini: float, fin: float) -> tuple[int, int] | None:
+    """Franja vertical (arriba, abajo) en px de 1920 que ocupa la cara mientras dura el recurso,
+    con margen para el pelo y la barbilla. None si no se ve ninguna cara."""
     arriba, abajo = None, None
     for i in range(MUESTRAS):
-        t = ini + (fin - ini) * (i + 0.5) / MUESTRAS
-        gris = fotograma_gris(cortes, brutos, t)
-        if gris is None:
+        c = cara_en(cortes, brutos, ini + (fin - ini) * (i + 0.5) / MUESTRAS)
+        if c is None:
             continue
-        caras = detector.detectMultiScale(gris, scaleFactor=1.1, minNeighbors=5, minSize=(60, 60))
-        if len(caras) == 0:
-            continue
-        x, y, w, h = max(caras, key=lambda c: c[2] * c[3])   # la cara más grande es la del talento
-        sup, inf = (y - 0.35 * h) * 2, (y + 1.2 * h) * 2      # pelo y barbilla; ×2 para pasar a 1920
+        x, y, w, h = c
+        sup, inf = y - 0.35 * h, y + 1.2 * h      # pelo y barbilla
         arriba = sup if arriba is None else min(arriba, sup)
         abajo = inf if abajo is None else max(abajo, inf)
     if arriba is None:
@@ -202,6 +220,10 @@ def main() -> int:
             errores += 1
             continue
         modo = r.get("modo", "tarjeta")
+        if modo not in ("completo", "tarjeta", "partida"):
+            print(f"  ✗ Modo «{modo}» no existe: usa completo, tarjeta o partida.")
+            errores += 1
+            continue
         fin = min(cuando + float(r.get("dura", DURA)), duracion)
         tipo = "imagen" if archivo.suffix.lower() in IMAGENES else "video" if archivo.suffix.lower() in VIDEOS else None
         if tipo is None:
@@ -228,10 +250,21 @@ def main() -> int:
                 print(f"  · {archivo.name}: no cabe una tarjeta sin tapar la cara; va a pantalla completa.")
             else:
                 caja = (TARJETA_ANCHO, min(TARJETA_ALTO, hueco[1] - hueco[0]))
+        if modo == "partida":
+            # Pantalla partida: el recurso arriba (1080×960) y el talento abajo, recortado para que
+            # su cara quede entera y algo por encima del centro de su mitad. La cara no se tapa:
+            # se mueve con él a la mitad de abajo.
+            zona = zona_de_la_cara(cortes, video / "02_brutos", cuando, fin)
+            medio = (zona[0] + zona[1]) / 2 if zona else ALTO * 0.30
+            corte_y = round(medio - MITAD * 0.45)
+            if zona:
+                corte_y = min(corte_y, zona[0] - 20)          # que no se corte el pelo
+            entrada["corte_y"] = int(min(max(corte_y, 0), ALTO - MITAD))
         if tipo == "imagen":
             destino = carpeta_tarjetas / f"{modo}-{k:02d}.png"
-            tw, th = preparar_imagen(archivo, destino, modo_color, completo=(modo == "completo"),
-                                     caja=caja if modo == "tarjeta" else (TARJETA_ANCHO, TARJETA_ALTO))
+            tw, th = preparar_imagen(archivo, destino, modo_color, completo=(modo in ("completo", "partida")),
+                                     caja=caja if modo == "tarjeta" else (TARJETA_ANCHO, TARJETA_ALTO),
+                                     tam=(ANCHO, MITAD) if modo == "partida" else (ANCHO, ALTO))
             entrada.update({"preparado": str(destino), "ancho": tw, "alto": th})
         elif modo == "tarjeta":
             r_v = ejecutar(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
@@ -243,7 +276,8 @@ def main() -> int:
             # Centrada en vertical dentro del hueco.
             entrada["y"] = hueco[0] + (hueco[1] - hueco[0] - entrada["alto"]) // 2
         plan.append(entrada)
-        sitio = f" (y={entrada['y']}–{entrada['y'] + entrada['alto']} px, cara libre)" if modo == "tarjeta" else ""
+        sitio = (f" (y={entrada['y']}–{entrada['y'] + entrada['alto']} px, cara libre)" if modo == "tarjeta"
+                 else f" (talento abajo desde y={entrada['corte_y']} px)" if modo == "partida" else "")
         print(f"  · {modo} {cuando:.1f}–{fin:.1f} s: {archivo.name}{sitio}")
 
     # Dos recursos a la vez se tapan: se avisa (el segundo se queda, por orden de tiempo).

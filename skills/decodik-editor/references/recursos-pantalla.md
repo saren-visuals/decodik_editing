@@ -10,14 +10,16 @@ Ningún recurso se pone encima de su cara. El script lo garantiza solo:
 - En cada tarjeta mira 5 fotogramas de esos segundos, **detecta la cara** y pone la tarjeta en el hueco libre más alto, **debajo de la barbilla o encima de la cabeza**, sin pisar los subtítulos ni la barra de arriba de la app. Si hace falta, la hace más pequeña.
 - Si no cabe una tarjeta legible (al menos 200 px de alto), **la pasa a pantalla completa** y lo dice.
 - Si en esos segundos no se ve ninguna cara, la coloca como si la cara estuviera en su sitio habitual, por si el detector falló.
+- La **pantalla partida** tampoco tapa la cara: el talento pasa a la mitad de abajo, recortado para que su cara quede entera.
 - El **corte a pantalla completa sí está permitido** (Santiago, 2026-11-15): no se pone encima de la cara, cambia de plano 1-3 s mientras sigue la voz.
 
-## Dos maneras
+## Tres maneras
 
 | Modo | Cómo se ve | Cuándo |
 |---|---|---|
 | `completo` | El recurso ocupa toda la pantalla 1-3 s mientras sigue la voz (corte a B-roll). Las fotos llevan un acercamiento lento del 5 % para que no parezcan congeladas | Lugares, entrenos, partidos, el producto en uso |
 | `tarjeta` | Tarjeta con esquinas redondeadas fuera de la cara (debajo o encima), entra deslizándose con un fundido | Fotos, capturas de pantalla, datos, portadas, el producto |
+| `partida` | **Pantalla partida:** el recurso en la mitad de arriba y el talento abajo, recortado alrededor de su cara (entera); los subtítulos suben a la unión de las dos mitades | Contar algo que pasó con imágenes de apoyo durante varios segundos (3-8 s): **el estilo de Jesús**. También técnica, jugadas propias, la otra mitad de una comparación |
 
 ## Qué escribes tú (Claude)
 

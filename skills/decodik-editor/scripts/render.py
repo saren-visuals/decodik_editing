@@ -108,13 +108,15 @@ def cadenas_audio(segmentos: list[dict]) -> str:
 
 
 def subtitulos_con_huecos(ass: Path) -> Path:
-    """Si textos.py dejó huecos (cifras grandes), devuelve una copia de los subtítulos sin texto
-    en esos momentos; si no, los subtítulos tal cual."""
+    """Copia de los subtítulos para el render: sin texto mientras se ve una cifra grande
+    (textos.py) y con el texto en la unión de las dos mitades durante una pantalla partida
+    (recursos.py). Si no hace falta nada de eso, los subtítulos tal cual."""
     huecos_f = ass.with_name("textos-huecos.json")
-    if not huecos_f.exists() or not ass.with_name("textos.ass").exists():
-        return ass
-    huecos = json.loads(huecos_f.read_text(encoding="utf-8")).get("sin_subtitulos", [])
-    if not huecos:
+    if not ass.with_name("textos.ass").exists():
+        huecos_f = ass.with_name("no-hay-huecos.json")
+    huecos = json.loads(huecos_f.read_text(encoding="utf-8")).get("sin_subtitulos", []) if huecos_f.exists() else []
+    partidas = [(r["inicio"], r["fin"]) for r in plan_recursos(ass) if r["modo"] == "partida"]
+    if not huecos and not partidas:
         return ass
 
     def seg(t: str) -> float:
@@ -145,10 +147,19 @@ def subtitulos_con_huecos(ass: Path) -> Path:
                 if y > b:
                     nuevos.append((b, y))
             trozos = nuevos
+        # Trozos dentro de una pantalla partida: el texto sube a la unión de las dos mitades.
+        finales = []
         for x, y in trozos:
+            cortes_t = sorted({x, y, *[c for a, b in partidas for c in (a, b) if x < c < y]})
+            finales += list(zip(cortes_t, cortes_t[1:]))
+        for x, y in finales:
             if y - x >= 0.1:
                 p[1], p[2] = ts(x), ts(y)
+                texto = p[9]
+                if any(a <= (x + y) / 2 < b for a, b in partidas):
+                    p[9] = "{\\an2\\pos(540,945)}" + texto
                 lineas.append(cab + ":" + ",".join(p))
+                p[9] = texto
     copia = ass.with_name("subtitulos-render.ass")
     copia.write_text("\n".join(lineas) + "\n", encoding="utf-8")
     return copia
@@ -175,29 +186,41 @@ def entradas_recursos(plan: list[dict]) -> list[str]:
 
 def capas_recursos(plan: list[dict], primera: int, decision: dict, entrada: str) -> tuple[str, str]:
     """Filtros que ponen cada recurso encima del vídeo (en orden de tiempo). Devuelve el grafo y la
-    etiqueta de salida. Tarjeta: entra subiendo 40 px y con un fundido de 0,18 s; sale con fundido."""
+    etiqueta de salida.
+    - completo: el recurso cubre la pantalla (las fotos con un acercamiento lento del 5 %).
+    - tarjeta: entra deslizándose 40 px con un fundido de 0,18 s y sale con fundido.
+    - partida: el recurso arriba (1080×960) y abajo el propio vídeo recortado alrededor de la cara."""
     hdr = decision["modo"] == "hdr"
     matriz, formato = ("bt2020", "yuva420p10le") if hdr else ("bt709", "yuva420p")
+    mezcla = "yuv420p10" if hdr else "yuv420"
     partes, actual = [], entrada
     y_tarjeta = round(1920 * 0.38)
+    partidas = [r for r in plan if r["modo"] == "partida"]
+    if partidas:
+        # Una copia del vídeo por cada pantalla partida, para recortar al talento en su mitad.
+        partes.append(f"[{entrada}]split={len(partidas) + 1}[base]" + "".join(f"[pm{j}]" for j in range(len(partidas))) + ";")
+        actual = "base"
+    j_partida = 0
     for k, r in enumerate(plan):
         i = primera + k
         ini, fin = r["inicio"], r["fin"]
+        alto_rec = 960 if r["modo"] == "partida" else 1920
         if r["tipo"] == "imagen":
             # PNG ya escalado (y en HLG si el vídeo es HDR): solo se pasa a YUV con la matriz correcta.
             base = f"[{i}:v:0]scale=out_color_matrix={matriz}:out_range=tv,format={formato}"
-            if r["modo"] == "completo":
-                # Foto a pantalla completa: acercamiento lento del 5 % para que no parezca congelada.
+            if r["modo"] in ("completo", "partida"):
+                # Foto que llena su sitio: acercamiento lento del 5 % para que no parezca congelada.
                 d = max(fin - ini, 0.1)
-                base += (f",scale=w='1080*(1+0.05*t/{d:.3f})':h='1920*(1+0.05*t/{d:.3f})':eval=frame:flags=bicubic,"
-                         "crop=1080:1920:(iw-1080)/2:(ih-1920)/2")
+                base += (f",scale=w='1080*(1+0.05*t/{d:.3f})':h='{alto_rec}*(1+0.05*t/{d:.3f})':eval=frame:flags=bicubic,"
+                         f"crop=1080:{alto_rec}:(iw-1080)/2:(ih-{alto_rec})/2")
         else:
-            if r["modo"] == "completo":
-                caja = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920"
+            if r["modo"] in ("completo", "partida"):
+                caja = f"scale=1080:{alto_rec}:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:{alto_rec}"
             else:
                 caja = f"scale={r['ancho']}:{r['alto']}:flags=lanczos"
             base = f"[{i}:v:0]{caja},setsar=1,fps={FPS},format={formato}"
         base += f",setpts=PTS-STARTPTS+{ini:.3f}/TB"
+        cuando = f"enable='between(t\\,{ini:.3f}\\,{fin:.3f})':eof_action=pass:format={mezcla}"
         if r["modo"] == "tarjeta":
             base += (f",fade=t=in:st={ini:.3f}:d=0.18:alpha=1,"
                      f"fade=t=out:st={max(fin - 0.18, ini):.3f}:d=0.18:alpha=1")
@@ -209,16 +232,31 @@ def capas_recursos(plan: list[dict], primera: int, decision: dict, entrada: str)
         else:
             pos = "x=0:y=0"
         partes.append(f"{base}[r{k}];")
-        partes.append(f"[{actual}][r{k}]overlay={pos}:enable='between(t\\,{ini:.3f}\\,{fin:.3f})':"
-                      f"eof_action=pass:format={'yuv420p10' if hdr else 'yuv420'}[o{k}];")
+        partes.append(f"[{actual}][r{k}]overlay={pos}:{cuando}[o{k}];")
         actual = f"o{k}"
+        if r["modo"] == "partida":
+            j = j_partida
+            j_partida += 1
+            partes.append(f"[pm{j}]crop=1080:960:0:{r['corte_y']}[pc{j}];")
+            partes.append(f"[{actual}][pc{j}]overlay=x=0:y=960:{cuando}[op{j}];")
+            actual = f"op{j}"
     return "".join(partes), actual
 
 
 def grafo_completo(segmentos: list[dict], brutos: Path, decision: dict, ass: Path, fuentes: Path, volumen: str) -> str:
     partes = []
+    # Cambio de encuadre (encuadre.py): en los tramos en plano cerrado, recorte hacia la cara y
+    # vuelta a 1080×1920.
+    f_encuadre = ass.with_name("encuadre.json")
+    tramos = json.loads(f_encuadre.read_text(encoding="utf-8"))["tramos"] if f_encuadre.exists() else []
+    partidas = [(r["inicio"], r["fin"]) for r in plan_recursos(ass) if r["modo"] == "partida"]
     for k, s in enumerate(segmentos):
-        partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{color.filtro_clip(brutos / s['clip'], decision, FPS)},"
+        plano = tramos[k] if k < len(tramos) else None
+        if plano and any(s["salida_inicio"] < b and s["salida_fin"] > a for a, b in partidas):
+            plano = None   # en pantalla partida el talento ya va recortado: sin plano cerrado
+        cerrar = (f",crop={plano['ancho']}:{plano['alto']}:{plano['x']}:{plano['y']},scale=1080:1920:flags=lanczos,setsar=1"
+                  if plano else "")
+        partes.append(f"[{k}:v:0]setpts=PTS-STARTPTS,{color.filtro_clip(brutos / s['clip'], decision, FPS)}{cerrar},"
                       f"trim=end_frame={s['cuadros']},setpts=PTS-STARTPTS[v{k}];")
     union = "".join(f"[v{k}][a{k}]" for k in range(len(segmentos)))
     # Recursos (recursos.py) encima del vídeo; subtítulos y textos, encima de todo.
