@@ -47,7 +47,7 @@ perfil-talento.md
 8. Revisión: estándar de calidad + brief → Sello DECODIK.
 9. Entrega en `06_entrega/`: MP4, SRT, guion, notas + mensaje para la marca.
 
-**Día 1:** 3 plantillas montadas automáticamente (Lista rápida, Ranking por niveles, Integración de marca). Las 9, en v1.
+**Estilos de edición:** catálogo propio en `docs/catalogo-estilos-decodik.md` (formatos genéricos de redes con nombres y descripciones de DECODIK + estilos específicos de UGC). **Día 1 del modo UGC:** subtítulo nativo + palabra a palabra, y los estilos UGC natural, Problema → solución y Unboxing; en marca personal, Lista rápida y Ranking por niveles.
 **Modo anuncio (v1):** variantes de gancho, 15/30 s, 9:16 · 4:5 · 1:1, zonas seguras, afirmaciones verificables.
 
 **Stack (actualizado 2026-11-15):** **ffmpeg + whisper** (transcripción con marcas de tiempo; corte, subtítulos y textos). Para gráficos y animaciones: **HyperFrames** (HeyGen, Apache-2.0, HTML → MP4). **No usar Remotion:** su licencia es de pago para empresas de 4 personas o más.
