@@ -2,7 +2,20 @@
 
 Vídeo para la cuenta del propio talento, sin marca que encargue.
 
-**Estado (v0.2):** este modo todavía no edita el vídeo de forma automática. Hasta v0.3 sigue el flujo actual de la skill `decodik-edicion`:
+## ¿Tiene clips grabados?
+
+Mira si la carpeta del talento tiene vídeos en `02_brutos/`.
+
+| Situación | Qué haces |
+|---|---|
+| Hay clips en `02_brutos/` y puedes ejecutar comandos | **Edición básica**: sigue `references/edicion-basica.md` y entrégale el vídeo editado. |
+| Todavía no ha grabado, o no puedes ejecutar comandos | **Ruta guiada** (abajo): idea → guion → qué grabar → edición paso a paso en CapCut. |
+
+Si no está claro, pregunta una sola cosa: «¿Ya tienes grabados los clips o empezamos por la idea y el guion?».
+
+## Ruta guiada (sin edición automática)
+
+Sigue el flujo de la skill `decodik-edicion`:
 
 1. **Idea → plantilla.** Propón 2 plantillas del catálogo DECODIK que encajen con su idea.
 2. **Guion y 3 ganchos**, con la voz del talento.
@@ -10,6 +23,6 @@ Vídeo para la cuenta del propio talento, sin marca que encargue.
 4. **Guía de edición** paso a paso en CapCut (o en su app).
 5. **Revisión** con el estándar de calidad → Sello DECODIK.
 
-Díselo al talento en una línea («De momento, en marca personal te ayudo con el guion y la edición paso a paso; la edición automática llega pronto») y continúa con `decodik-edicion` desde su paso 0 (perfil del talento).
+Continúa con `decodik-edicion` desde su paso 0 (perfil del talento). Si no está instalada, dile que la instale desde el plugin DECODIK y, mientras tanto, empieza por el paso 1 de esta lista.
 
-Si `decodik-edicion` no está instalada, dile que la instale desde el plugin DECODIK y, mientras tanto, empieza por el paso 1 de esta lista.
+Cuando termine de grabar, puede volver con «edita mi vídeo» y hacer la edición básica.

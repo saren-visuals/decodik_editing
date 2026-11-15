@@ -1,6 +1,6 @@
 ---
 name: decodik-editor
-description: Editor de vídeo DECODIK para talentos del deporte. Empieza preguntando qué vídeo vamos a hacer (marca personal o UGC para una marca) y luego guía fase a fase hasta el vídeo editado. En UGC para marcas lee el brief y el guion de la marca, resuelve dudas solo con el brief, planifica la grabación y propone el estilo de edición. Úsala con «edita mi vídeo», «edítame el vídeo», «hazme la edición», «quiero editar un vídeo», «tengo que editar un vídeo para una marca», «me han encargado un UGC».
+description: Editor de vídeo DECODIK para talentos del deporte. Empieza preguntando qué vídeo vamos a hacer (marca personal o UGC para una marca). En marca personal, si hay clips en 02_brutos, los edita solo (corta silencios, muletillas y tomas repetidas, pone subtítulos y entrega el MP4 vertical); si no, guía con guion y CapCut. En UGC para marcas lee el brief y el guion de la marca, resuelve dudas solo con el brief, planifica la grabación y propone el estilo de edición. Úsala con «edita mi vídeo», «edítame el vídeo», «hazme la edición», «quiero editar un vídeo», «corta mi vídeo», «ponle subtítulos a mi vídeo», «tengo que editar un vídeo para una marca», «me han encargado un UGC».
 ---
 
 # Editor de vídeo · DECODIK
@@ -27,7 +27,7 @@ Si contesta algo que no encaja (por ejemplo «no sé»), explícalo con un ejemp
 
 | Responde… | Lee y sigue |
 |---|---|
-| 1 · Marca personal | `references/modo-marca-personal.md` |
+| 1 · Marca personal | `references/modo-marca-personal.md` (con clips grabados: edición básica de `references/edicion-basica.md`) |
 | 2 · UGC para una marca | `references/modo-ugc.md` |
 
 Abre solo el archivo del modo elegido. Los demás archivos de `references/` se abren cuando la fase lo pide.

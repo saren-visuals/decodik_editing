@@ -4,6 +4,9 @@ Los números coinciden con la checklist general de Santiago. Marca `[x]` solo cu
 
 **Orden (cambiado por Santiago el 2026-11-15):** primero la edición básica de bruto a editado (#24 → #15 → #25 → #28 → #34); después U3–U5 y lo complejo.
 
+## Mínimo viable · edición básica desde la skill (decisión de Santiago, 2026-11-15)
+- [x] MVP «Edita mi vídeo» en marca personal con clips en `02_brutos/` → vídeo editado (corte + subtítulos + volumen, color original); sin clips o sin poder ejecutar comandos, ruta guiada con CapCut · **Hecho cuando:** siguiendo `references/edicion-basica.md` desde una carpeta que solo tiene `02_brutos/`, sale `06_entrega/video-v1.mp4` y pasa la revisión · Prueba: 2026-11-15, copia del caso A con solo los 15 clips (`caso-a-mvp`), comandos de la guía tal cual: equipo listo → transcripción 74 s (210 palabras) → corte 97,9 → 61,0 s (toma repetida del Clip 8 resuelta) → 61 bloques de subtítulos → render HDR 102 s con revisión superada; total 194 s. Pendiente: repetir en una sesión nueva con el plugin cargado (`claude --plugin-dir .`), porque aquí la CLI no tiene sesión iniciada.
+
 ## 0 · Diseño
 - [x] #0 `docs/diseno-decodik-editor.md` aprobado por Santiago · **Hecho cuando:** Santiago da el «ok» al diseño · Prueba: ok de Santiago el 2026-11-15
 
