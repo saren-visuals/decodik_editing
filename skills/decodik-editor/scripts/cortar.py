@@ -248,12 +248,54 @@ def render(segmentos: list[dict], brutos: Path, salida: Path, rapido: bool, deci
 
 # ---------- principal ----------
 
+def tomas_del_guion(trabajo: Path, frases: list[dict], variante: str | None, forzar: bool) -> list[dict] | None:
+    """Modo UGC: una frase por escena del guion (cobertura.py elige la toma), en el orden del guion.
+    De cada grupo de escenas alternativas (p. ej. 3 ganchos) se usa la de --variante o la primera.
+    Solo entran las palabras de la toma elegida; el resto del clip se descarta."""
+    f = trabajo / "cobertura.json"
+    if not f.exists():
+        print(f"Falta {f}. Antes ejecuta cobertura.py.")
+        return None
+    escenas = json.loads(f.read_text(encoding="utf-8"))["escenas"]
+    vistas, elegidas = set(), []
+    for e in escenas:
+        g = e.get("grupo")
+        if g:
+            ids = [x["id"] for x in escenas if x.get("grupo") == g]
+            usar = variante if variante in ids else ids[0]
+            if e["id"] != usar:
+                continue
+        if e["estado"] in ("falta", "regrabar") or "toma" not in e:
+            if not forzar:
+                print(f"La escena {e['id']} ({e['nombre']}) está «{e['estado']}»: grábala antes de editar "
+                      "(o usa --forzar para montar sin ella).")
+                return None
+            print(f"  ! Se monta sin la escena {e['id']} ({e['nombre']}).")
+            continue
+        t = e["toma"]
+        palabras = [w for fr in frases if fr["clip"] == t["clip"] for w in fr["palabras"]
+                    if w["inicio"] >= t["inicio"] - 0.05 and w["fin"] <= t["fin"] + 0.05]
+        if not palabras:
+            print(f"  ! La toma de la escena {e['id']} no tiene palabras tras limpiar muletillas: se salta.")
+            continue
+        clave = (t["clip"], palabras[0]["inicio"])
+        if clave in vistas:
+            continue
+        vistas.add(clave)
+        elegidas.append({"clip": t["clip"], "palabras": palabras, "muletillas": 0, "quitadas": 0, "escena": e["id"]})
+    return elegidas
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Corte automático de silencios, muletillas y tomas repetidas.")
     p.add_argument("carpeta", type=Path, help="carpeta del talento")
     p.add_argument("--pausa-max", type=float, default=0.3, help="pausa máxima que se deja dentro de una frase (s)")
     p.add_argument("--sin-video", action="store_true", help="solo calcula los cortes, no renderiza corte.mp4")
     p.add_argument("--rapido", action="store_true", help="render más rápido y de menos calidad")
+    p.add_argument("--guion", action="store_true",
+                   help="modo UGC: monta en el orden del guion de la marca con las tomas de cobertura.json")
+    p.add_argument("--variante", help="con --guion: id de la escena que se usa de su grupo (p. ej. 1B para el gancho B)")
+    p.add_argument("--forzar", action="store_true", help="con --guion: monta aunque falten escenas")
     args = p.parse_args()
 
     talento = args.carpeta.resolve()
@@ -278,7 +320,12 @@ def main() -> int:
                 frases.append({"clip": c["archivo"], "palabras": quedan, "muletillas": muletillas,
                                "quitadas": antes - len(quedan)})
 
-    elegidas = elegir_tomas(frases, descartes)
+    if args.guion:
+        elegidas = tomas_del_guion(trabajo, frases, args.variante, args.forzar)
+        if elegidas is None:
+            return 2
+    else:
+        elegidas = elegir_tomas(frases, descartes)
 
     segmentos, finos = [], {}
     for f in elegidas:

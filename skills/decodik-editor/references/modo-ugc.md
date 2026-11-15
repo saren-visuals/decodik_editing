@@ -12,9 +12,9 @@ Vídeo que una marca le encarga al talento. La marca da **el brief y el guion**.
 | 2 · Dudas | Respuestas citando el brief + mensaje para la marca | lista |
 | 3 · Plan de grabación | Lista de tomas por escena + checklist del día | lista |
 | 4 · Estilo de edición | Ficha de estilo | lista |
-| 5 · Brutos y cobertura del guion | Tabla de cobertura | pendiente (v0.2, fase de vídeo) |
-| 6 · Edición | Vídeo editado | pendiente (v0.2, fase de vídeo) |
-| 7 · Revisión y entrega | Sello DECODIK + mensaje de entrega | pendiente (v0.2, fase de vídeo) |
+| 5 · Brutos y cobertura del guion | Tabla de cobertura | lista |
+| 6 · Edición | Vídeo editado (y sus versiones de gancho) | lista |
+| 7 · Revisión y entrega | Tabla de cumplimiento, Sello DECODIK y mensaje de entrega | lista |
 
 Si el talento llega a una fase pendiente, díselo en una línea y ofrécele lo que sí puedes hacer: la guía de edición paso a paso en CapCut (`decodik-edicion`, paso 5) y la revisión contra el brief (`decodik-marca`).
 
@@ -113,3 +113,46 @@ Cuando el talento diga que no tiene más dudas:
 5. Guárdala y enséñale un resumen de 4-5 líneas («Estilo UGC natural: subtítulos Crema con la clave en el verde de Zancada, código TALENTO10 escrito al final, sin logo, música pendiente de la marca»). **Espera su aprobación o sus cambios**; si cambia algo, apúntalo con `(pedido por el talento, <fecha>)`.
 
 Con la ficha de estilo aprobada termina la parte de texto. La fase 5 empieza cuando el talento sube los clips a `02_brutos/`.
+
+## Fase 5 · Brutos y cobertura del guion
+
+**Entrada:** los clips en `02_brutos/`, la ficha de campaña. **Salida:** `06_entrega/trabajo/cobertura.md`.
+
+1. Revisa el equipo y transcribe como en `references/edicion-basica.md` (pasos 2-4), con `--nombres` = marca, producto y nombres del brief («Zancada, Brisa 3, TALENTO10»).
+2. **Escribe `06_entrega/trabajo/guion.json`** a partir de la ficha: una escena por fila con su `texto` y si es `literal`; las alternativas (p. ej. 3 ganchos) con el mismo `grupo` y su id (`1A`, `1B`, `1C`); y en `prohibidas`, las palabras y expresiones prohibidas del brief, literales.
+3. Calcula la cobertura:
+```
+uv run "$SKILL/scripts/cobertura.py" "<carpeta del vídeo>"
+```
+4. Lee `cobertura.md` y repásala tú también con la transcripción (lo que el script no puede saber: si un obligatorio visual se ve, si nombra bien el producto, si dice algo prohibido con otras palabras, como «dice que te cura»).
+5. Enséñale al talento la tabla resumida:
+   - ✓ escenas cubiertas, con la toma elegida;
+   - ⚠ escenas literales que no dijo igual (con la diferencia exacta) o con audio flojo;
+   - ✗ **escenas sin grabar** o con todas sus tomas con **palabras prohibidas**: dile **exactamente qué volver a grabar** (la frase, y que la repita 3 veces).
+6. Si falta algo, **no edites**: espera los clips nuevos y vuelve al paso 3. Si todo está, pide el «ok» para editar.
+
+## Fase 6 · Edición
+
+Con la cobertura completa y la ficha de estilo aprobada. Usa el motor de la edición básica con los valores de la ficha de estilo (fase 4):
+
+```
+uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --guion [--variante 1A] --sin-video
+```
+- `--guion` monta **una toma por escena, en el orden del guion de la marca** (las que eligió `cobertura.py`). Si falta una escena se niega a montar.
+- Después: `claves.json` y `subtitulos.py --estilo …`, `textos.json` y `textos.py` (solo lo que permita el brief), `recursos.json` y `recursos.py` (planos de producto, pantallas de la app), `encuadre.py` y `render.py`, como en `edicion-basica.md`.
+- **Versiones de gancho** (si el brief pide varios): repite `cortar.py --guion --variante <id>`, `subtitulos.py`, `textos.py` y `render.py --version N --sufijo gancho-<letra>` por cada gancho. Salen `video-vN-gancho-A.mp4`, `-B`, `-C`, con el mismo número de versión y cada una con su revisión (`trabajo/revision-gancho-A/`…).
+- Otras versiones que pida el brief (sin subtítulos, sin música): mismo sistema con otro `--sufijo`.
+
+## Fase 7 · Revisión y entrega
+
+1. **Revisión técnica:** la de `render.py` (✓ en todo) y la hoja de fotogramas de cada versión.
+2. **Tabla de cumplimiento del brief** en `06_entrega/cumplimiento.md`, punto por punto:
+
+| Punto del brief | ¿Se cumple? | Dónde (segundo o frase) | Arreglo |
+|---|---|---|---|
+
+   Siempre: cada escena y frase literal · cada obligatorio · **cada prohibido** (que no esté) · CTA y código · señalización (#publi o etiqueta, que se pone al publicar) · nombre del producto bien escrito · música y logo según lo que dijo la marca · duración y formato.
+3. **Estándar de calidad DECODIK** (`decodik-edicion/references/estandar-calidad.md`): si pasa, escribe el **Sello DECODIK**; si no, la lista de arreglos, del más importante al menos, y arréglalos antes de entregar.
+4. **Entrega** en `06_entrega/`: los MP4 (y sus versiones), los `.srt`, `ficha-campana.md`, `ficha-estilo.md`, `cumplimiento.md` y `mensaje-entrega.md`.
+5. **Mensaje de entrega para la marca** (`mensaje-entrega.md`, listo para copiar, en la voz del talento): qué entrega y en qué formato, cómo cumple el brief en 3 líneas, fecha prevista de publicación, y petición de aprobación o cambios antes de una fecha. No lo mandes tú.
+6. **Cambios de la marca:** el talento pega sus comentarios. Aplica **solo esos cambios** sobre la última versión y renderiza la siguiente (`video-v2…`); la anterior no se toca. Apunta cada cambio en la ficha con `(cambio pedido por la marca, <fecha>)`.

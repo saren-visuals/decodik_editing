@@ -44,6 +44,9 @@ if hasattr(sys.stdout, "reconfigure"):
 LUFS = -14.0          # referencia de TikTok, Instagram y YouTube
 PICO = -1.5           # dBTP máximo
 FOTOGRAMAS = 8
+# Compresión suave de voz antes de normalizar: iguala partes suaves y fuertes para que el vídeo
+# llegue a −14 LUFS sin pasar el pico (el volumen se mide ya con ella puesta).
+COMPRESOR = "acompressor=threshold=0.1:ratio=3:attack=8:release=150:knee=4"
 
 
 def ejecutar(cmd: list[str]) -> subprocess.CompletedProcess:
@@ -278,13 +281,13 @@ def grafo_completo(segmentos: list[dict], brutos: Path, decision: dict, ass: Pat
             + (f",subtitles=filename='{ruta_filtro(ass.with_name('textos.ass'))}':fontsdir='{ruta_filtro(fuentes)}'"
                if ass.with_name("textos.ass").exists() else "")
             + "[v];"
-            + f"[ac]{volumen},aresample=48000[a]")
+            + f"[ac]{COMPRESOR},{volumen},aresample=48000[a]")
 
 
 def medir_volumen(segmentos: list[dict], brutos: Path, trabajo: Path) -> dict:
     """Primera pasada (solo audio): mide el volumen del corte para normalizarlo con precisión."""
     union = "".join(f"[a{k}]" for k in range(len(segmentos)))
-    grafo = (cadenas_audio(segmentos) + f"{union}concat=n={len(segmentos)}:v=0:a=1,"
+    grafo = (cadenas_audio(segmentos) + f"{union}concat=n={len(segmentos)}:v=0:a=1,{COMPRESOR},"
              f"loudnorm=I={LUFS}:TP={PICO}:LRA=11:print_format=json[a]")
     script = trabajo / "volumen.filtro.txt"
     script.write_text(grafo, encoding="utf-8")
@@ -298,9 +301,20 @@ def medir_volumen(segmentos: list[dict], brutos: Path, trabajo: Path) -> dict:
 
 
 def filtro_volumen(medida: dict) -> str:
-    return (f"loudnorm=I={LUFS}:TP={PICO}:LRA=11:measured_I={medida['input_i']}:measured_TP={medida['input_tp']}:"
-            f"measured_LRA={medida['input_lra']}:measured_thresh={medida['input_thresh']}:"
-            f"offset={medida['target_offset']}:linear=true")
+    """Normalización a LUFS. Modo lineal (sube o baja todo igual) si el pico lo permite; si subir
+    hasta el objetivo pasaría el pico máximo (pasa en vídeos cortos con algún golpe de voz), modo
+    dinámico, que comprime un poco esos picos para llegar al volumen de las redes."""
+    ganancia = LUFS - float(medida["input_i"])
+    if float(medida["input_tp"]) + ganancia <= PICO:
+        return (f"loudnorm=I={LUFS}:TP={PICO}:LRA=11:measured_I={medida['input_i']}:measured_TP={medida['input_tp']}:"
+                f"measured_LRA={medida['input_lra']}:measured_thresh={medida['input_thresh']}:"
+                f"offset={medida['target_offset']}:linear=true")
+    # Subir la ganancia exacta y que un limitador recorte solo los picos (el modo dinámico de
+    # loudnorm no llega al objetivo en vídeos cortos). Se limita a 0,5 dB por debajo del pico
+    # máximo para dejar margen al pico real tras el AAC.
+    techo = 10 ** ((PICO - 0.5) / 20)
+    return (f"aresample=192000,volume={ganancia + 0.3:.2f}dB,"
+            f"alimiter=limit={techo:.4f}:attack=2:release=60:level=disabled,aresample=48000")
 
 
 # ---------- revisión ----------
@@ -413,7 +427,7 @@ def revisar(video: Path, segmentos: list[dict], ass: Path, carpeta: Path, fuente
 # ---------- principal ----------
 
 def siguiente_version(entrega: Path) -> int:
-    hechas = [int(m.group(1)) for p in entrega.glob("video-v*.mp4") if (m := re.match(r"video-v(\d+)\.mp4$", p.name))]
+    hechas = [int(m.group(1)) for p in entrega.glob("video-v*.mp4") if (m := re.match(r"video-v(\d+)(-[^.]+)?\.mp4$", p.name))]
     return max(hechas, default=0) + 1
 
 
@@ -422,6 +436,8 @@ def main() -> int:
     p.add_argument("carpeta", type=Path, help="carpeta del talento")
     p.add_argument("--sin-gpu", action="store_true", help="no usa la tarjeta gráfica aunque la haya")
     p.add_argument("--sin-revision", action="store_true", help="no saca fotogramas de revisión")
+    p.add_argument("--version", type=int, help="número de versión (por defecto, la primera libre)")
+    p.add_argument("--sufijo", help="nombre de la variante, p. ej. «gancho-A» → video-vN-gancho-A.mp4")
     args = p.parse_args()
 
     talento = args.carpeta.resolve()
@@ -440,8 +456,12 @@ def main() -> int:
     fuentes = letras.asegurar(todas_las_letras())
     ass = trabajo / "subtitulos.ass"
 
-    n = siguiente_version(entrega)
-    salida = entrega / f"video-v{n}.mp4"
+    n = args.version or siguiente_version(entrega)
+    nombre = f"v{n}" + (f"-{args.sufijo}" if args.sufijo else "")
+    salida = entrega / f"video-{nombre}.mp4"
+    if salida.exists():
+        print(f"Ya existe {salida.name}: no se sobrescribe. Usa otra --version u otro --sufijo.")
+        return 2
     t0 = time.time()
     print(f"Render de la versión {n}: {len(segmentos)} tramos, {segmentos[-1]['salida_fin']:.1f} s.")
     print("  … Midiendo el volumen")
@@ -478,15 +498,15 @@ def main() -> int:
         print("No se pudo renderizar el vídeo.")
         return 1
     script.unlink(missing_ok=True)
-    shutil.copyfile(trabajo / "subtitulos.srt", entrega / f"subtitulos-v{n}.srt")
+    shutil.copyfile(trabajo / "subtitulos.srt", entrega / f"subtitulos-{nombre}.srt")
     print(f"  {salida}")
-    print(f"  {entrega / f'subtitulos-v{n}.srt'}")
+    print(f"  {entrega / f'subtitulos-{nombre}.srt'}")
 
     if args.sin_revision:
         return 0
-    carpeta = trabajo / "revision"
+    carpeta = trabajo / ("revision" + (f"-{args.sufijo}" if args.sufijo else ""))
     bien, notas = revisar(salida, segmentos, ass, carpeta, fuentes, decision)
-    informe = [f"# Revisión · video-v{n}.mp4", "", *[f"- {x}" for x in notas], "",
+    informe = [f"# Revisión · {salida.name}", "", *[f"- {x}" for x in notas], "",
                f"Hoja de contacto: `revision/hoja.png` · Tiempo total: {time.time() - t0:.0f} s", ""]
     (carpeta / "revision.md").write_text("\n".join(informe), encoding="utf-8")
     print("\nRevisión:")

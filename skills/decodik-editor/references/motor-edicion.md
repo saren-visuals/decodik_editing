@@ -115,6 +115,16 @@ uv run scripts/encuadre.py <carpeta del vídeo> [--zoom 1.12] [--quitar]
 - El acercamiento va **hacia la cara** (detectada en cada tramo con OpenCV): la cara queda donde estaba pero más grande y nunca se corta la cabeza. Escribe `encuadre.json`; `render.py` recorta y vuelve a 1080×1920.
 - En los tramos con pantalla partida no se aplica (el talento ya va recortado).
 
+## Cobertura del guion (modo UGC)
+
+```
+uv run scripts/cobertura.py <carpeta del vídeo>
+```
+
+- Lee `guion.json` (escenas, alternativas en `grupo`, `literal`, `prohibidas`) y la transcripción; para cada escena busca en todos los clips el tramo que más se parece a la frase (por palabras) y elige la mejor toma **sin palabras prohibidas** (también en plural o con tilde). Marca las escenas sin grabar (parecido < 55 %) y las literales que no se dicen igual.
+- `cortar.py --guion [--variante 1A] [--forzar]` monta esas tomas en el orden del guion.
+- `render.py --version N --sufijo gancho-A` para las versiones (cada una con su carpeta de revisión).
+
 ## Render final y revisión
 
 ```
@@ -123,7 +133,7 @@ uv run scripts/render.py <carpeta del talento> [--sin-gpu] [--sin-revision]
 
 - Hace el vídeo final **en una sola pasada desde los brutos**: corte, subtítulos y volumen, con el color tal como se grabó.
 - Entrega en `06_entrega/`: `video-vN.mp4` (1080×1920, 30 fps, AAC; HEVC 10 bits si es HDR, H.264 si es SDR) y `subtitulos-vN.srt`. N es la primera versión libre: nunca se sobrescribe una entrega.
-- **Volumen:** se mide primero y se lleva a −14 LUFS con pico máximo de −1,5 dBTP (el que usan TikTok, Instagram y YouTube).
+- **Volumen:** compresión suave de voz (iguala partes suaves y fuertes) y después se mide y se lleva a −14 LUFS con pico máximo de −1,5 dBTP (el que usan TikTok, Instagram y YouTube). Si subir hasta el objetivo pasaría el pico, se sube la ganancia exacta y un limitador recorta solo los picos.
 - **Hardware:** con tarjeta NVIDIA lee el vídeo con la tarjeta y, si el controlador lo permite, también codifica con ella; en Mac usa VideoToolbox. Antes de usar el codificador de la tarjeta hace una prueba de 0,1 s; si falla (por ejemplo, controlador NVIDIA anterior al 610), codifica con el procesador y lo avisa. `--sin-gpu` lo fuerza todo al procesador.
 - **Revisión automática antes de entregar** (`06_entrega/trabajo/revision/`): tamaño, cuadros por segundo, duración, volumen y pico, sin imagen congelada ni fotogramas negros, y subtítulo visible en los fotogramas clave con voz. Saca 8 fotogramas (primero, último y cambios de tramo) y una hoja de contacto `hoja.png`.
 - **Tú (Claude) miras la hoja de contacto** antes de decir que el vídeo está listo: que el subtítulo se lea, no tape la cara y no haya nada raro en la imagen. Si la revisión marca un ✗, no se entrega: se arregla y se vuelve a renderizar.
