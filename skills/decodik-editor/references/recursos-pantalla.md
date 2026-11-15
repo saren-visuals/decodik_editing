@@ -4,12 +4,19 @@ Las fotos, capturas y clips del talento (en `03_recursos/`) aparecen **cuando lo
 
 **Solo material del talento o con permiso** (`CLAUDE.md`): la skill no busca, descarga ni genera imágenes de terceros (jugadas, retransmisiones, fotos de famosos, logos). Si el talento quiere un recurso que no tiene, díselo y propón grabarlo o hacer una captura propia.
 
+## Regla: la cara del talento no se tapa nunca
+
+Ningún recurso se pone encima de su cara. El script lo garantiza solo:
+- En cada tarjeta mira 5 fotogramas de esos segundos, **detecta la cara** y pone la tarjeta en el hueco libre más alto, **debajo de la barbilla o encima de la cabeza**, sin pisar los subtítulos ni la barra de arriba de la app. Si hace falta, la hace más pequeña.
+- Si no cabe una tarjeta legible (al menos 200 px de alto), **la pasa a pantalla completa** y lo dice.
+- Si en esos segundos no se ve ninguna cara, la coloca como si la cara estuviera en su sitio habitual, por si el detector falló.
+
 ## Dos maneras
 
 | Modo | Cómo se ve | Cuándo |
 |---|---|---|
-| `completo` | El recurso ocupa toda la pantalla 1-3 s mientras sigue la voz (corte a B-roll) | Lugares, entrenos, partidos, el producto en uso. **Si la cara del talento está baja en el plano**, mejor este que una tarjeta |
-| `tarjeta` | Tarjeta con esquinas redondeadas sobre el pecho, entre la cara y los subtítulos; entra subiendo con un fundido | Fotos, capturas de pantalla, datos, portadas, el producto |
+| `completo` | El recurso ocupa toda la pantalla 1-3 s mientras sigue la voz (corte a B-roll). Las fotos llevan un acercamiento lento del 5 % para que no parezcan congeladas | Lugares, entrenos, partidos, el producto en uso |
+| `tarjeta` | Tarjeta con esquinas redondeadas fuera de la cara (debajo o encima), entra deslizándose con un fundido | Fotos, capturas de pantalla, datos, portadas, el producto |
 
 ## Qué escribes tú (Claude)
 

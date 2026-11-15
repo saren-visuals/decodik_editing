@@ -186,17 +186,26 @@ def capas_recursos(plan: list[dict], primera: int, decision: dict, entrada: str)
         if r["tipo"] == "imagen":
             # PNG ya escalado (y en HLG si el vídeo es HDR): solo se pasa a YUV con la matriz correcta.
             base = f"[{i}:v:0]scale=out_color_matrix={matriz}:out_range=tv,format={formato}"
+            if r["modo"] == "completo":
+                # Foto a pantalla completa: acercamiento lento del 5 % para que no parezca congelada.
+                d = max(fin - ini, 0.1)
+                base += (f",scale=w='1080*(1+0.05*t/{d:.3f})':h='1920*(1+0.05*t/{d:.3f})':eval=frame:flags=bicubic,"
+                         "crop=1080:1920:(iw-1080)/2:(ih-1920)/2")
         else:
             if r["modo"] == "completo":
                 caja = "scale=1080:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=1080:1920"
             else:
-                caja = "scale=820:440:force_original_aspect_ratio=decrease:flags=lanczos"
+                caja = f"scale={r['ancho']}:{r['alto']}:flags=lanczos"
             base = f"[{i}:v:0]{caja},setsar=1,fps={FPS},format={formato}"
         base += f",setpts=PTS-STARTPTS+{ini:.3f}/TB"
         if r["modo"] == "tarjeta":
             base += (f",fade=t=in:st={ini:.3f}:d=0.18:alpha=1,"
                      f"fade=t=out:st={max(fin - 0.18, ini):.3f}:d=0.18:alpha=1")
-            pos = f"x=(W-w)/2:y={y_tarjeta}+40*max(0\\,1-(t-{ini:.3f})/0.2)"
+            # La «y» la calcula recursos.py para no tapar la cara. Entra deslizándose 40 px desde
+            # fuera de la cara: hacia arriba si está debajo de ella, hacia abajo si está encima.
+            y = r.get("y", y_tarjeta)
+            signo = "-" if y < 1920 * 0.3 else "+"
+            pos = f"x=(W-w)/2:y={y}{signo}40*max(0\\,1-(t-{ini:.3f})/0.2)"
         else:
             pos = "x=0:y=0"
         partes.append(f"{base}[r{k}];")
@@ -310,7 +319,10 @@ def revisar(video: Path, segmentos: list[dict], ass: Path, carpeta: Path, fuente
 
     r = ejecutar(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(video), "-an",
                   "-vf", "freezedetect=n=-60dB:d=1,blackdetect=d=0.2:pix_th=0.1", "-f", "null", "-"])
-    congelado = re.findall(r"freeze_duration: ([0-9.]+)", r.stderr)
+    # Una foto puesta a propósito (recursos.py) no cuenta como imagen congelada.
+    fotos = [(x["inicio"] - 0.3, x["fin"] + 0.3) for x in plan_recursos(ass) if x["tipo"] == "imagen"]
+    congelado = [inicio for inicio in re.findall(r"freeze_start: ([0-9.]+)", r.stderr)
+                 if not any(a <= float(inicio) <= b for a, b in fotos)]
     negro = re.findall(r"black_duration:([0-9.]+)", r.stderr)
     nota(not congelado, "Sin imagen congelada más de 1 s" + (f" (hay {len(congelado)})" if congelado else ""))
     nota(not negro, "Sin fotogramas negros" + (f" (hay {len(negro)} tramos)" if negro else ""))

@@ -99,8 +99,9 @@ uv run scripts/recursos.py <carpeta del vídeo>
 ```
 
 - Lee `recursos.json` (propuesto por Claude, aprobado por el talento; ver `references/recursos-pantalla.md`), ancla cada recurso de `03_recursos/` a la palabra en que se nombra y escribe `recursos-plan.json`.
-- **Completo:** el recurso cubre los 1080×1920. **Tarjeta:** como mucho 820×440 px, esquinas redondeadas, arriba al 38 % de la altura; entra subiendo 40 px con fundido de 0,18 s y sale con fundido.
-- Las imágenes se preparan con numpy (dependencia de `uv run`): escala, esquinas con transparencia y, si el vídeo es HDR, paso a BT.2020 + HLG con el blanco de referencia. Los clips se usan sin sonido y tienen que tener el mismo color que el vídeo.
+- **Completo:** el recurso cubre los 1080×1920; las fotos con un acercamiento lento del 5 %. **Tarjeta:** como mucho 820×440 px, esquinas redondeadas, en el hueco libre que deja la cara (debajo o encima); entra deslizándose 40 px con fundido de 0,18 s y sale con fundido.
+- **La cara no se tapa nunca:** detección de cara con OpenCV (clasificador Haar, local) en 5 fotogramas de cada tarjeta. Si no cabe una tarjeta de al menos 200 px fuera de la cara, el recurso pasa a pantalla completa.
+- Las imágenes se preparan con numpy y la cara se detecta con OpenCV 4 (dependencias de `uv run`; la primera vez descarga ~40 MB): escala, esquinas con transparencia y, si el vídeo es HDR, paso a BT.2020 + HLG con el blanco de referencia. Los clips se usan sin sonido y tienen que tener el mismo color que el vídeo.
 - `render.py` pone los recursos encima del vídeo y, encima de todo, subtítulos y textos.
 
 ## Render final y revisión

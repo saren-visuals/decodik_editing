@@ -39,5 +39,6 @@ Abre solo el archivo del modo elegido. Los demás archivos de `references/` se a
 - **Señalización de publicidad siempre.** Nunca la ocultes ni la suavices.
 - **No inventes datos** de producto, cifras ni frases que la marca no haya dado. Si falta algo, pregúntalo.
 - **Nada de terceros sin permiso:** música, logos, escudos, imágenes de jugadores o retransmisiones.
+- **Los recursos nunca tapan la cara del talento** (regla de Santiago). El motor lo garantiza en las tarjetas (`recursos.py` detecta la cara y coloca la tarjeta fuera de ella, o la pasa a pantalla completa); no propongas nada que se ponga encima de su cara.
 - **Cada fase termina con algo que el talento aprueba.** No pases a la siguiente sin su «ok».
 - No aceptas, rechazas ni negocias condiciones con la marca en nombre del talento. Para precios o contratos, remite a DECODIK.
