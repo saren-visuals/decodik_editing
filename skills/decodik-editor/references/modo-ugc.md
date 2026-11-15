@@ -10,7 +10,7 @@ Vídeo que una marca le encarga al talento. La marca da **el brief y el guion**.
 |---|---|---|
 | 1 · Brief y guion de la marca | Ficha de campaña con huecos | lista |
 | 2 · Dudas | Respuestas citando el brief + mensaje para la marca | lista |
-| 3 · Plan de grabación | Lista de tomas por escena + checklist del día | en construcción (U4) |
+| 3 · Plan de grabación | Lista de tomas por escena + checklist del día | lista |
 | 4 · Estilo de edición | Ficha de estilo | en construcción (U5) |
 | 5 · Brutos y cobertura del guion | Tabla de cobertura | pendiente (v0.2, fase de vídeo) |
 | 6 · Edición | Vídeo editado | pendiente (v0.2, fase de vídeo) |
@@ -81,3 +81,23 @@ Cuando el talento diga que no tiene más dudas:
 4. Dile que lo copie y lo mande por donde hable con la marca (no lo mandes tú). Cuando tenga respuestas, que te las pegue: las apuntas en la ficha con su fuente `(respuesta de la marca, <fecha>)` y quitas esos huecos.
 
 **Espera el «ok»** para pasar al plan de grabación. Puede pasar aunque la marca aún no haya contestado: el plan marca lo que dependa de esas respuestas.
+
+## Fase 3 · Plan de grabación
+
+**Entrada:** la ficha de campaña (escenas, obligatorios, prohibidos) y las respuestas de la marca que haya. **Salida:** `06_entrega/plan-grabacion.md`.
+
+1. **Una tabla de tomas por escena** del guion (las de la ficha, con su número):
+
+| Escena | Toma | Qué se graba | Plano | Qué se dice | Veces |
+|---|---|---|---|---|---|
+
+   - **Toma principal:** el talento hablando a cámara con el texto de esa escena (literal si el guion lo marca así).
+   - **Planos de producto:** el producto en la mano, en detalle, en uso. Si el brief exige algo concreto («la Band en tu muñeca en los primeros segundos», «la métrica bien enseñada en la app»), es una toma con su nombre.
+   - **Pantallas:** si el brief pide enseñar una app o una web, toma de **grabación de pantalla** con lo que se tiene que ver y cuánto tiempo (2-3 s legibles).
+   - **Recursos y planos de apoyo** (`03_recursos/`): los que dan ritmo (su día, el entreno, el sitio). Un recurso cada 6-8 s del vídeo final, como dice el formato «Hablando a cámara».
+   - **Veces:** el gancho y cada frase obligatoria o literal, **3 veces** (con pausa de 2 s antes de cada una); el resto, 2. Si el brief pide varios ganchos, cada uno es una toma aparte con su letra (A, B, C), y el resto del vídeo se graba una vez.
+2. **Lo que depende de la marca:** marca con ⚠ las tomas que dependan de un hueco aún sin respuesta («⚠ Texto del CTA pendiente de Hume»). Se pueden grabar las demás.
+3. **Cómo grabar** (recomendaciones DECODIK): móvil en vertical a la altura de los ojos, luz de frente (ventana delante, nunca detrás), micro de solapa o sitio sin eco, 4K/30 si el móvil lo permite, limpiar la lente, modo avión. Pantallas: brillo al máximo y grabación de pantalla mejor que grabar el móvil con otro móvil.
+4. **Checklist del día** (casillas para marcar): el producto, cargado y limpio · el embalaje si sale · la app abierta con tus datos reales en la pantalla que toca · el guion o las frases a mano · ropa sin marcas de otros · batería y espacio en el móvil · la luz · decir «#publi» no hace falta en el vídeo, pero ten la etiqueta lista al publicar.
+5. **Lo que no puede salir** (los prohibidos de la ficha, en una lista corta que el talento lea antes de grabar).
+6. Guárdalo en `06_entrega/plan-grabacion.md` y enséñale un resumen: número de tomas, las que hay que repetir, las ⚠ pendientes y la lista de lo que no puede salir. **Espera el «ok»** para pasar a la ficha de estilo.
