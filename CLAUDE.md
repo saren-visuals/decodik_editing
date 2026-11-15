@@ -50,7 +50,16 @@ perfil-talento.md
 **Día 1:** 3 plantillas montadas automáticamente (Lista rápida, Ranking por niveles, Integración de marca). Las 9, en v1.
 **Modo anuncio (v1):** variantes de gancho, 15/30 s, 9:16 · 4:5 · 1:1, zonas seguras, afirmaciones verificables.
 
-**Stack (actualizado 2026-11-15):** **ffmpeg + whisper** (transcripción con marcas de tiempo; subtítulos y textos con ffmpeg). **No usar Remotion por ahora:** su licencia es de pago para empresas de 4 personas o más; se decidirá cuando haga falta motion graphics. Scripts dentro de la skill (`scripts/`), sin claves de API obligatorias para el modo básico.
+**Stack (actualizado 2026-11-15):** **ffmpeg + whisper** (transcripción con marcas de tiempo; corte, subtítulos y textos). Para gráficos y animaciones: **HyperFrames** (HeyGen, Apache-2.0, HTML → MP4). **No usar Remotion:** su licencia es de pago para empresas de 4 personas o más.
+
+**Bases open source permitidas** (descargar siempre del repositorio original, respetar su licencia y citar la procedencia en un `CREDITOS.md`):
+- `heygen-com/hyperframes` (Apache-2.0)
+- packs de `iart-ai` (MIT), p. ej. `tiktok-video-skills`, `ad-video-skills`, `ecommerce-video-skills`
+- ffmpeg, whisper / whisper.cpp, Playwright, GSAP, three.js, rough.js (según su licencia)
+
+**Prohibido como base:** el «Módulo de Edición» de Fórmula 100K (ZIP con `auto-edicion`, `editor-video-formula100k`, `*-f100k`…) y cualquier skill de F100K. Es propietario (todos los derechos reservados). No se copia, no se adapta y no se abre como plantilla al escribir código de DECODIK. Si alguna pieza de ese ZIP declara una licencia libre de un tercero (p. ej. el motor adaptado de iart-ai), se descarga del repositorio original del tercero, nunca del ZIP.
+
+Scripts dentro de la skill (`scripts/`), sin claves de API obligatorias para el modo básico.
 
 ## Pendiente de decidir (preguntar a Santiago)
 - Disponibilidad de la app de escritorio de Claude con carpeta conectada en el plan de los talentos, y límites de tamaño de los brutos.
