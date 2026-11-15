@@ -1,6 +1,6 @@
 ---
 name: decodik-editor
-description: Editor de vídeo DECODIK para talentos del deporte. Empieza preguntando qué vídeo vamos a hacer (marca personal o UGC para una marca). En marca personal, si hay clips en 02_brutos, los edita solo (corta silencios, muletillas y tomas repetidas, pone subtítulos y entrega el MP4 vertical); si no, guía con guion y CapCut. En UGC para marcas lee el brief y el guion de la marca, resuelve dudas solo con el brief, planifica la grabación y propone el estilo de edición. Úsala con «edita mi vídeo», «edítame el vídeo», «hazme la edición», «quiero editar un vídeo», «corta mi vídeo», «ponle subtítulos a mi vídeo», «tengo que editar un vídeo para una marca», «me han encargado un UGC».
+description: Editor de vídeo DECODIK para talentos del deporte. Empieza preguntando qué vídeo vamos a hacer (marca personal o UGC para una marca). En marca personal, si hay clips en 02_brutos, los edita solo (corta silencios, muletillas y tomas repetidas, pone subtítulos en 8 estilos con la palabra clave resaltada y entrega el MP4 vertical); si no, guía con guion y CapCut. En UGC para marcas lee el brief y el guion de la marca, resuelve dudas solo con el brief, planifica la grabación y propone el estilo de edición. Úsala con «edita mi vídeo», «edítame el vídeo», «hazme la edición», «quiero editar un vídeo», «corta mi vídeo», «ponle subtítulos a mi vídeo», «tengo que editar un vídeo para una marca», «me han encargado un UGC».
 ---
 
 # Editor de vídeo · DECODIK

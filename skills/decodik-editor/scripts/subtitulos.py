@@ -1,74 +1,93 @@
 # /// script
 # requires-python = ">=3.10"
 # ///
-"""Subtítulos del vídeo cortado: bloques de 1 a 4 palabras con la palabra que suena resaltada.
+"""Subtítulos del vídeo cortado, en uno de los 8 estilos DECODIK, con la palabra clave resaltada.
 
 Uso:
-    uv run subtitulos.py <carpeta del talento> [--max-palabras 4] [--color-activa FFD400] [--sin-video]
+    uv run subtitulos.py <carpeta del vídeo> [--estilo clave] [--claves claves.json]
+                         [--color-clave FFD400] [--max-palabras N] [--sin-video]
 
-Lee 06_entrega/trabajo/transcripcion.json y cortes.json (de cortar.py), pasa el tiempo de cada
-palabra al vídeo cortado y escribe en 06_entrega/trabajo/:
+Estilos (ver references/estilos-subtitulos.md):
+    clave (por defecto) · serif · frase · impacto · caja · condensada · mixta · minimo
 
-    subtitulos.ass        estilo «nativo + palabra a palabra» que ffmpeg pinta sobre el vídeo
-    subtitulos.srt        bloques sin estilo, para entregar o subir a la red
+Palabras clave: las elige Claude y las escribe en 06_entrega/trabajo/claves.json:
+    {"claves": ["olímpica", "Stanford", "62 créditos", "veterinaria#1"]}
+«palabra#2» marca solo la 2.ª vez que se dice. Si no hay archivo, se resaltan las cifras y los
+nombres propios que se pasaron a transcribir.py con --nombres.
+
+Lee 06_entrega/trabajo/transcripcion.json y cortes.json (de cortar.py) y escribe ahí:
+    subtitulos.ass        el estilo que ffmpeg pinta sobre el vídeo
+    subtitulos.srt        los bloques sin estilo, para entregar o subir a la red
     subtitulado.mp4       corte.mp4 con los subtítulos pintados, para revisarlo (salvo --sin-video)
 
-La letra (Montserrat ExtraBold, licencia OFL) se descarga de su repositorio oficial la primera
-vez y se guarda en ~/.cache/decodik/fuentes/. Códigos: 0 bien · 1 error · 2 falta algo · 3 sin red.
+Las letras (Inter, Inter Display, Figtree; licencia OFL) se descargan de su repositorio oficial
+la primera vez (ver fuentes.py). Códigos: 0 bien · 1 error · 2 falta algo · 3 sin red.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
-import urllib.request
+import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import color  # noqa: E402
+import fuentes  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # Lienzo del ASS = vídeo final.
 ANCHO, ALTO = 1080, 1920
-# Zona segura de TikTok/Reels: se evita el 20 % de abajo (descripción y música) y la franja
-# derecha de botones. El texto va centrado con su base a ~66 % de la altura.
-MARGEN_LATERAL = 130
-BASE_Y = 0.66
-TAMANO = 78
-CONTORNO = 7
 MIN_CUADROS = 4                      # ningún bloque dura menos de 4 cuadros
 PAUSA_CORTE = 0.25                   # una pausa así en el vídeo cortado abre bloque nuevo
 SIGNOS_FIN = (".", ",", ";", ":", "?", "!", "…")
-FUENTE = {
-    "familia": "Montserrat ExtraBold",
-    "archivo": "Montserrat-ExtraBold.ttf",
-    "url": "https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/Montserrat-ExtraBold.ttf",
-    "licencia_url": "https://raw.githubusercontent.com/JulietaUla/Montserrat/master/OFL.txt",
+# Palabras de enlace con las que no debe acabar un bloque.
+ENLACES = {"y", "e", "o", "u", "ni", "de", "del", "a", "al", "en", "con", "por", "para", "sin", "que", "el", "la",
+           "los", "las", "un", "una", "unos", "unas", "lo", "mi", "tu", "su", "se", "me", "te", "le", "les", "es",
+           "como", "pero", "si", "mas", "muy", "and", "the", "of", "to", "in"}
+
+# Los 8 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
+# la descripción de abajo y de los botones de la derecha); «minimo» va centrado.
+ESTILOS = {
+    "clave": {
+        "fuente": "Inter Display Black", "archivos": ["InterDisplay-Black.ttf"], "tam": 86,
+        "sombra": 5, "max": 3, "clave": {"color": "FFD400", "escala": 112},
+    },
+    "serif": {
+        "fuente": "Georgia", "archivos": [], "tam": 68, "cursiva": 1, "sombra": 4, "max": 4,
+        "clave": {"escala": 160, "cursiva": 0, "negrita": 1},
+    },
+    "frase": {
+        "fuente": "Inter SemiBold", "archivos": ["Inter-SemiBold.ttf"], "tam": 50, "sombra": 3, "max": 8,
+        "margen": 150, "clave": None,
+    },
+    "impacto": {
+        "fuente": "Inter Display Black", "archivos": ["InterDisplay-BlackItalic.ttf"], "tam": 92, "cursiva": 1,
+        "contorno": 6, "mayus": True, "max": 3, "margen": 110, "clave": {"color": "3DDC5A"},
+    },
+    "caja": {
+        "fuente": "Figtree", "archivos": ["Figtree-Bold.ttf"], "tam": 58, "negrita": 1, "texto": "000000",
+        "caja": "FFFFFF", "contorno": 14, "max": 4, "margen": 150, "clave": None,
+    },
+    "condensada": {
+        "fuente": "Inter Display Black", "archivos": ["InterDisplay-Black.ttf"], "tam": 104, "escala_x": 74,
+        "espaciado": -2, "sombra": 5, "mayus": True, "max": 3, "clave": {"color": "FFD400"},
+    },
+    "mixta": {
+        "fuente": "Figtree Medium", "archivos": ["Figtree-Medium.ttf", "Figtree-Black.ttf"], "tam": 54,
+        "sombra": 3, "max": 8, "margen": 150, "clave": {"fuente": "Figtree Black"},
+    },
+    "minimo": {
+        "fuente": "Inter Medium", "archivos": ["Inter-Medium.ttf"], "tam": 40, "sombra": 2, "max": 10,
+        "margen": 200, "centrado": True, "clave": None,
+    },
 }
-
-
-def carpeta_fuentes() -> Path:
-    return Path.home() / ".cache" / "decodik" / "fuentes"
-
-
-def asegurar_fuente() -> Path:
-    destino = carpeta_fuentes()
-    destino.mkdir(parents=True, exist_ok=True)
-    ttf = destino / FUENTE["archivo"]
-    if not ttf.exists():
-        print(f"  … Descargando la letra {FUENTE['familia']} (licencia OFL, solo la primera vez).")
-        try:
-            urllib.request.urlretrieve(FUENTE["url"], ttf)
-            urllib.request.urlretrieve(FUENTE["licencia_url"], destino / "Montserrat-OFL.txt")
-        except OSError as e:
-            ttf.unlink(missing_ok=True)
-            print(f"No se pudo descargar la letra ({e}). Revisa la conexión y vuelve a intentarlo.")
-            sys.exit(3)
-    return destino
+BASE_Y = 0.66
 
 
 # ---------- tiempos ----------
@@ -96,32 +115,91 @@ def palabras_en_corte(transcripcion: dict, cortes: dict) -> list[dict]:
 
 def bloques(palabras: list[dict], max_palabras: int) -> list[list[dict]]:
     """Agrupa palabras en bloques de como mucho max_palabras palabras visibles (un nombre como
-    «Eileen Gu» cuenta como dos). Abre bloque nuevo en puntuación y en pausas."""
+    «Eileen Gu» cuenta como dos). Abre bloque nuevo en puntuación y en pausas. Si un bloque se
+    corta solo por llegar al máximo, no termina en palabras de enlace («y», «de», «en lo»…):
+    pasan a abrir el bloque siguiente («Eileen Gu» / «y es esquiadora»)."""
     def visibles(ws: list[dict]) -> int:
         return sum(len(w["p"].split()) for w in ws)
+
+    def es_enlace(w: dict) -> bool:
+        return norm(w["p"]) in ENLACES and not w["p"].endswith(SIGNOS_FIN)
+
+    def cerrar_por_maximo(actual: list[dict]) -> list[dict]:
+        """Cierra el bloque y devuelve las palabras de enlace del final, que abren el siguiente."""
+        corte = len(actual)
+        while corte > 1 and es_enlace(actual[corte - 1]):
+            corte -= 1
+        grupos.append(actual[:corte])
+        return actual[corte:]
 
     grupos, actual = [], []
     for i, w in enumerate(palabras):
         if actual and visibles(actual) + len(w["p"].split()) > max_palabras:
-            grupos.append(actual)
-            actual = []
+            actual = cerrar_por_maximo(actual)
         actual.append(w)
         siguiente = palabras[i + 1] if i + 1 < len(palabras) else None
-        cierra = (
-            visibles(actual) >= max_palabras
-            or w["p"].endswith(SIGNOS_FIN)
-            or siguiente is None
-            or siguiente["inicio"] - w["fin"] > PAUSA_CORTE
-        )
-        if cierra:
+        frase_termina = (w["p"].endswith(SIGNOS_FIN) or siguiente is None
+                         or siguiente["inicio"] - w["fin"] > PAUSA_CORTE)
+        if frase_termina:
             grupos.append(actual)
             actual = []
+        elif visibles(actual) >= max_palabras:
+            actual = cerrar_por_maximo(actual)
+    if actual:
+        grupos.append(actual)
     return grupos
 
 
-def limpiar(palabra: str) -> str:
-    """Estilo nativo: sin puntos ni comas al final; se dejan ¿?¡! porque cambian el sentido."""
+def limpiar(palabra: str, estilo: str) -> str:
+    """Sin puntos ni comas al final (estilo de las redes); se dejan ¿?¡! porque cambian el sentido.
+    En «frase», «mixta» y «minimo», que son frases enteras, se deja la puntuación."""
+    if estilo in ("frase", "mixta", "minimo"):
+        return palabra
     return palabra.rstrip(".,;:…")
+
+
+# ---------- palabras clave ----------
+
+def norm(texto: str) -> str:
+    t = unicodedata.normalize("NFD", texto.lower())
+    return "".join(c for c in t if c.isalnum() or c == " ").strip()
+
+
+def marcar_claves(palabras: list[dict], claves: list[str]) -> int:
+    """Marca w["clave"]=True en las palabras que coinciden con la lista. Una clave puede tener
+    varias palabras («62 créditos») y «#n» para quedarse solo con la n-ésima vez que se dice."""
+    # Se compara palabra a palabra visible: «Eileen Gu» viene como una sola entrada de la
+    # transcripción pero son dos palabras, y la clave puede ser «Eileen Gu» o solo «Gu».
+    fichas, de_quien = [], []
+    for i, w in enumerate(palabras):
+        for t in norm(w["p"]).split():
+            fichas.append(t)
+            de_quien.append(i)
+    marcadas = 0
+    for c in claves:
+        texto, _, n = c.partition("#")
+        objetivo = norm(texto).split()
+        if not objetivo:
+            continue
+        vez = 0
+        for i in range(len(fichas) - len(objetivo) + 1):
+            if fichas[i:i + len(objetivo)] != objetivo:
+                continue
+            vez += 1
+            if n and str(vez) != n.strip():
+                continue
+            for j in sorted(set(de_quien[i:i + len(objetivo)])):
+                if not palabras[j].get("clave"):
+                    palabras[j]["clave"] = True
+                    marcadas += 1
+    return marcadas
+
+
+def claves_automaticas(palabras: list[dict], nombres: str) -> list[str]:
+    """Sin claves.json: cifras y nombres propios dados a transcribir.py."""
+    auto = {w["p"] for w in palabras if re.search(r"\d", w["p"])}
+    auto |= {n.strip() for n in nombres.split(",") if n.strip()}
+    return sorted(auto)
 
 
 # ---------- formatos ----------
@@ -136,8 +214,54 @@ def t_srt(seg: float) -> str:
     return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
 
 
-def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, trabajo: Path, modo: str) -> None:
-    """modo = "hdr" o "sdr" (de cortes.json): en HDR el texto se pone al blanco de referencia."""
+def estilo_ass(nombre: str, e: dict, modo: str, max_override: int | None) -> tuple[str, dict]:
+    """Devuelve la línea Style del ASS y los datos del estilo ya resueltos."""
+    margen = e.get("margen", 120)
+    centrado = e.get("centrado", False)
+    texto = color.color_texto(e.get("texto", "FFFFFF"), modo)
+    if "caja" in e:
+        # Caja opaca (BorderStyle 3): el color de la caja va en OutlineColour.
+        borde = fondo = color.color_texto(e["caja"], modo)
+        estilo_borde = 3
+    else:
+        borde, fondo, estilo_borde = "&H00000000", "&H80000000", 1
+    linea = (f"Style: {nombre},{e['fuente']},{e['tam']},{texto},{texto},{borde},{fondo},"
+             f"{-1 if e.get('negrita') else 0},{-1 if e.get('cursiva') else 0},0,0,"
+             f"{e.get('escala_x', 100)},100,{e.get('espaciado', 0)},0,{estilo_borde},"
+             f"{e.get('contorno', 0)},{e.get('sombra', 0)},{5 if centrado else 2},{margen},{margen},"
+             f"{0 if centrado else round(ALTO * (1 - BASE_Y))},1")
+    return linea, {**e, "max": max_override or e["max"]}
+
+
+def texto_bloque(g: list[dict], nombre: str, e: dict, modo: str, color_clave: str | None) -> str:
+    """Texto ASS del bloque, con las palabras clave resaltadas según el estilo."""
+    clave = e.get("clave")
+    partes = []
+    for w in g:
+        t = limpiar(w["p"], nombre)
+        if e.get("mayus"):
+            t = t.upper()
+        t = t.replace("{", "(").replace("}", ")")
+        if w.get("clave") and clave:
+            tags = ""
+            c = color_clave or clave.get("color")
+            if c:
+                tags += f"\\c{color.color_texto(c, modo)}&"
+            if clave.get("escala"):
+                tags += f"\\fscx{clave['escala'] * e.get('escala_x', 100) // 100}\\fscy{clave['escala']}"
+            if clave.get("fuente"):
+                tags += f"\\fn{clave['fuente']}"
+            if "cursiva" in clave:
+                tags += f"\\i{clave['cursiva']}"
+            if "negrita" in clave:
+                tags += f"\\b{clave['negrita']}"
+            t = "{" + tags + "}" + t + "{\\r}"
+        partes.append(t)
+    return " ".join(partes)
+
+
+def escribir(grupos: list[list[dict]], duracion: float, fps: int, trabajo: Path, modo: str,
+             nombre: str, e: dict, linea_estilo: str, color_clave: str | None) -> None:
     minimo = MIN_CUADROS / fps
     # Cada bloque se ve desde su primera palabra hasta que empieza el siguiente (o un poco
     # después de su última palabra si hay pausa), y nunca menos de 4 cuadros.
@@ -149,31 +273,19 @@ def escribir(grupos: list[list[dict]], duracion: float, fps: int, activa: str, t
         fin = max(fin, min(ini + minimo, sig))
         tiempos.append((ini, fin))
 
-    margen_v = round(ALTO * (1 - BASE_Y))
-    blanco = color.color_texto("FFFFFF", modo)
     ass = [
         "[Script Info]", "ScriptType: v4.00+", f"PlayResX: {ANCHO}", f"PlayResY: {ALTO}",
         "WrapStyle: 0", "ScaledBorderAndShadow: yes", "",
         "[V4+ Styles]",
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, "
         "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-        f"Style: Nativo,{FUENTE['familia']},{TAMANO},{blanco},{blanco},&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,"
-        f"{CONTORNO},0,2,{MARGEN_LATERAL},{MARGEN_LATERAL},{margen_v},1",
+        linea_estilo,
         "", "[Events]", "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
     ]
     srt = []
-    c_activa = color.color_texto(activa, modo)
     for k, (g, (ini, fin)) in enumerate(zip(grupos, tiempos), 1):
-        textos = [limpiar(w["p"]) for w in g]
-        srt += [str(k), f"{t_srt(ini)} --> {t_srt(fin)}", " ".join(textos), ""]
-        # Un evento por palabra: el bloque entero, con la palabra que suena en el color activo.
-        for j, w in enumerate(g):
-            w_ini = ini if j == 0 else w["inicio"]
-            w_fin = g[j + 1]["inicio"] if j + 1 < len(g) else fin
-            if w_fin - w_ini <= 0:
-                continue
-            partes = [(f"{{\\c{c_activa}&}}{t}{{\\c{blanco}&}}" if i == j else t) for i, t in enumerate(textos)]
-            ass.append(f"Dialogue: 0,{t_ass(w_ini)},{t_ass(w_fin)},Nativo,,0,0,0,,{' '.join(partes)}")
+        srt += [str(k), f"{t_srt(ini)} --> {t_srt(fin)}", " ".join(limpiar(w["p"], nombre) for w in g), ""]
+        ass.append(f"Dialogue: 0,{t_ass(ini)},{t_ass(fin)},{nombre},,0,0,0,,{texto_bloque(g, nombre, e, modo, color_clave)}")
 
     (trabajo / "subtitulos.ass").write_text("\n".join(ass) + "\n", encoding="utf-8")
     (trabajo / "subtitulos.srt").write_text("\n".join(srt), encoding="utf-8")
@@ -184,18 +296,25 @@ def ruta_filtro(ruta: Path) -> str:
     return ruta.as_posix().replace(":", "\\:").replace("'", "\\'")
 
 
+def todas_las_letras() -> list[str]:
+    """Todas las letras de los estilos, más la de la hoja de revisión."""
+    return sorted({a for e in ESTILOS.values() for a in e["archivos"]} | {"InterDisplay-Bold.ttf"})
+
+
 def main() -> int:
-    p = argparse.ArgumentParser(description="Subtítulos nativos palabra a palabra para el vídeo cortado.")
-    p.add_argument("carpeta", type=Path, help="carpeta del talento")
-    p.add_argument("--max-palabras", type=int, default=4, choices=range(1, 5), help="palabras por bloque (1-4)")
-    p.add_argument("--color-activa", default="FFD400", help="color HEX de la palabra que suena (por defecto FFD400)")
+    p = argparse.ArgumentParser(description="Subtítulos en uno de los 8 estilos DECODIK, con palabra clave.")
+    p.add_argument("carpeta", type=Path, help="carpeta del vídeo")
+    p.add_argument("--estilo", default="clave", choices=list(ESTILOS), help="estilo de subtítulos (por defecto clave)")
+    p.add_argument("--claves", type=Path, help="JSON con las palabras clave (por defecto 06_entrega/trabajo/claves.json)")
+    p.add_argument("--color-clave", help="color HEX de la palabra clave (por defecto, el del estilo)")
+    p.add_argument("--max-palabras", type=int, help="palabras por bloque (por defecto, las del estilo)")
     p.add_argument("--sin-video", action="store_true", help="solo escribe .ass y .srt")
     args = p.parse_args()
 
     trabajo = args.carpeta.resolve() / "06_entrega" / "trabajo"
-    for nombre in ("transcripcion.json", "cortes.json"):
-        if not (trabajo / nombre).exists():
-            print(f"Falta {trabajo / nombre}. Antes ejecuta transcribir.py y cortar.py.")
+    for nombre_f in ("transcripcion.json", "cortes.json"):
+        if not (trabajo / nombre_f).exists():
+            print(f"Falta {trabajo / nombre_f}. Antes ejecuta transcribir.py y cortar.py.")
             return 2
     transcripcion = json.loads((trabajo / "transcripcion.json").read_text(encoding="utf-8"))
     cortes = json.loads((trabajo / "cortes.json").read_text(encoding="utf-8"))
@@ -203,29 +322,47 @@ def main() -> int:
         print("cortes.json es de una versión anterior. Vuelve a ejecutar cortar.py.")
         return 2
 
+    nombre = args.estilo
+    modo = cortes.get("color", {}).get("modo", "sdr")
+    linea, e = estilo_ass(nombre, ESTILOS[nombre], modo, args.max_palabras)
     fps = cortes.get("fps", 30)
     palabras = palabras_en_corte(transcripcion, cortes)
-    grupos = bloques(palabras, args.max_palabras)
+
+    ruta_claves = args.claves or trabajo / "claves.json"
+    if ruta_claves.exists():
+        claves = json.loads(ruta_claves.read_text(encoding="utf-8")).get("claves", [])
+        origen = ruta_claves.name
+    else:
+        claves = claves_automaticas(palabras, transcripcion.get("nombres", ""))
+        origen = "automáticas: cifras y nombres"
+    marcadas = marcar_claves(palabras, claves) if e.get("clave") else 0
+
+    grupos = bloques(palabras, e["max"])
     duracion = cortes["segmentos"][-1]["salida_fin"]
-    modo = cortes.get("color", {}).get("modo", "sdr")
-    escribir(grupos, duracion, fps, args.color_activa.lstrip("#"), trabajo, modo)
-    print(f"{len(palabras)} palabras en {len(grupos)} bloques "
+    color_clave = args.color_clave.lstrip("#") if args.color_clave else None
+    escribir(grupos, duracion, fps, trabajo, modo, nombre, e, linea, color_clave)
+    print(f"Estilo «{nombre}»: {len(palabras)} palabras en {len(grupos)} bloques "
           f"(máximo {max(sum(len(w['p'].split()) for w in g) for g in grupos)} palabras visibles por bloque).")
+    if e.get("clave"):
+        print(f"Palabras clave ({origen}): {len(claves)} en la lista, {marcadas} palabras resaltadas.")
+    else:
+        print("Este estilo no resalta palabras clave.")
     print(f"  {trabajo / 'subtitulos.ass'}")
     print(f"  {trabajo / 'subtitulos.srt'}")
 
+    carpeta_letras = fuentes.asegurar(todas_las_letras())
+    (trabajo / "subtitulos.json").write_text(json.dumps({"estilo": nombre}, ensure_ascii=False), encoding="utf-8")
     if not args.sin_video:
-        fuentes = asegurar_fuente()
         corte = trabajo / "corte.mp4"
         if not corte.exists():
             print("Falta corte.mp4. Ejecuta cortar.py sin --sin-video.")
             return 2
         salida = trabajo / "subtitulado.mp4"
-        filtro = f"subtitles='{ruta_filtro(trabajo / 'subtitulos.ass')}':fontsdir='{ruta_filtro(fuentes)}'"
+        filtro = f"subtitles='{ruta_filtro(trabajo / 'subtitulos.ass')}':fontsdir='{ruta_filtro(carpeta_letras)}'"
+        dec = {"modo": modo, "transferencia": cortes.get("color", {}).get("transferencia", "bt709")}
         r = subprocess.run(
             ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-nostdin", "-i", str(corte), "-vf", filtro,
-             *color.codec_cpu({"modo": modo, "transferencia": cortes.get("color", {}).get("transferencia", "bt709")}, True),
-             *color.etiquetas_salida({"modo": modo, "transferencia": cortes.get("color", {}).get("transferencia", "bt709")}),
+             *color.codec_cpu(dec, True), *color.etiquetas_salida(dec),
              "-c:a", "copy", "-movflags", "+faststart", str(salida)],
             capture_output=True, text=True, encoding="utf-8", errors="replace",
         )

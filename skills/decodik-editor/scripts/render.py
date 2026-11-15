@@ -35,7 +35,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import color  # noqa: E402
 from cortar import FPS  # noqa: E402
-from subtitulos import asegurar_fuente, ruta_filtro  # noqa: E402
+import fuentes as letras  # noqa: E402
+from subtitulos import ruta_filtro, todas_las_letras  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -225,7 +226,7 @@ def revisar(video: Path, segmentos: list[dict], ass: Path, carpeta: Path, fuente
          + (f" (falta en {', '.join(con_voz_sin_texto)})" if con_voz_sin_texto else ""))
 
     # Hoja de contacto: 4 × 2 fotogramas con su segundo.
-    fuente = (fuentes / "Montserrat-ExtraBold.ttf").as_posix().replace(":", "\\:")
+    fuente = (fuentes / "InterDisplay-Bold.ttf").as_posix().replace(":", "\\:")
     entradas_hoja, cadenas = [], []
     for k, ruta in enumerate(rutas):
         segundo = ruta.stem.split("-")[1]
@@ -271,7 +272,7 @@ def main() -> int:
         print("cortes.json es de una versión anterior. Vuelve a ejecutar cortar.py y subtitulos.py.")
         return 2
     brutos = talento / "02_brutos"
-    fuentes = asegurar_fuente()
+    fuentes = letras.asegurar(todas_las_letras())
     ass = trabajo / "subtitulos.ass"
 
     n = siguiente_version(entrega)

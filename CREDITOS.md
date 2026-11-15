@@ -8,4 +8,6 @@
 | [uv](https://github.com/astral-sh/uv) | Trae Python y las librerías | MIT / Apache-2.0 | Lo instala el talento |
 | [faster-whisper](https://github.com/SYSTRAN/faster-whisper) | Transcripción con tiempos por palabra | MIT | PyPI, vía `uv run` |
 | Modelo Whisper `large-v3-turbo` ([OpenAI](https://github.com/openai/whisper), convertido por [mobiuslabsgmbh](https://huggingface.co/mobiuslabsgmbh/faster-whisper-large-v3-turbo)) | Transcripción | MIT | Hugging Face, en el primer vídeo |
-| [Montserrat](https://github.com/JulietaUla/Montserrat) ExtraBold | Letra de los subtítulos | SIL Open Font License 1.1 | Repositorio oficial de Montserrat, en el primer vídeo subtitulado (se guarda junto a su `OFL.txt`) |
+| [Inter e Inter Display](https://github.com/rsms/inter) 4.1 | Letras de los subtítulos (`clave`, `frase`, `impacto`, `condensada`, `minimo`) y de la hoja de revisión | SIL Open Font License 1.1 | Zip oficial de la versión 4.1 en GitHub; se guardan solo los grosores que se usan, con su licencia |
+| [Figtree](https://github.com/erikdkennedy/figtree) | Letras de los subtítulos (`caja`, `mixta`) | SIL Open Font License 1.1 | Repositorio oficial de Figtree, con su `OFL.txt` |
+| Georgia | Estilo `serif` (provisional) | Letra del sistema (Windows y Mac); no se distribuye | No se descarga |
