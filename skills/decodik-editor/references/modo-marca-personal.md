@@ -8,7 +8,7 @@ Primero elige o crea la carpeta de este vídeo con `references/carpetas.md` (un 
 
 | Situación | Qué haces |
 |---|---|
-| Hay clips en `02_brutos/` y puedes ejecutar comandos | **Edición básica**: sigue `references/edicion-basica.md` y entrégale el vídeo editado. |
+| Hay clips en `02_brutos/` y puedes ejecutar comandos | **Edición básica**: sigue `references/edicion-basica.md` y entrégale el vídeo editado. Antes de cortar, el paso «Tu estilo» (`references/estilo-talento.md`): su estilo guardado, uno sacado de un vídeo que le guste o el de Decodik. |
 | Todavía no ha grabado, o no puedes ejecutar comandos | **Ruta guiada** (abajo): idea → guion → qué grabar → edición paso a paso en CapCut. |
 
 Si no está claro, pregunta una sola cosa: «¿Ya tienes grabados los clips o empezamos por la idea y el guion?».

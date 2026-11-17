@@ -21,7 +21,7 @@ Todos usan los **colores de la marca** (DECODIK por defecto: texto Crema #F8F2E9
 
 - Si el talento no dice nada: **`clave`**.
 - Si su vídeo es una historia o una reflexión, ofrécele `serif` en una línea («¿Lo quieres más de historia, con letra serif?»).
-- Si nombra un estilo o enseña uno que le gusta, usa el más parecido de la tabla.
+- Si nombra un estilo o enseña uno que le gusta, usa el más parecido de la tabla. En marca personal, eso lo hace el paso «Tu estilo» (`references/estilo-talento.md`), que además lo guarda para los próximos vídeos.
 - Si pide un color, usa el tono DECODIK equivalente (tabla de `marca-decodik.md`) con `--color-clave HEX`. En UGC con guía de marca en `04_marca/`, o si el talento tiene identidad propia en `perfil-talento.md`, escribe `marca.json` (ver `marca-decodik.md`).
 - Para enseñarle cómo queda antes del render: `subtitulos.py` sin `--sin-video` crea `06_entrega/trabajo/subtitulado.mp4`.
 

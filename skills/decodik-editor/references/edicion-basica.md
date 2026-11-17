@@ -42,18 +42,24 @@ uv run "$SKILL/scripts/transcribir.py" "<carpeta del vídeo>" --nombres "<nombre
 ### 4 bis. Formato
 Con la transcripción, elige el formato (p. ej. «Hablando a cámara») y abre su skill: `references/formatos.md`. Comprueba sus **requisitos** (sobre todo los recursos de `03_recursos/`) y usa su **receta** en los pasos 6 a 6 quater.
 
-### 5. Corta
+### 4 ter. Tu estilo
+Mira si el talento tiene estilo guardado y, si no, pregúntale si quiere editarlo como un vídeo que le guste (o con el estilo Decodik). Todo el paso, en `references/estilo-talento.md`. Termina con:
 ```
-uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --sin-video
+uv run "$SKILL/scripts/estilo.py" aplicar "<carpeta del vídeo>"
+```
+Usa en los pasos 5 a 6 quater las opciones que dice (pausa, estilo de subtítulos, textos, recursos y encuadre).
+
+```
+uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --sin-video --pausa-max <la del estilo>
 ```
 - Lee `06_entrega/trabajo/cortes.md` y cuéntale en 2-3 líneas qué ha pasado: duración antes → después y qué se quitó, sobre todo las **tomas repetidas** («Dijiste dos veces lo de la periodista; me quedo con la segunda, que se oye más clara»).
 - Si el corte dura mucho más o mucho menos de lo que pide su formato o su plataforma, díselo, pero no quites frases por tu cuenta.
 
 ### 6. Subtítulos
-- **Estilo:** por defecto `clave`. Cómo elegir otro y los 8 que hay: `references/estilos-subtitulos.md`.
+- **Estilo:** el que dice `estilo.py aplicar` (por defecto `clave`). Cómo elegir otro y los 8 que hay: `references/estilos-subtitulos.md`.
 - **Palabras clave:** lee `06_entrega/trabajo/transcripcion.md` y escribe `06_entrega/trabajo/claves.json` con la palabra que lleva el peso de cada frase (cifras, nombres, la promesa). Cómo hacerlo, en la misma guía.
 ```
-uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --estilo clave --sin-video
+uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --estilo <el del estilo> --sin-video
 ```
 Lee `06_entrega/trabajo/subtitulos.srt` por encima: nombres bien escritos, nada raro.
 
@@ -92,6 +98,7 @@ Mensaje corto:
 > ¡Listo! Tu vídeo está en `2026-11-15 Eileen Gu/06_entrega/video-v1.mp4` (de 1:38 a 1:01). He quitado los silencios y la toma repetida, y le he puesto subtítulos.
 > Míralo en el móvil. Si algo no te convence (un corte, una palabra mal escrita…), dime el segundo y lo cambio.
 
+- **¿Guardo tu estilo?** Si el estilo de este vídeo no es el que ya tenía guardado, añade una línea preguntando si lo guarda para los próximos vídeos (`references/estilo-talento.md`, punto 5).
 - Si pide cambios, haz el cambio y renderiza otra vez: sale `video-v2.mp4` y la v1 se queda como estaba.
 - Los subtítulos sueltos están en `06_entrega/subtitulos-vN.srt`, por si su red le deja subirlos aparte.
 
