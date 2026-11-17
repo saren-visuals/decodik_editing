@@ -54,15 +54,13 @@ def _carpetas_del_sistema() -> list[Path]:
     ) if p.is_dir()]
 
 
-def grande() -> tuple[str, str]:
-    """(nombre, archivo) de la letra de los textos grandes.
-
-    Si el equipo tiene Helvetica Now Display ExtraBlack instalada, se copia a la carpeta de letras
-    (copia local, para que ffmpeg la encuentre) y se usa. Si no, Inter Display Black."""
-    nombre, archivos = HELVETICA
+def local(archivos: tuple[str, ...] | list[str]) -> str | None:
+    """Busca una letra que no se descarga (de pago o propia del talento) en la carpeta de letras y
+    en las del sistema. Si está instalada, se copia a la carpeta de letras (copia local, para que
+    ffmpeg la encuentre; nunca sale del equipo). Devuelve el archivo o None."""
     for a in archivos:
         if (CARPETA / a).exists():
-            return nombre, a
+            return a
     for carpeta in _carpetas_del_sistema():
         for a in archivos:
             for p in (carpeta / a, *carpeta.glob(f"*/{a}")):
@@ -70,10 +68,18 @@ def grande() -> tuple[str, str]:
                     try:
                         CARPETA.mkdir(parents=True, exist_ok=True)
                         shutil.copy2(p, CARPETA / a)
-                        return nombre, a
+                        return a
                     except OSError:
                         pass
-    return INTER_GRANDE
+    return None
+
+
+def grande() -> tuple[str, str]:
+    """(nombre, archivo) de la letra de los textos grandes: Helvetica Now Display ExtraBlack si el
+    equipo la tiene; si no, Inter Display Black."""
+    nombre, archivos = HELVETICA
+    a = local(archivos)
+    return (nombre, a) if a else INTER_GRANDE
 
 
 def asegurar(archivos: list[str]) -> Path:

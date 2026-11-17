@@ -35,7 +35,7 @@ import marca  # noqa: E402
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-ESTILOS_SUB = ["clave", "frase", "impacto", "caja", "condensada", "mixta", "minimo"]
+ESTILOS_SUB = ["clave", "limpio", "frase", "impacto", "caja", "condensada", "mixta", "minimo"]
 RECURSOS = ["tarjeta", "completo", "partida", "mixto"]
 POR_DEFECTO = {
     "origen": "estilo DECODIK por defecto",
@@ -44,6 +44,8 @@ POR_DEFECTO = {
     "colores_exactos": False,
     "pausa_max": 0.3,
     "palabras_max": None,
+    "fuente": None,      # letra propia del talento: {"nombre": "Bootzy TM", "archivo": "BootzyTM.ttf"}
+    "sombra": None,      # px de sombra de los subtítulos (0 = sin sombra); sin poner, la del estilo
     "gancho": True,
     "cifras": True,
     "cta": True,
@@ -90,6 +92,12 @@ def leer(f: Path) -> dict:
     pm = est.get("palabras_max")
     if pm is not None and (not isinstance(pm, int) or not 1 <= pm <= 10):
         errores.append("palabras_max debe ser un número entero entre 1 y 10")
+    f = est.get("fuente")
+    if f is not None and (not isinstance(f, dict) or not f.get("archivo")):
+        errores.append('fuente debe ser {"nombre": "...", "archivo": "....ttf"}')
+    s = est.get("sombra")
+    if s is not None and (not isinstance(s, (int, float)) or not 0 <= s <= 10):
+        errores.append("sombra debe ser un número entre 0 y 10")
     if not 0.1 <= float(est["pausa_max"]) <= 1.0:
         errores.append("pausa_max debe estar entre 0.1 y 1.0")
     if errores:
@@ -106,8 +114,13 @@ def tabla(est: dict) -> str:
     textos = [n for n, k in (("gancho", "gancho"), ("cifras grandes", "cifras"), ("CTA", "cta")) if est[k]]
     filas = [
         ("Subtítulos", est["subtitulos"] + (f", máximo {est['palabras_max']} palabras" if est.get("palabras_max") else "")),
-        ("Palabra clave", f"#{clave} ({NOMBRES.get(clave, 'color propio')})"),
+        *([("Letra", f"{est['fuente'].get('nombre') or est['fuente']['archivo']} (del talento)")]
+          if est.get("fuente") else []),
+        ("Palabra clave", f"#{clave} ({NOMBRES.get(clave, 'color propio')})" if est["subtitulos"] != "limpio"
+         else "ninguna (estilo limpio)"),
         ("Texto", f"#{texto} ({NOMBRES.get(texto, 'color propio')})"),
+        *([("Sombra", "sin sombra" if not est["sombra"] else f"{est['sombra']} px")]
+          if est.get("sombra") is not None else []),
         ("Ritmo", ritmo),
         ("Textos en pantalla", ", ".join(textos) or "ninguno"),
         ("Recursos", est["recursos"]),
@@ -162,9 +175,11 @@ def cmd_aplicar(video: Path) -> int:
         datos["colores"] = colores
         propio.write_text(json.dumps(datos, ensure_ascii=False, indent=2), encoding="utf-8")
     marca_json = propio.parent / "marca.json"
-    if colores:
+    extra = {k: est[k] for k in ("fuente", "sombra") if est.get(k) is not None}
+    if colores or extra:
         marca_json.write_text(json.dumps({"origen": f"estilo del talento ({est.get('origen', '')})",
-                                          "colores": colores}, ensure_ascii=False, indent=2), encoding="utf-8")
+                                          "colores": colores, **extra}, ensure_ascii=False, indent=2),
+                              encoding="utf-8")
     elif marca_json.exists() and "estilo del talento" in marca_json.read_text(encoding="utf-8"):
         marca_json.unlink()   # quedaba de un estilo anterior; vuelve la marca DECODIK
 
@@ -176,7 +191,7 @@ def cmd_aplicar(video: Path) -> int:
     print(f"  5  cortar.py ... --pausa-max {est['pausa_max']}")
     print(f"  6  subtitulos.py ... --estilo {est['subtitulos']}"
           + (f" --max-palabras {est['palabras_max']}" if est.get("palabras_max") else "")
-          + ("  (colores en marca.json)" if colores else ""))
+          + ("  (colores y letra en marca.json)" if colores or extra else ""))
     print(f"  6 bis textos.json: gancho={'sí' if est['gancho'] else 'no'}, cifras={'sí' if est['cifras'] else 'no'}, "
           f"CTA={'sí' if est['cta'] else 'no'}")
     print(f"  6 ter recursos.json: modo preferido «{est['recursos']}»")

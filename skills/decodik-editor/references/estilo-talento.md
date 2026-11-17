@@ -35,7 +35,7 @@ Mira **tú** las hojas `06_entrega/trabajo/referencia/hoja-N.jpg` y lee `referen
 
 | Qué miras | Qué decides | Cómo |
 |---|---|---|
-| Letra, tamaño y cuántas palabras salen a la vez | `subtitulos` y `palabras_max` | El más parecido de los 7 (`references/estilos-subtitulos.md`); serif no se usa: letra serif o cursiva → `mixta` o `clave`; mayúsculas con contorno → `impacto`; texto sobre caja → `caja`; frase entera pequeña → `frase` o `minimo`; 1-3 palabras con una de color → `clave` o `condensada` |
+| Letra, tamaño y cuántas palabras salen a la vez | `subtitulos` y `palabras_max` | El más parecido de los 8 (`references/estilos-subtitulos.md`); serif no se usa: letra serif o cursiva → `mixta` o `clave`; mayúsculas con contorno → `impacto`; texto sobre caja → `caja`; frase entera pequeña → `frase` o `minimo`; 1-3 palabras con una de color → `clave` o `condensada`; letra pequeña sin contorno ni palabra de color → `limpio` |
 | Colores del texto y de la palabra resaltada | `colores` | Hex aproximado de `clave` y `texto` (y `caja` si hay caja). El script los pasa al tono DECODIK más cercano |
 | `segundos_por_plano` y `ritmo` del JSON | `pausa_max` | Rápido → 0.2 · medio → 0.3 · pausado → 0.45 |
 | Texto grande arriba al empezar, números grandes, llamada a la acción al final | `gancho`, `cifras`, `cta` | `true` si los ves |
@@ -64,8 +64,10 @@ Si la referencia hace algo que el motor no tiene (música, transiciones, efectos
 ```
 - Las claves que no pongas se quedan como en el estilo DECODIK.
 - `palabras_max`: cuántas palabras salen a la vez como mucho (1-10). Sin ella, las del estilo.
+- `fuente`: la letra propia del talento, solo si la pide por su nombre: `{"nombre": "Bootzy TM", "archivo": "BootzyTM.ttf"}` (el nombre tal como sale al instalarla). Tiene que estar instalada en el equipo (doble clic en el archivo → Instalar): la skill la busca allí y nunca la descarga ni la sube a ningún sitio. Si no la encuentra, avisa y usa la del estilo.
+- `sombra`: px de la sombra de los subtítulos (`0` = sin sombra). Sin ponerla, la del estilo.
+- Si pide un color exacto («blanco», «este hex»), `"colores_exactos": true`: lo que pide el talento va por delante de la paleta DECODIK.
 - `colores` admite `texto`, `contorno`, `clave`, `caja`, `texto_caja`, `acento2`.
-- Si el talento pide un color exacto («este hex, no el de Decodik»), añade `"colores_exactos": true`.
 
 Enséñale la tabla que saca el paso 4 y espera su «ok». Si cambia algo, edita `estilo.json` y vuelve a aplicar.
 

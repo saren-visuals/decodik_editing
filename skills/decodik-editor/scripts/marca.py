@@ -56,6 +56,18 @@ def cargar(trabajo: Path) -> dict:
     return colores
 
 
+def subtitulos(trabajo: Path) -> dict:
+    """Ajustes de subtítulos del talento en marca.json: {"fuente": {"nombre", "archivo"}, "sombra": px}."""
+    f = trabajo / "marca.json"
+    if not f.exists():
+        return {}
+    try:
+        datos = json.loads(f.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return {k: datos[k] for k in ("fuente", "sombra") if k in datos}
+
+
 def origen(trabajo: Path) -> str:
     f = trabajo / "marca.json"
     if f.exists():

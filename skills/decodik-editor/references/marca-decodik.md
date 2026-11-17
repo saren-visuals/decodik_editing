@@ -41,7 +41,7 @@ Cuando el talento diga un color por su nombre, usa SIEMPRE el tono DECODIK equiv
 - Amarillo solo para destacar: una palabra clave por subtítulo o un elemento por pantalla.
 
 ## Fuentes
-Solo 3 letras principales: **Figtree, Inter y Helvetica Now Display**.
+Solo 3 letras principales: **Figtree, Inter y Helvetica Now Display**. Si el talento pide su propia letra para sus subtítulos, manda la suya (`fuente` en su estilo, `references/estilo-talento.md`).
 
 | Uso | Fuente |
 |---|---|

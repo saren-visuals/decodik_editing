@@ -1,14 +1,14 @@
 # /// script
 # requires-python = ">=3.10"
 # ///
-"""Subtítulos del vídeo cortado, en uno de los 7 estilos DECODIK, con la palabra clave resaltada.
+"""Subtítulos del vídeo cortado, en uno de los 8 estilos DECODIK, con la palabra clave resaltada.
 
 Uso:
     uv run subtitulos.py <carpeta del vídeo> [--estilo clave] [--claves claves.json]
                          [--color-clave FFD400] [--max-palabras N] [--sin-video]
 
 Estilos (ver references/estilos-subtitulos.md):
-    clave (por defecto) · frase · impacto · caja · condensada · mixta · minimo
+    clave (por defecto) · limpio · frase · impacto · caja · condensada · mixta · minimo
 
 Palabras clave: las elige Claude y las escribe en 06_entrega/trabajo/claves.json:
     {"claves": ["olímpica", "Stanford", "62 créditos", "veterinaria#1"]}
@@ -53,7 +53,7 @@ ENLACES = {"y", "e", "o", "u", "ni", "de", "del", "a", "al", "en", "con", "por",
            "los", "las", "un", "una", "unos", "unas", "lo", "mi", "tu", "su", "se", "me", "te", "le", "les", "es",
            "como", "pero", "si", "mas", "muy", "and", "the", "of", "to", "in"}
 
-# Los 7 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
+# Los 8 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
 # la descripción de abajo y de los botones de la derecha); «minimo» va centrado.
 ESTILOS = {
     # Estilo por defecto = estilo de subtítulos de la marca DECODIK: Figtree ExtraBold, Crema,
@@ -61,6 +61,12 @@ ESTILOS = {
     "clave": {
         "fuente": "Figtree ExtraBold", "archivos": ["Figtree-ExtraBold.ttf"], "tam": 82,
         "contorno": 3, "sombra": 2, "max": 3, "clave": {"rol": "clave", "escala": 108},
+    },
+    # Limpio: letra pequeña, sin contorno ni palabra clave, 1-3 palabras a media altura, con una
+    # sombra muy suave para que se lea sobre fondos claros. La letra puede ser la del talento.
+    "limpio": {
+        "fuente": "Figtree SemiBold", "archivos": ["Figtree-SemiBold.ttf"], "tam": 56, "contorno": 0,
+        "sombra": 2, "alfa_sombra": "B0", "max": 3, "base": 0.58, "clave": None,
     },
     "frase": {
         "fuente": "Figtree SemiBold", "archivos": ["Figtree-SemiBold.ttf"], "tam": 52, "contorno": 2, "sombra": 2,
@@ -230,12 +236,13 @@ def estilo_ass(nombre: str, e: dict, modo: str, max_override: int | None, colore
         borde = fondo = color.color_texto(colores[e["rol_caja"]], modo)
         estilo_borde = 3
     else:
-        borde, fondo, estilo_borde = color.color_texto(colores["contorno"], modo), sombra_ass(colores["contorno"], modo), 1
+        borde, estilo_borde = color.color_texto(colores["contorno"], modo), 1
+        fondo = sombra_ass(colores["contorno"], modo, e.get("alfa_sombra", "60"))
     linea = (f"Style: {nombre},{e['fuente']},{e['tam']},{texto},{texto},{borde},{fondo},"
              f"{-1 if e.get('negrita') else 0},{-1 if e.get('cursiva') else 0},0,0,"
              f"{e.get('escala_x', 100)},100,{e.get('espaciado', 0)},0,{estilo_borde},"
              f"{e.get('contorno', 0)},{e.get('sombra', 0)},{5 if centrado else 2},{margen},{margen},"
-             f"{0 if centrado else round(ALTO * (1 - BASE_Y))},1")
+             f"{0 if centrado else round(ALTO * (1 - e.get('base', BASE_Y)))},1")
     return linea, {**e, "max": max_override or e["max"]}
 
 
@@ -339,7 +346,20 @@ def main() -> int:
     nombre = args.estilo
     modo = cortes.get("color", {}).get("modo", "sdr")
     colores = marca.cargar(trabajo)
-    linea, e = estilo_ass(nombre, ESTILOS[nombre], modo, args.max_palabras, colores)
+    e_base = dict(ESTILOS[nombre])
+    ajustes = marca.subtitulos(trabajo)   # letra y sombra propias del talento (estilo.json → marca.json)
+    if isinstance(ajustes.get("fuente"), dict) and ajustes["fuente"].get("archivo"):
+        f_tal = ajustes["fuente"]
+        if fuentes.local([f_tal["archivo"]]):
+            e_base.update(fuente=f_tal.get("nombre") or Path(f_tal["archivo"]).stem, archivos=[],
+                          negrita=0, cursiva=0)
+            print(f"Letra del talento: {e_base['fuente']}.")
+        else:
+            print(f"  ! No encuentro la letra {f_tal['archivo']} en este equipo: uso {e_base['fuente']}. "
+                  "Instálala (doble clic en el archivo → Instalar) y vuelve a ejecutar.")
+    if "sombra" in ajustes:
+        e_base["sombra"] = ajustes["sombra"]
+    linea, e = estilo_ass(nombre, e_base, modo, args.max_palabras, colores)
     fps = cortes.get("fps", 30)
     palabras = palabras_en_corte(transcripcion, cortes)
 
