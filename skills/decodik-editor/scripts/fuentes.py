@@ -1,13 +1,17 @@
-"""Letras de los subtítulos y textos: se descargan de su repositorio oficial la primera vez.
+"""Letras de los subtítulos y textos. Las 3 de DECODIK: Figtree, Inter y Helvetica Now Display.
 
-Todas tienen licencia SIL Open Font License 1.1 (ver CREDITOS.md). Se guardan en
-~/.cache/decodik/fuentes/ junto a su licencia. El repo no incluye ninguna.
-Solo biblioteca estándar.
+Figtree e Inter tienen licencia SIL Open Font License 1.1 (ver CREDITOS.md): se descargan de su
+repositorio oficial la primera vez y se guardan en ~/.cache/decodik/fuentes/ junto a su licencia.
+Helvetica Now Display es de pago (Monotype): nunca se descarga ni entra al repo. Se usa solo si el
+equipo la tiene (instalada o en ~/.cache/decodik/fuentes/); si no, Inter Display Black.
+El repo no incluye ninguna letra. Solo biblioteca estándar.
 """
 
 from __future__ import annotations
 
 import io
+import os
+import shutil
 import sys
 import urllib.request
 import zipfile
@@ -17,7 +21,6 @@ CARPETA = Path.home() / ".cache" / "decodik" / "fuentes"
 
 INTER_ZIP = "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip"
 FIGTREE = "https://raw.githubusercontent.com/erikdkennedy/figtree/master/fonts/ttf/{}"
-GOOGLE = "https://raw.githubusercontent.com/google/fonts/main/ofl/{}"
 
 # archivo → de dónde sale
 ORIGEN = {
@@ -29,16 +32,48 @@ ORIGEN = {
     **{f: ("figtree", FIGTREE.format(f)) for f in (
         "Figtree-Medium.ttf", "Figtree-SemiBold.ttf", "Figtree-Bold.ttf", "Figtree-ExtraBold.ttf",
         "Figtree-Black.ttf", "Figtree-BlackItalic.ttf")},
-    # Marca DECODIK: Anton para ganchos y textos grandes, Bebas Neue para etiquetas.
-    "Anton-Regular.ttf": ("anton", GOOGLE.format("anton/Anton-Regular.ttf")),
-    "BebasNeue-Regular.ttf": ("bebasneue", GOOGLE.format("bebasneue/BebasNeue-Regular.ttf")),
 }
 LICENCIAS = {
     "inter": ("Inter-OFL.txt", None),  # viene dentro del zip (LICENSE.txt)
     "figtree": ("Figtree-OFL.txt", "https://raw.githubusercontent.com/erikdkennedy/figtree/master/OFL.txt"),
-    "anton": ("Anton-OFL.txt", GOOGLE.format("anton/OFL.txt")),
-    "bebasneue": ("BebasNeue-OFL.txt", GOOGLE.format("bebasneue/OFL.txt")),
 }
+
+# Textos grandes (gancho, cifras, CTA, estilo condensada): Helvetica Now Display ExtraBlack si el
+# equipo la tiene; si no, Inter Display Black, la libre más parecida.
+HELVETICA = ("HelveticaNowDisplay ExtraBlack", ("HelveticaNowDisplay-ExtBlk.ttf", "HelveticaNowDisplay-ExtBlk.otf"))
+INTER_GRANDE = ("Inter Display Black", "InterDisplay-Black.ttf")
+
+
+def _carpetas_del_sistema() -> list[Path]:
+    casa = Path.home()
+    return [p for p in (
+        Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts",
+        Path(os.environ.get("LOCALAPPDATA", casa / "AppData/Local")) / "Microsoft/Windows/Fonts",
+        casa / "Library/Fonts", Path("/Library/Fonts"), Path("/System/Library/Fonts"),
+        casa / ".fonts", casa / ".local/share/fonts", Path("/usr/share/fonts"), Path("/usr/local/share/fonts"),
+    ) if p.is_dir()]
+
+
+def grande() -> tuple[str, str]:
+    """(nombre, archivo) de la letra de los textos grandes.
+
+    Si el equipo tiene Helvetica Now Display ExtraBlack instalada, se copia a la carpeta de letras
+    (copia local, para que ffmpeg la encuentre) y se usa. Si no, Inter Display Black."""
+    nombre, archivos = HELVETICA
+    for a in archivos:
+        if (CARPETA / a).exists():
+            return nombre, a
+    for carpeta in _carpetas_del_sistema():
+        for a in archivos:
+            for p in (carpeta / a, *carpeta.glob(f"*/{a}")):
+                if p.is_file():
+                    try:
+                        CARPETA.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(p, CARPETA / a)
+                        return nombre, a
+                    except OSError:
+                        pass
+    return INTER_GRANDE
 
 
 def asegurar(archivos: list[str]) -> Path:

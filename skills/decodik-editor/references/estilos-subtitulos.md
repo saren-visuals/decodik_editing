@@ -7,11 +7,11 @@ Todos usan los **colores de la marca** (DECODIK por defecto: texto Crema #F8F2E9
 | Estilo | Cómo se ve | Palabra clave | Úsalo para |
 |---|---|---|---|
 | `clave` | **Estilo DECODIK:** Figtree ExtraBold, Crema, contorno fino Tinta, 1-3 palabras a media altura | **Amarillo Decodik**, algo más grande | Por defecto; hablar a cámara |
-| `serif` | Serif cursiva, 1-4 palabras | **grande, recta y en negrita** | Historias, reflexión, el estilo de Jesús |
+| `serif` | Serif cursiva, 1-4 palabras | **grande, recta, en negrita y con el color de la palabra clave** | Historias, reflexión, el estilo de Jesús |
 | `frase` | Frase entera en 1-2 líneas, pequeña (Figtree SemiBold) | — | Storytelling, pizarra, explicaciones largas |
 | `impacto` | MAYÚSCULAS cursivas con contorno (Inter Display Black), 1-3 palabras | **Menta** | Opinión, entrevistas, puntuaciones |
 | `caja` | Texto Tinta sobre caja Crema (Figtree Bold), 1-4 palabras | — | Listas, POV, aspecto «nativo de Instagram» |
-| `condensada` | MAYÚSCULAS en Anton, 1-3 palabras | **Amarillo Decodik** | Ganchos con fuerza, tono de cartel |
+| `condensada` | MAYÚSCULAS en Helvetica Now Display ExtraBlack (o Inter Display Black), 1-3 palabras | **Amarillo Decodik** | Ganchos con fuerza, tono de cartel |
 | `mixta` | Frase pequeña (Figtree Medium) | **en negrita** (Figtree Black) | Conversación, dos personas |
 | `minimo` | Letra pequeña centrada (Figtree Medium), frases largas | — | Vídeo de frase, vlog |
 
@@ -20,7 +20,7 @@ Todos usan los **colores de la marca** (DECODIK por defecto: texto Crema #F8F2E9
 ## Cómo elegir el estilo
 
 - Si el talento no dice nada: **`clave`**.
-- Si su vídeo es una historia o una reflexión, ofrécele `serif` en una línea («¿Lo quieres más de historia, con letra serif?»).
+- Si su vídeo es una historia o una reflexión, ofrécele `mixta` o `frase` (con Figtree). `serif` solo cuando su referencia lleva letra serif.
 - Si nombra un estilo o enseña uno que le gusta, usa el más parecido de la tabla. En marca personal, eso lo hace el paso «Tu estilo» (`references/estilo-talento.md`), que además lo guarda para los próximos vídeos.
 - Si pide un color, usa el tono DECODIK equivalente (tabla de `marca-decodik.md`) con `--color-clave HEX`. En UGC con guía de marca en `04_marca/`, o si el talento tiene identidad propia en `perfil-talento.md`, escribe `marca.json` (ver `marca-decodik.md`).
 - Para enseñarle cómo queda antes del render: `subtitulos.py` sin `--sin-video` crea `06_entrega/trabajo/subtitulado.mp4`.
@@ -47,4 +47,4 @@ El script dice cuántas palabras ha resaltado. Si son 0 con una lista llena, alg
 - En `clave`, `serif`, `impacto`, `caja` y `condensada` se quitan puntos y comas al final; en `frase`, `mixta` y `minimo` se deja la puntuación.
 - Ningún bloque dura menos de 4 fotogramas. Base del texto al 66 % de la altura (zona segura de TikTok y Reels); `minimo` va centrado.
 - En vídeos HDR los colores del texto se convierten para verse igual que en SDR (ver «Color» en `motor-edicion.md`).
-- `serif` usa de momento **Georgia**, la que trae Windows y Mac. Pendiente de elegir una serif libre para que sea igual en todos los equipos.
+- Letras: solo **Figtree, Inter y Helvetica Now Display** (ver `marca-decodik.md`). La excepción es `serif`, que usa **Georgia** (la que trae Windows y Mac) y solo sale si el talento trae una referencia con letra serif; nunca por defecto.

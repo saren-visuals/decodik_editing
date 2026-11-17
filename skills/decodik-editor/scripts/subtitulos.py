@@ -21,7 +21,7 @@ Lee 06_entrega/trabajo/transcripcion.json y cortes.json (de cortar.py) y escribe
     subtitulado.mp4       corte.mp4 con los subtítulos pintados, para revisarlo (salvo --sin-video)
 
 Colores y letras de la marca DECODIK por defecto (ver marca.py y references/marca-decodik.md). Las
-letras (Figtree, Anton, Bebas Neue, Inter, Inter Display; licencia OFL) se descargan de su repositorio oficial
+letras (Figtree, Inter, Inter Display; licencia OFL) se descargan de su repositorio oficial
 la primera vez (ver fuentes.py). Códigos: 0 bien · 1 error · 2 falta algo · 3 sin red.
 """
 
@@ -64,7 +64,7 @@ ESTILOS = {
     },
     "serif": {
         "fuente": "Georgia", "archivos": [], "tam": 68, "cursiva": 1, "contorno": 2, "sombra": 3, "max": 4,
-        "clave": {"escala": 160, "cursiva": 0, "negrita": 1},
+        "clave": {"rol": "clave", "escala": 160, "cursiva": 0, "negrita": 1},
     },
     "frase": {
         "fuente": "Figtree SemiBold", "archivos": ["Figtree-SemiBold.ttf"], "tam": 52, "contorno": 2, "sombra": 2,
@@ -79,7 +79,7 @@ ESTILOS = {
         "rol_caja": "caja", "contorno": 14, "max": 4, "margen": 150, "clave": None,
     },
     "condensada": {
-        "fuente": "Anton", "archivos": ["Anton-Regular.ttf"], "tam": 104, "contorno": 3, "sombra": 3,
+        "fuente": marca.FUENTES["grande"][0], "archivos": ["InterDisplay-Black.ttf"], "tam": 86, "contorno": 3, "sombra": 3,
         "mayus": True, "max": 3, "clave": {"rol": "clave"},
     },
     "mixta": {
@@ -316,7 +316,7 @@ def ruta_filtro(ruta: Path) -> str:
 def todas_las_letras() -> list[str]:
     """Todas las letras de los estilos, más la de la hoja de revisión."""
     return sorted({a for e in ESTILOS.values() for a in e["archivos"]}
-                  | {"InterDisplay-Bold.ttf", "Anton-Regular.ttf", "BebasNeue-Regular.ttf"})
+                  | {"InterDisplay-Bold.ttf", "InterDisplay-Black.ttf", "Inter-Bold.ttf"})
 
 
 def main() -> int:

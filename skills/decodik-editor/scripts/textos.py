@@ -38,7 +38,8 @@ from subtitulos import ALTO, ANCHO, SIGNOS_FIN, norm, palabras_en_corte, t_ass  
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-# Marca DECODIK: Anton (en mayúsculas) para ganchos y textos grandes, Bebas Neue para etiquetas.
+# Marca DECODIK: Helvetica Now Display ExtraBlack (o Inter Display Black) en mayúsculas para ganchos y
+# textos grandes; Inter Bold en mayúsculas para etiquetas.
 LETRA = marca.FUENTES["grande"][0]
 LETRA_ETIQUETA = marca.FUENTES["etiqueta"][0]
 Y_ARRIBA = round(ALTO * 0.12)    # gancho y CTA: justo por debajo de la barra de arriba de TikTok/Reels, sin tapar los ojos
@@ -114,9 +115,9 @@ def main() -> int:
 
     estilos = [
         # Arriba, centrado, 2 líneas como mucho.
-        f"Style: Arriba,{LETRA},124,{claro},{claro},{tinta},{sombra},0,0,0,0,100,100,1,0,1,3,4,8,90,90,{Y_ARRIBA},1",
-        f"Style: Cifra,{LETRA},400,{c_clave},{c_clave},{tinta},{sombra},0,0,0,0,100,100,0,0,1,4,8,5,60,60,0,1",
-        f"Style: Detalle,{LETRA_ETIQUETA},84,{claro},{claro},{tinta},{sombra},0,0,0,0,100,100,2,0,1,2,4,5,60,60,0,1",
+        f"Style: Arriba,{LETRA},108,{claro},{claro},{tinta},{sombra},0,0,0,0,100,100,1,0,1,3,4,8,90,90,{Y_ARRIBA},1",
+        f"Style: Cifra,{LETRA},330,{c_clave},{c_clave},{tinta},{sombra},0,0,0,0,100,100,0,0,1,4,8,5,60,60,0,1",
+        f"Style: Detalle,{LETRA_ETIQUETA},54,{claro},{claro},{tinta},{sombra},-1,0,0,0,100,100,4,0,1,2,4,5,60,60,0,1",
     ]
     eventos, resumen, errores, huecos = [], [], 0, []
 
@@ -141,7 +142,7 @@ def main() -> int:
                        f"{{\\pos({ANCHO // 2},{Y_CIFRA})}}{anim}{c['texto']}")
         if c.get("detalle"):
             eventos.append(f"Dialogue: 3,{t_ass(cuando)},{t_ass(fin)},Detalle,,0,0,0,,"
-                           f"{{\\pos({ANCHO // 2},{Y_CIFRA + 225})\\fad(120,180)}}{c['detalle'].upper()}")
+                           f"{{\\pos({ANCHO // 2},{Y_CIFRA + 195})\\fad(120,180)}}{c['detalle'].upper()}")
         resumen.append(f"cifra {cuando:.1f} s: «{c['texto']} {c.get('detalle', '')}»".rstrip())
         huecos.append([round(cuando, 3), round(fin, 3)])
 

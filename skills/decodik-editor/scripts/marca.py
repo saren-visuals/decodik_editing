@@ -8,7 +8,11 @@ marca DECODIK, que es la de por defecto. Solo biblioteca estándar.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+import fuentes  # noqa: E402
 
 # Paleta DECODIK (sin blanco ni negro puros).
 DECODIK = {
@@ -29,11 +33,11 @@ POR_DEFECTO = {
     "acento2": DECODIK["menta"],      # segundo color, cuando un estilo necesita otro (Impacto)
 }
 
-# Letras de la marca: nombre interno (para los subtítulos) y archivo.
+# Letras de la marca (solo 3: Figtree, Inter y Helvetica Now Display): nombre interno y archivo.
 FUENTES = {
     "subtitulos": ("Figtree ExtraBold", "Figtree-ExtraBold.ttf"),
-    "grande": ("Anton", "Anton-Regular.ttf"),
-    "etiqueta": ("Bebas Neue", "BebasNeue-Regular.ttf"),
+    "grande": fuentes.grande(),  # Helvetica Now Display ExtraBlack, o Inter Display Black si no está
+    "etiqueta": ("Inter", "Inter-Bold.ttf"),
 }
 
 

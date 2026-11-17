@@ -41,4 +41,4 @@ uv run "$SKILL/scripts/textos.py" "<carpeta del vídeo>" [--color-clave HEX]
 
 Escribe `textos.ass` y `textos-huecos.json`; `render.py` los pinta solo encima de los subtítulos. Si no hay `textos.json`, el vídeo sale sin estos textos.
 
-**Marca:** gancho, CTA y cifra en **Anton** (mayúsculas), etiqueta de la cifra en **Bebas Neue**; texto Crema con contorno Tinta y lo resaltado en Amarillo Decodik (ver `references/marca-decodik.md`). Con otra marca, `marca.json` o `--color-clave`.
+**Marca:** gancho, CTA y cifra en **Helvetica Now Display ExtraBlack** (mayúsculas; si el equipo no la tiene, Inter Display Black), etiqueta de la cifra en **Inter Bold** (mayúsculas); texto Crema con contorno Tinta y lo resaltado en Amarillo Decodik (ver `references/marca-decodik.md`). Con otra marca, `marca.json` o `--color-clave`.

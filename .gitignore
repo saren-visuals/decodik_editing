@@ -6,3 +6,7 @@ _investigacion/
 dist/
 *.zip
 *.skill
+
+# Letras: nunca entran al repo (Helvetica Now Display es de pago)
+*.ttf
+*.otf

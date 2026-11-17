@@ -79,7 +79,7 @@ uv run scripts/subtitulos.py <carpeta del vídeo> [--estilo clave] [--claves cla
 - Lee `transcripcion.json` y `cortes.json`, pasa cada palabra al tiempo del vídeo cortado y escribe `subtitulos.ass` (con estilo), `subtitulos.srt` (para entregar) y `subtitulado.mp4` (el corte con los subtítulos pintados, para revisarlo).
 - **8 estilos** (`clave` por defecto, `serif`, `frase`, `impacto`, `caja`, `condensada`, `mixta`, `minimo`) y **palabras clave** desde `claves.json`: ver `references/estilos-subtitulos.md`.
 - **Bloques** según el estilo (de 1-3 palabras a frases enteras), sin terminar en palabras de enlace. Ningún bloque dura menos de 4 cuadros. Base al 66 % de la altura, dentro de la zona segura de TikTok y Reels.
-- **Letras:** Inter, Inter Display y Figtree (OFL), que se descargan de su repositorio oficial la primera vez en `~/.cache/decodik/fuentes/` (`scripts/fuentes.py`; Inter viene en un zip de ~34 MB). `serif` usa de momento Georgia, del sistema. Ver `CREDITOS.md`.
+- **Letras:** Figtree, Inter y Helvetica Now Display. Figtree e Inter (OFL) se descargan de su repositorio oficial la primera vez en `~/.cache/decodik/fuentes/` (`scripts/fuentes.py`; Inter viene en un zip de ~34 MB). Helvetica Now Display ExtraBlack es de pago: si está instalada en el equipo se copia a esa carpeta y se usa en los textos grandes; si no, Inter Display Black. `serif` usa Georgia, del sistema. Ver `CREDITOS.md`.
 - Los nombres salen como quedaron corregidos en la transcripción (`--nombres` de `transcribir.py`).
 
 ## Gancho, cifras y CTA

@@ -41,12 +41,16 @@ Cuando el talento diga un color por su nombre, usa SIEMPRE el tono DECODIK equiv
 - Amarillo solo para destacar: una palabra clave por subtítulo o un elemento por pantalla.
 
 ## Fuentes
+Solo 3 letras principales: **Figtree, Inter y Helvetica Now Display**.
+
 | Uso | Fuente |
 |---|---|
 | Subtítulos y texto general | Figtree (ExtraBold 800) |
-| Ganchos y textos grandes en pantalla | Anton (en mayúsculas) |
-| Etiquetas, rótulos pequeños y fechas | Bebas Neue (en mayúsculas) |
+| Ganchos, cifras, CTA y textos grandes en pantalla | Helvetica Now Display ExtraBlack (en mayúsculas). Es de pago: si el equipo no la tiene instalada, Inter Display Black |
+| Etiquetas, rótulos pequeños y fechas | Inter Bold (en mayúsculas) |
 | Logotipo «decodik.» (solo el logo) | Fraunces Bold |
+
+Helvetica Now Display (Monotype) nunca se descarga ni se reparte con la skill: se usa si está instalada en el equipo o copiada en `~/.cache/decodik/fuentes/`. La excepción es `serif` (Georgia), que solo sale si el talento trae una referencia con letra serif.
 
 ## Estilo de subtítulos por defecto
 - Figtree ExtraBold, color Crema, contorno fino Tinta.

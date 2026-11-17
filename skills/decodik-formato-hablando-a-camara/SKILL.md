@@ -28,7 +28,7 @@ Si un recurso es de otros (un documental, una retransmisión, fotos de un famoso
 ## Estructura
 | Momento | Qué pasa | En pantalla |
 |---|---|---|
-| 0-3 s (gancho) | La frase que engancha, sin saludos. Voz desde el segundo 0 | Gancho escrito arriba (Anton, palabra fuerte en amarillo). Si hay una cifra, cifra gigante |
+| 0-3 s (gancho) | La frase que engancha, sin saludos. Voz desde el segundo 0 | Gancho escrito arriba (Helvetica Now Display, palabra fuerte en amarillo). Si hay una cifra, cifra gigante |
 | Cuerpo | La idea, con un ejemplo suyo | Subtítulos `clave`; un recurso cada 6-8 s cuando nombra algo; cifras que cuentan la historia |
 | Cierre | La idea que se queda y **un solo** CTA | CTA escrito arriba los últimos 2,5 s |
 
