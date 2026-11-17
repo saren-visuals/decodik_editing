@@ -2,7 +2,7 @@
  "nombre": "NOMBRE",
  "familia": "FAMILIA DEL BANCO DECODIK (p. ej. Hablar a cámara)",
  "duracion_recomendada_s": [30, 60],
- "subtitulos": {"estilo": "clave", "alternativas": ["serif"]},
+ "subtitulos": {"estilo": "clave", "alternativas": ["frase"]},
  "textos": {"gancho": true, "cifras": true, "cta": true},
  "recursos": {
   "requisito": "recomendado",

@@ -35,7 +35,7 @@ import marca  # noqa: E402
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-ESTILOS_SUB = ["clave", "serif", "frase", "impacto", "caja", "condensada", "mixta", "minimo"]
+ESTILOS_SUB = ["clave", "frase", "impacto", "caja", "condensada", "mixta", "minimo"]
 RECURSOS = ["tarjeta", "completo", "partida", "mixto"]
 POR_DEFECTO = {
     "origen": "estilo DECODIK por defecto",
@@ -43,6 +43,7 @@ POR_DEFECTO = {
     "colores": {},
     "colores_exactos": False,
     "pausa_max": 0.3,
+    "palabras_max": None,
     "gancho": True,
     "cifras": True,
     "cta": True,
@@ -86,6 +87,9 @@ def leer(f: Path) -> dict:
             errores.append(f"color «{k}» no existe (valen: {', '.join(marca.POR_DEFECTO)})")
         elif not isinstance(v, str) or len(v.lstrip("#")) != 6:
             errores.append(f"color «{k}» debe ser un hex de 6 cifras")
+    pm = est.get("palabras_max")
+    if pm is not None and (not isinstance(pm, int) or not 1 <= pm <= 10):
+        errores.append("palabras_max debe ser un número entero entre 1 y 10")
     if not 0.1 <= float(est["pausa_max"]) <= 1.0:
         errores.append("pausa_max debe estar entre 0.1 y 1.0")
     if errores:
@@ -101,7 +105,7 @@ def tabla(est: dict) -> str:
                                                               f"pausas de {est['pausa_max']} s")
     textos = [n for n, k in (("gancho", "gancho"), ("cifras grandes", "cifras"), ("CTA", "cta")) if est[k]]
     filas = [
-        ("Subtítulos", est["subtitulos"]),
+        ("Subtítulos", est["subtitulos"] + (f", máximo {est['palabras_max']} palabras" if est.get("palabras_max") else "")),
         ("Palabra clave", f"#{clave} ({NOMBRES.get(clave, 'color propio')})"),
         ("Texto", f"#{texto} ({NOMBRES.get(texto, 'color propio')})"),
         ("Ritmo", ritmo),
@@ -170,7 +174,9 @@ def cmd_aplicar(video: Path) -> int:
         print(f"  · color pasado al tono DECODIK: {c}")
     print("\nOpciones para los pasos siguientes:")
     print(f"  5  cortar.py ... --pausa-max {est['pausa_max']}")
-    print(f"  6  subtitulos.py ... --estilo {est['subtitulos']}" + ("  (colores en marca.json)" if colores else ""))
+    print(f"  6  subtitulos.py ... --estilo {est['subtitulos']}"
+          + (f" --max-palabras {est['palabras_max']}" if est.get("palabras_max") else "")
+          + ("  (colores en marca.json)" if colores else ""))
     print(f"  6 bis textos.json: gancho={'sí' if est['gancho'] else 'no'}, cifras={'sí' if est['cifras'] else 'no'}, "
           f"CTA={'sí' if est['cta'] else 'no'}")
     print(f"  6 ter recursos.json: modo preferido «{est['recursos']}»")

@@ -36,7 +36,7 @@ Si un recurso es de otros (un documental, una retransmisión, fotos de un famoso
 Sigue `decodik-editor/references/edicion-basica.md` con estos valores (también en `formato.json`):
 
 1. **Corte:** sin aire, mejor toma (`cortar.py`, por defecto).
-2. **Subtítulos:** estilo `clave` (marca DECODIK). Para historias o reflexión, ofrece `serif`. Una palabra clave por frase en `claves.json`.
+2. **Subtítulos:** estilo `clave` (marca DECODIK). Para historias o reflexión, ofrece `frase` o `mixta`. Una palabra clave por frase en `claves.json`.
 3. **Gancho, cifras y CTA:** siempre gancho y CTA; 1-3 cifras solo si cuentan la historia (`textos.json`).
 4. **Recursos** (`recursos.json`, guía `decodik-editor/references/recursos-pantalla.md`):
    - Uno cada **6-8 s** como mucho, en la palabra en que lo nombra.

@@ -13,7 +13,7 @@ y escribe en 06_entrega/trabajo/referencia/:
     referencia.json   por cada vídeo: duración, cortes detectados, segundos por plano y ritmo
 
 Con eso Claude rellena 06_entrega/trabajo/estilo.json (ver references/estilo-talento.md): el estilo de
-subtítulos más parecido de los 8, los colores, el ritmo de cortes, textos, recursos y encuadre.
+subtítulos más parecido de los 7, los colores, el ritmo de cortes, textos, recursos y encuadre.
 Solo mira; no copia nada del vídeo de referencia en el vídeo del talento.
 Códigos: 0 bien · 2 no hay nada en 03_recursos/referencia/.
 """

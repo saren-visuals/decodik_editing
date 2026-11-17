@@ -50,7 +50,7 @@ Solo 3 letras principales: **Figtree, Inter y Helvetica Now Display**.
 | Etiquetas, rótulos pequeños y fechas | Inter Bold (en mayúsculas) |
 | Logotipo «decodik.» (solo el logo) | Fraunces Bold |
 
-Helvetica Now Display (Monotype) nunca se descarga ni se reparte con la skill: se usa si está instalada en el equipo o copiada en `~/.cache/decodik/fuentes/`. La excepción es `serif` (Georgia), que solo sale si el talento trae una referencia con letra serif.
+Helvetica Now Display (Monotype) nunca se descarga ni se reparte con la skill: se usa si está instalada en el equipo o copiada en `~/.cache/decodik/fuentes/`.
 
 ## Estilo de subtítulos por defecto
 - Figtree ExtraBold, color Crema, contorno fino Tinta.

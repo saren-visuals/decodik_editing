@@ -56,10 +56,10 @@ uv run "$SKILL/scripts/cortar.py" "<carpeta del vídeo>" --sin-video --pausa-max
 - Si el corte dura mucho más o mucho menos de lo que pide su formato o su plataforma, díselo, pero no quites frases por tu cuenta.
 
 ### 6. Subtítulos
-- **Estilo:** el que dice `estilo.py aplicar` (por defecto `clave`). Cómo elegir otro y los 8 que hay: `references/estilos-subtitulos.md`.
+- **Estilo:** el que dice `estilo.py aplicar` (por defecto `clave`). Cómo elegir otro y los 7 que hay: `references/estilos-subtitulos.md`.
 - **Palabras clave:** lee `06_entrega/trabajo/transcripcion.md` y escribe `06_entrega/trabajo/claves.json` con la palabra que lleva el peso de cada frase (cifras, nombres, la promesa). Cómo hacerlo, en la misma guía.
 ```
-uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --estilo <el del estilo> --sin-video
+uv run "$SKILL/scripts/subtitulos.py" "<carpeta del vídeo>" --estilo <el del estilo> [--max-palabras N, si lo dice] --sin-video
 ```
 Lee `06_entrega/trabajo/subtitulos.srt` por encima: nombres bien escritos, nada raro.
 

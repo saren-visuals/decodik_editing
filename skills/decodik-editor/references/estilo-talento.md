@@ -35,7 +35,7 @@ Mira **tú** las hojas `06_entrega/trabajo/referencia/hoja-N.jpg` y lee `referen
 
 | Qué miras | Qué decides | Cómo |
 |---|---|---|
-| Letra, tamaño y cuántas palabras salen a la vez | `subtitulos` | El más parecido de los 8 (`references/estilos-subtitulos.md`). Cursiva serif → `serif`; mayúsculas con contorno → `impacto`; texto sobre caja → `caja`; frase entera pequeña → `frase` o `minimo`; 1-3 palabras con una de color → `clave` o `condensada` |
+| Letra, tamaño y cuántas palabras salen a la vez | `subtitulos` y `palabras_max` | El más parecido de los 7 (`references/estilos-subtitulos.md`); serif no se usa: letra serif o cursiva → `mixta` o `clave`; mayúsculas con contorno → `impacto`; texto sobre caja → `caja`; frase entera pequeña → `frase` o `minimo`; 1-3 palabras con una de color → `clave` o `condensada` |
 | Colores del texto y de la palabra resaltada | `colores` | Hex aproximado de `clave` y `texto` (y `caja` si hay caja). El script los pasa al tono DECODIK más cercano |
 | `segundos_por_plano` y `ritmo` del JSON | `pausa_max` | Rápido → 0.2 · medio → 0.3 · pausado → 0.45 |
 | Texto grande arriba al empezar, números grandes, llamada a la acción al final | `gancho`, `cifras`, `cta` | `true` si los ves |
@@ -50,7 +50,8 @@ Si la referencia hace algo que el motor no tiene (música, transiciones, efectos
 ```json
 {
   "origen": "referencia: reel-jesus.mp4",
-  "subtitulos": "serif",
+  "subtitulos": "clave",
+  "palabras_max": 2,
   "colores": {"clave": "F7CE07", "texto": "F8F2E9"},
   "pausa_max": 0.2,
   "gancho": true,
@@ -62,6 +63,7 @@ Si la referencia hace algo que el motor no tiene (música, transiciones, efectos
 }
 ```
 - Las claves que no pongas se quedan como en el estilo DECODIK.
+- `palabras_max`: cuántas palabras salen a la vez como mucho (1-10). Sin ella, las del estilo.
 - `colores` admite `texto`, `contorno`, `clave`, `caja`, `texto_caja`, `acento2`.
 - Si el talento pide un color exacto («este hex, no el de Decodik»), añade `"colores_exactos": true`.
 

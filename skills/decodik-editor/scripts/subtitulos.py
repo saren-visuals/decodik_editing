@@ -1,14 +1,14 @@
 # /// script
 # requires-python = ">=3.10"
 # ///
-"""Subtítulos del vídeo cortado, en uno de los 8 estilos DECODIK, con la palabra clave resaltada.
+"""Subtítulos del vídeo cortado, en uno de los 7 estilos DECODIK, con la palabra clave resaltada.
 
 Uso:
     uv run subtitulos.py <carpeta del vídeo> [--estilo clave] [--claves claves.json]
                          [--color-clave FFD400] [--max-palabras N] [--sin-video]
 
 Estilos (ver references/estilos-subtitulos.md):
-    clave (por defecto) · serif · frase · impacto · caja · condensada · mixta · minimo
+    clave (por defecto) · frase · impacto · caja · condensada · mixta · minimo
 
 Palabras clave: las elige Claude y las escribe en 06_entrega/trabajo/claves.json:
     {"claves": ["olímpica", "Stanford", "62 créditos", "veterinaria#1"]}
@@ -53,7 +53,7 @@ ENLACES = {"y", "e", "o", "u", "ni", "de", "del", "a", "al", "en", "con", "por",
            "los", "las", "un", "una", "unos", "unas", "lo", "mi", "tu", "su", "se", "me", "te", "le", "les", "es",
            "como", "pero", "si", "mas", "muy", "and", "the", "of", "to", "in"}
 
-# Los 8 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
+# Los 7 estilos. Base del texto al 66 % de la altura (zona segura de TikTok y Reels: lejos de
 # la descripción de abajo y de los botones de la derecha); «minimo» va centrado.
 ESTILOS = {
     # Estilo por defecto = estilo de subtítulos de la marca DECODIK: Figtree ExtraBold, Crema,
@@ -61,10 +61,6 @@ ESTILOS = {
     "clave": {
         "fuente": "Figtree ExtraBold", "archivos": ["Figtree-ExtraBold.ttf"], "tam": 82,
         "contorno": 3, "sombra": 2, "max": 3, "clave": {"rol": "clave", "escala": 108},
-    },
-    "serif": {
-        "fuente": "Georgia", "archivos": [], "tam": 68, "cursiva": 1, "contorno": 2, "sombra": 3, "max": 4,
-        "clave": {"rol": "clave", "escala": 160, "cursiva": 0, "negrita": 1},
     },
     "frase": {
         "fuente": "Figtree SemiBold", "archivos": ["Figtree-SemiBold.ttf"], "tam": 52, "contorno": 2, "sombra": 2,
@@ -320,7 +316,7 @@ def todas_las_letras() -> list[str]:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Subtítulos en uno de los 8 estilos DECODIK, con palabra clave.")
+    p = argparse.ArgumentParser(description="Subtítulos en uno de los 7 estilos DECODIK, con palabra clave.")
     p.add_argument("carpeta", type=Path, help="carpeta del vídeo")
     p.add_argument("--estilo", default="clave", choices=list(ESTILOS), help="estilo de subtítulos (por defecto clave)")
     p.add_argument("--claves", type=Path, help="JSON con las palabras clave (por defecto 06_entrega/trabajo/claves.json)")

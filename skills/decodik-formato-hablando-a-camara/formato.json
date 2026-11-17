@@ -2,7 +2,7 @@
  "nombre": "Hablando a cámara",
  "familia": "Hablar a cámara",
  "duracion_recomendada_s": [30, 90],
- "subtitulos": {"estilo": "clave", "alternativas": ["serif", "frase"]},
+ "subtitulos": {"estilo": "clave", "alternativas": ["frase", "mixta"]},
  "textos": {"gancho": true, "cifras": true, "cta": true},
  "recursos": {
   "requisito": "minimo",

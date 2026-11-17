@@ -13,4 +13,3 @@
 | [OpenCV](https://github.com/opencv/opencv) 4 (`opencv-python-headless`) | Detectar la cara para que los recursos no la tapen | Apache-2.0 | PyPI, vía `uv run` |
 | [NumPy](https://numpy.org) | Preparar las imágenes de los recursos (color HDR, esquinas) | BSD-3-Clause | PyPI, vía `uv run` |
 | Helvetica Now Display ExtraBlack (Monotype) | Marca DECODIK: ganchos, cifras, CTA y estilo `condensada` | Comercial, todos los derechos reservados (Monotype); **no se distribuye** | Nunca se descarga: se usa solo si el equipo la tiene con licencia. Si no, Inter Display Black |
-| Georgia | Estilo `serif`, solo cuando la referencia del talento es serif | Letra del sistema (Windows y Mac); no se distribuye | No se descarga |
