@@ -1,45 +1,24 @@
-# DECODIK · Edición con IA
+# decodik-editor · Skill de edición de vídeo con IA de Decodik
 
-Skills y recursos del **Módulo de Edición con IA** de DECODIK, para talentos apasionados del deporte que crean contenido y colaboran con marcas.
+Skill para **Claude Code** que edita tus vídeos verticales sin abrir ningún editor: corta silencios, muletillas y tomas falsas, subtitula y, según tu nivel, añade estilos, gráficos animados y música con la marca Decodik.
 
-## Qué hay aquí
+Forma parte del módulo **«El futuro de la edición»** de Decodik.
 
-| Skill | Para qué sirve | Cómo se pide |
-|---|---|---|
-| `decodik-perfil` | Crea tu perfil (quién eres, cómo hablas, tu audiencia, tus marcas) para que todo suene a ti | «crea mi perfil» |
-| `decodik-edicion` | De la idea al vídeo: plantilla, guion, 3 ganchos, qué grabar, edición paso a paso en CapCut y revisión con el Sello DECODIK | «quiero hacer un vídeo sobre…» |
-| `decodik-editor` | Edita el vídeo: «edita mi vídeo» → corte, subtítulos, textos, recursos y MP4 con la marca DECODIK | «edita mi vídeo» |
-| `decodik-formato-hablando-a-camara` | Formato «Hablando a cámara» (receta y requisitos que usa `decodik-editor`) | lo elige `decodik-editor` |
-| `decodik-marca` | Colaboraciones: ordena el brief, revisa que lo cumples y prepara la entrega a la marca | «tengo un brief de…» |
+## Instalar o actualizar (un solo prompt)
+Abre la app de escritorio de Claude, pestaña **Code**, y pega:
 
-**Plantillas de vídeo (v1):** Reacción · Ranking por niveles · Explicación con pizarra · Lista rápida · Debate · Historia o curiosidad · Antes y ahora · Vlog de experiencia · Integración de marca.
+> Instala la skill de Decodik desde GitHub: descarga https://github.com/saren-visuals/decodik_editing/archive/refs/heads/main.zip, descomprímela y copia el contenido de la carpeta `decodik_editing-main` en `~/.claude/skills/decodik-editor` (si ya existe, sustitúyela), de forma que quede `~/.claude/skills/decodik-editor/SKILL.md`. Después dime qué versión ha quedado instalada (la pone en LEEME.md).
 
-## Instalación
+Después escribe `/` y comprueba que aparece **decodik-editor**. Si no aparece, abre una sesión nueva o escribe `/reload-skills`.
 
-### Nivel 1 · App de Claude (sin terminal)
-1. Descarga los archivos `.zip` de cada skill que te da DECODIK.
-2. En Claude: **Configuración → Capacidades → Skills → Subir skill** y sube cada `.zip`.
-3. Crea un **Proyecto** llamado «Mi contenido DECODIK».
-4. Dentro del proyecto escribe: **«crea mi perfil»** y sube el `perfil-talento.md` resultante al conocimiento del proyecto.
-5. Listo: «quiero hacer un vídeo sobre…».
+Para actualizar, pega el mismo prompt otra vez. Los cambios de cada versión están en [CHANGELOG.md](CHANGELOG.md).
 
-### Nivel 3 · Claude Code
+## Requisitos
+- Plan Claude **Pro** o superior y la app de escritorio (Windows o Mac), pestaña **Code**.
+- Unos 3 GB libres. Con tarjeta NVIDIA todo va más rápido.
+
+## Usarla
 ```
-/plugin marketplace add saren-visuals/decodik_editing
-/plugin install decodik@decodik
+/decodik-editor edita mi última toma para mi marca personal
 ```
-
-## Estructura
-```
-.claude-plugin/        manifiestos del plugin
-skills/
-  decodik-perfil/      entrevista + plantilla de perfil
-  decodik-edicion/     flujo completo + referencias (contexto, catálogo, calidad, CapCut)
-  decodik-marca/       brief + revisión + entrega
-modulo/                mapa del módulo y guiones de las lecciones (Loom)
-```
-
-## Propiedad intelectual
-Todo el contenido de este repositorio es original de DECODIK. Material de formaciones de terceros se usa solo como referencia de investigación y **nunca** se copia aquí (`referencias/` está en `.gitignore`).
-
-© DECODIK · Todos los derechos reservados. Uso exclusivo de talentos DECODIK.
+Guía completa en [LEEME.md](LEEME.md).

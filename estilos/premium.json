@@ -1,0 +1,75 @@
+{
+  "id": "premium",
+  "nombre": "Premium",
+  "nivel_minimo": "intermedio",
+  "inspiracion": "Sistema editorial: dos fondos con grano, etiqueta en mayúsculas + palabra serif gigante, texto que aparece cuando se dice. Paleta Decodik.",
+  "subtitulos": {
+    "fuente": "Figtree Bold",
+    "tamano": 58,
+    "color": "#F8F2E9",
+    "contorno": "#021020",
+    "grosor_contorno": 0,
+    "sombra": 2,
+    "clave_fuente": "Instrument Serif",
+    "clave_tamano": 82,
+    "clave_color": "#F8F2E9",
+    "mayusculas": false,
+    "palabras_max": 3,
+    "posicion_y": 1130,
+    "centro_x": 540,
+    "duracion_minima_s": 0.3,
+    "entrada": "desenfoque 8 px → 0 y opacidad 0 → 1 en 0,12 s, sin desplazamiento ni rebote"
+  },
+  "graficos": {
+    "densidad": "short: 1 escena de texto cada 6-10 s (30-40 % del tiempo) + 1 llamada cada 15-20 s; long: bloques cámara/gráfico de 6-10 s + 1 llamada cada 1-2 min",
+    "tipos": ["escena_texto", "llamada", "capitulo", "final", "tarjeta", "lista", "cifra", "imagen", "broll", "cta"],
+    "fondos": {"fuerte": "#021020", "suave": "#F8F2E9", "grano_pct": 4, "alternancia": "nunca dos escenas seguidas con el mismo fondo"},
+    "escena_texto": {
+      "etiqueta": {"fuente": "Figtree Bold", "tamano_px": 60, "mayusculas": true},
+      "clave": {"fuente": "Instrument Serif", "tamano_px": 200, "interlineado": 0.9},
+      "sobre_noche": {"texto": "#F8F2E9", "clave": "#7EDEE3"},
+      "sobre_crema": {"texto": "#254B57", "clave": "#254B57"},
+      "acento": "#E86FA8",
+      "alineacion": "rota izquierda / centro / derecha"
+    },
+    "llamada": {"caja": "#5DD7B9", "texto_caja": "#021020", "duracion_s": [2, 4], "posicion": "a la izquierda de la cabeza, nunca sobre la cara"},
+    "entrada": "cada palabra entra cuando se dice: desenfoque → nítido, 0,16 s",
+    "rebote": false
+  },
+  "transiciones": {
+    "tipo": "barrido de color (noche, crema o petróleo) de abajo arriba al entrar en una escena a pantalla completa",
+    "duracion_s": 0.22,
+    "nota": "La referencia usa 0,08-0,12 s. Decodik lo suaviza a 0,22 s con curva para que no sea brusco.",
+    "entre_planos_de_camara": "corte"
+  },
+  "ritmo": {
+    "short": {"cambios_escena_min": [16, 20], "plano_mediana_s": 2.8, "elemento_nuevo_cada_s": [0.3, 0.6]},
+    "long": {"cortes_min_inicio_3min": 12, "cortes_min_desarrollo": [4, 8], "bloque_mediana_s": 8, "cambio_visual_max_s": 4},
+    "pausa_max_s": 0.3,
+    "respiro_tras_remate_s": 0.4,
+    "zoom_max": 0.1,
+    "zoom": "punch-in suave (8-10 %) en frases de énfasis, máximo 1 cada 10 s",
+    "pct_tiempo_graficos": [30, 40]
+  },
+  "sonido": {
+    "musica": "ambiental o electrónica suave (lofi o synthwave lento), sin voces",
+    "musica_db_bajo_voz": 20,
+    "efectos": [
+      {"archivo": "whoosh", "evento": "cada barrido", "db": -24, "adelanto_s": 0.03},
+      {"archivo": "uiclick", "evento": "palabra serif clave y elementos de lista", "db": -28, "adelanto_s": 0.02},
+      {"archivo": "impact", "evento": "cifra o capítulo (máx. 2 por vídeo corto)", "db": -20, "adelanto_s": 0.02},
+      {"archivo": "riser", "evento": "antes del CTA (solo long form)", "db": -26, "adelanto_s": 1.2}
+    ]
+  },
+  "estructura": {
+    "short": {"gancho": "promesa concreta en ≤ 10 palabras con la palabra fuerte en serif y la prueba visible antes de 1 s",
+              "cuerpo": "mecanismo o prueba alternando cámara y escena de texto cada 2-4 s",
+              "cta": "palabra clave para comentar, en escena de texto (2-3 s)",
+              "final": "tarjeta noche «SIGUE PARA MÁS», 2,5 s"},
+    "long": {"apertura_en_frio_s": [0, 8], "mapa": "hoja de ruta 01-04 antes del 1:30", "capitulos": "tarjeta PARTE 0X de 2 s",
+             "resumen": "cuadrícula de lo visto + frase serif", "cierre": "CTA en caja menta + tarjeta final"}
+  },
+  "prohibido": ["más de 2 tipografías en pantalla", "rebotes", "texto que aparezca antes de que se diga",
+                "dos escenas seguidas con el mismo fondo", "gráficos sobre la cara o fuera de la banda segura",
+                "emojis de sistema y logos de terceros sin permiso", "urgencia falsa"]
+}

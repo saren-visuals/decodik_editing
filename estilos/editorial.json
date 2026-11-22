@@ -1,0 +1,63 @@
+{
+  "id": "editorial",
+  "nombre": "Editorial crema",
+  "nivel_minimo": "intermedio",
+  "subtitulos": {
+    "fuente": "Figtree SemiBold",
+    "tamano": 72,
+    "color": "#F8F2E9",
+    "contorno": "#021020",
+    "grosor_contorno": 0,
+    "sombra": 2,
+    "clave_fuente": "Bebas Neue",
+    "clave_tamano": 120,
+    "clave_color": "#F8F2E9",
+    "clave_caja": "#254B57",
+    "mayusculas": false,
+    "palabras_max": 3,
+    "posicion_y": 1160,
+    "duracion_minima_s": 0.4,
+    "entrada": "corte seco",
+    "centro_x": 540
+  },
+  "graficos": {
+    "densidad": "un apoyo cada 2-3 s, quieto",
+    "tipos": [
+      "tarjeta crema con titular en Bebas Neue",
+      "captura o foto real con borde fino",
+      "lista de 3 puntos",
+      "cita textual"
+    ],
+    "tarjeta": {
+      "fondo": "#F8F2E9",
+      "texto": "#021020",
+      "acento": "#5DD7B9",
+      "radio_px": 28,
+      "sombra": "0 20px 40px rgba(2,16,32,.35)"
+    },
+    "entrada_s": [
+      0.0,
+      0.15
+    ],
+    "rebote": false,
+    "regla": "Sin olor a IA: capturas y fotos reales antes que iconos o emojis; los elementos aparecen enteros y quietos."
+  },
+  "ritmo": {
+    "pausa_max_s": 0.35,
+    "zoom_max": 0.04,
+    "zoom": "acercamiento lento y continuo",
+    "cambio_visual_s": 2.5
+  },
+  "sonido": {
+    "efectos": [
+      "papel o clic suave al aparecer tarjetas"
+    ],
+    "musica": "lo-fi o acústica tranquila"
+  },
+  "prohibido": [
+    "rebotes",
+    "brillos",
+    "colores saturados fuera de la paleta",
+    "emojis"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "marca": "Decodik",
+  "lema": "Por deportistas, para deportistas",
+  "colores": {
+    "noche":    "#021020",
+    "petroleo": "#254B57",
+    "crema":    "#F8F2E9",
+    "humo":     "#C5EAEA",
+    "menta":    "#5DD7B9",
+    "cian":     "#7EDEE3",
+    "amarillo": "#FBDF4E",
+    "rosa":     "#F59BC4",
+    "rosa2":    "#E86FA8"
+  },
+  "degradado_titulares": ["#5DD7B9", "#7EDEE3"],
+  "brillo": "0 8px 24px rgba(93,215,185,.22)",
+  "tipografias": {
+    "texto": "Figtree",
+    "impacto": "Anton",
+    "titulares": "Bebas Neue"
+  },
+  "logo": "marca/logo.svg (pendiente: añadir el logo oficial)",
+  "notas": "Amarillo oficial pendiente de confirmar: la web usa #FBDF4E y el PDF del módulo #F7CE07. Cambiarlo solo aquí."
+}

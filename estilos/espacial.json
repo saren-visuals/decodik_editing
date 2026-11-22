@@ -1,0 +1,69 @@
+{
+  "id": "espacial",
+  "nombre": "Espacial",
+  "nivel_minimo": "intermedio",
+  "subtitulos": {
+    "fuente": "Figtree Bold",
+    "tamano": 74,
+    "color": "#F8F2E9",
+    "contorno": "#021020",
+    "grosor_contorno": 0,
+    "sombra": 3,
+    "clave_fuente": "Anton",
+    "clave_tamano": 130,
+    "clave_color": "#7EDEE3",
+    "clave_degradado": [
+      "#5DD7B9",
+      "#7EDEE3"
+    ],
+    "mayusculas": false,
+    "palabras_max": 3,
+    "posicion_y": 1160,
+    "duracion_minima_s": 0.4,
+    "entrada": "suave 0,3 s con ligero desenfoque, sin rebote",
+    "centro_x": 540
+  },
+  "graficos": {
+    "densidad": "4-6 tarjetas por minuto + logos",
+    "tipos": [
+      "tarjeta de cristal petróleo",
+      "píldora de estado (menta)",
+      "lista con checks",
+      "cifra grande con degradado",
+      "escena a pantalla completa con fondo noche y estrellas sutiles"
+    ],
+    "tarjeta": {
+      "fondo": "rgba(37,75,87,.55)",
+      "borde": "rgba(197,234,234,.25)",
+      "desenfoque_px": 24,
+      "radio_px": 32,
+      "brillo": "0 8px 24px rgba(93,215,185,.22)"
+    },
+    "entrada_s": [
+      0.2,
+      0.35
+    ],
+    "rebote": "suave solo en tarjetas, nunca en textos",
+    "avanzado": "palabra gigante con degradado menta→cian detrás de la cabeza en el gancho y en 1-2 palabras grandes"
+  },
+  "ritmo": {
+    "pausa_max_s": 0.35,
+    "zoom_max": 0.06,
+    "zoom": "curvas suaves, nunca saltos",
+    "cambio_visual_s": 2.5
+  },
+  "sonido": {
+    "efectos": [
+      "whoosh en tarjetas",
+      "clic en checks",
+      "riser antes de un momento grande",
+      "chime al cierre"
+    ],
+    "musica": "electrónica suave o synthwave"
+  },
+  "prohibido": [
+    "contorno blanco alrededor de la persona",
+    "tarjetas sobre la cara",
+    "más de una idea en pantalla"
+  ]
+}

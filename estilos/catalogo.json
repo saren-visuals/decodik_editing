@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "nota": "Formato = dónde va cada cosa. Estilo = cómo se ve. Se combinan libremente salvo lo que indique nivel_minimo.",
+  "formatos": [
+    {
+      "id": "pantalla-completa",
+      "nombre": "Pantalla completa",
+      "nivel_minimo": "basico",
+      "queSeVe": "La persona a pantalla completa en 9:16 con subtítulos y, según nivel, gráficos.",
+      "necesita": "Solo la toma."
+    },
+    {
+      "id": "pantalla-dividida",
+      "nombre": "Pantalla dividida",
+      "nivel_minimo": "avanzado",
+      "queSeVe": "Arriba (40 %) recursos o B-roll; abajo (60 %) la persona.",
+      "necesita": "Imágenes, capturas o clips en 03_recursos/ repartidos por todo el vídeo."
+    },
+    {
+      "id": "recuadro",
+      "nombre": "Recuadro",
+      "nivel_minimo": "avanzado",
+      "queSeVe": "Grabación de pantalla o clip de fondo y la persona en un recuadro arriba a la derecha.",
+      "necesita": "Una grabación de pantalla o clip en 03_recursos/fondo/."
+    }
+  ],
+  "estilos": [
+    {
+      "id": "minimal",
+      "nombre": "Minimal",
+      "nivel_minimo": "basico",
+      "archivo": "estilos/minimal.json",
+      "queSeVe": "Cortes limpios y subtítulos estilo TikTok: 1-2 palabras centradas en blanco con contorno negro, sin puntuación, sin palabra clave ni animación. Sin gráficos.",
+      "idealPara": "Principiantes, UGC sobrio, vídeos donde manda la persona."
+    },
+    {
+      "id": "golpe",
+      "nombre": "Golpe",
+      "nivel_minimo": "intermedio",
+      "archivo": "estilos/golpe.json",
+      "queSeVe": "Deportivo y enérgico: palabra clave gigante en amarillo, cortes secos, zooms cortos e impactos.",
+      "idealPara": "Entrenamientos, retos, motivación, competición."
+    },
+    {
+      "id": "editorial",
+      "nombre": "Editorial crema",
+      "nivel_minimo": "intermedio",
+      "archivo": "estilos/editorial.json",
+      "queSeVe": "Tarjetas crema con texto noche, capturas y fotos reales quietas, corte seco. Sin olor a IA.",
+      "idealPara": "Consejos, opinión, historias personales, nutrición, marca premium."
+    },
+    {
+      "id": "espacial",
+      "nombre": "Espacial",
+      "nivel_minimo": "intermedio",
+      "archivo": "estilos/espacial.json",
+      "queSeVe": "El look de Decodik: fondo noche, tarjetas de cristal petróleo, titulares con degradado menta→cian.",
+      "idealPara": "Tecnología, datos, explicaciones, lanzamientos. En avanzado añade palabra detrás de la cabeza."
+    },
+    {
+      "id": "premium",
+      "nombre": "Premium",
+      "nivel_minimo": "intermedio",
+      "archivo": "estilos/premium.json",
+      "queSeVe": "Editorial: fondos noche y crema con grano, etiqueta en mayúsculas + palabra serif gigante que aparece cuando la dices, llamadas en caja menta.",
+      "idealPara": "Contenido educativo y de autoridad, marca personal premium, vídeos largos con capítulos."
+    }
+  ]
+}

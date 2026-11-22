@@ -1,0 +1,61 @@
+{
+  "id": "golpe",
+  "nombre": "Golpe",
+  "nivel_minimo": "intermedio",
+  "subtitulos": {
+    "fuente": "Figtree Bold",
+    "tamano": 76,
+    "color": "#F8F2E9",
+    "contorno": "#021020",
+    "grosor_contorno": 4,
+    "sombra": 0,
+    "clave_fuente": "Anton",
+    "clave_tamano": 150,
+    "clave_color": "#FBDF4E",
+    "mayusculas": true,
+    "palabras_max": 2,
+    "posicion_y": 1150,
+    "duracion_minima_s": 0.35,
+    "entrada": "corte seco; la palabra clave entra con escala 1,15 → 1 en 0,12 s",
+    "centro_x": 540
+  },
+  "graficos": {
+    "densidad": "un apoyo cada 2-3 s",
+    "tipos": [
+      "palabra gigante amarilla en el gancho",
+      "contador o cifra grande",
+      "check/✕ sobre lista",
+      "flash blanco 2 fotogramas en el gancho"
+    ],
+    "tarjeta": {
+      "fondo": "#021020",
+      "borde": "#FBDF4E",
+      "radio_px": 18,
+      "texto": "#F8F2E9"
+    },
+    "entrada_s": [
+      0.12,
+      0.2
+    ],
+    "rebote": false
+  },
+  "ritmo": {
+    "pausa_max_s": 0.25,
+    "zoom_max": 0.08,
+    "zoom": "punch-in seco en palabras clave, se asienta en 0,25 s",
+    "cambio_visual_s": 2
+  },
+  "sonido": {
+    "efectos": [
+      "impacto en el gancho",
+      "whoosh corto en cambios",
+      "golpe grave en cifras"
+    ],
+    "musica": "energética, 120-140 BPM"
+  },
+  "prohibido": [
+    "degradados suaves",
+    "transiciones lentas",
+    "más de una palabra gigante a la vez"
+  ]
+}

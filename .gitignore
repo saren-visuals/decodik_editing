@@ -1,12 +1,4 @@
-# Material de terceros usado solo como referencia de investigación: nunca entra al repo
-referencias/
-_investigacion/
-# Sistema y builds
+__pycache__/
+*.pyc
 .DS_Store
-dist/
-*.zip
-*.skill
-
-# Letras: nunca entran al repo (Helvetica Now Display es de pago)
-*.ttf
-*.otf
+Thumbs.db

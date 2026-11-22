@@ -1,0 +1,44 @@
+{
+  "id": "minimal",
+  "nombre": "Minimal",
+  "nivel_minimo": "basico",
+  "subtitulos": {
+    "fuente": "Figtree Bold",
+    "tamano": 72,
+    "color": "#FFFFFF",
+    "contorno": "#000000",
+    "grosor_contorno": 6,
+    "sombra": 0,
+    "clave_fuente": "Figtree Bold",
+    "clave_tamano": 72,
+    "clave_color": "#FFFFFF",
+    "mayusculas": false,
+    "palabras_max": 2,
+    "posicion_y": 1160,
+    "duracion_minima_s": 0.4,
+    "entrada": "corte seco",
+    "centro_x": 540,
+    "palabra_clave": false,
+    "puntuacion": false,
+    "salida": "corte seco"
+  },
+  "graficos": {
+    "densidad": "ninguno"
+  },
+  "ritmo": {
+    "pausa_max_s": 0.4,
+    "zoom_max": 0,
+    "cambio_visual_s": null
+  },
+  "sonido": {
+    "efectos": false,
+    "musica": "opcional, la del usuario"
+  },
+  "prohibido": [
+    "emojis en subtítulos",
+    "texto sobre la cara",
+    "más de 2 palabras a la vez",
+    "palabra clave destacada",
+    "fundidos o animaciones en los subtítulos"
+  ]
+}
