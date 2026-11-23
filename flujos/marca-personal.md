@@ -12,7 +12,7 @@ Usa AskUserQuestion en **dos tandas de como máximo 4 preguntas**, con tu recome
 4. **Revisión:** guiada (recomendado: vista previa tras cada pasada) · rápida (solo apruebas transcripción, palabras clave y plan de gráficos).
 
 **Tanda 2** (solo intermedio y avanzado)
-1. **Formato:** los de `catalogo.json` permitidos para su nivel. Recomienda Pantalla completa.
+1. **Formato:** los de `catalogo.json` permitidos para su nivel. Recomienda Pantalla completa. Si el vídeo **explica** algo (producto, dato, dos opciones), ofrece **Explicativo con texto · pantalla dividida** (`{SKILL}/referencias/formato-explicativo-texto.md`) o **Explicativo con motion graphics · pantalla dividida** (`{SKILL}/referencias/formato-explicativo-motion.md`), con storyboard visual antes de construir. Si **clasifica cosas por niveles** (de más a menos, de peor a mejor), ofrece **Tierlist** (`{SKILL}/referencias/formato-tierlist.md`): la skill busca las fotos. Si cuenta **su historia** y tiene fotos y vídeos de archivo, ofrece **Mi historia · B-roll encima con subtítulos** (`{SKILL}/referencias/formato-mi-historia.md`).
 2. **Cantidad de gráficos:** pocos (2-3 tarjetas) · equilibrado (recomendado, lo que diga el estilo) · muchos.
 3. **Música:** la mía (`05_musica/`) · sin música. Si no tiene, explica que puede usar la biblioteca de audio de Instagram o TikTok al publicar.
 4. **Red:** Instagram · TikTok · YouTube Shorts · todas (cambia la zona segura y la duración).

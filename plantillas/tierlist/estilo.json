@@ -1,0 +1,146 @@
+{
+ "id": "tierlist",
+ "nombre": "Tierlist",
+ "nota": "Valores del formato Tier list. Se pueden ajustar por vídeo en tierlist-guion.json → estilo.",
+ "zona": {
+  "x0": 120,
+  "x1": 960,
+  "y0": 288,
+  "y1": 1450,
+  "nota": "Centrada en x=540. Por la derecha acaba antes de los botones de TikTok y Reels (x>960); por abajo, antes del texto del post (y>1450). La tabla necesita más alto que la banda común de zonas-seguras.md (y≤1248)."
+ },
+ "titulo": {
+  "y0": 288,
+  "linea1": {
+   "fuentes": [
+    "timesbd.ttf",
+    "Times New Roman Bold.ttf",
+    "InstrumentSerif-Regular.ttf"
+   ],
+   "px": 96,
+   "tracking": 1,
+   "color": "#F4EE00"
+  },
+  "linea2": {
+   "fuentes": [
+    "Figtree-Black.ttf"
+   ],
+   "px": 76,
+   "tracking": -3,
+   "color": "#FFFFFF",
+   "clave": "#FF1A1A",
+   "halo": "#FF0000"
+  },
+  "parte": {
+   "fuentes": [
+    "timesbd.ttf",
+    "Times New Roman Bold.ttf",
+    "InstrumentSerif-Regular.ttf"
+   ],
+   "px": 56,
+   "tracking": -1,
+   "color": "#FFFFFF"
+  },
+  "interlinea": [
+   76,
+   52
+  ],
+  "px_min": 60
+ },
+ "tabla": {
+  "ancho_etiqueta": 200,
+  "fila_ideal": 116,
+  "fila_min": 92,
+  "fondo": "#0E0E0C",
+  "linea": "#1E1E1C",
+  "fuentes": [
+   "Figtree-Black.ttf"
+  ],
+  "px": 26,
+  "tinta": "#111111",
+  "margen_mini": 6,
+  "ancho_grande": 440,
+  "ancho_grande_min": 300,
+  "aire_grande": 14,
+  "colores": [
+   "#EF5366",
+   "#F5A460",
+   "#F5D060",
+   "#F9F950",
+   "#90F060"
+  ]
+ },
+ "subtitulos": {
+  "fuentes": [
+   "Figtree-Black.ttf"
+  ],
+  "px": 56,
+  "tracking": -1.5,
+  "color": "#FFFFFF",
+  "bajo_barbilla": 62,
+  "max_palabras": 3,
+  "max_letras": 16,
+  "aguante": 0.35,
+  "no_cierran": [
+   "y",
+   "e",
+   "o",
+   "u",
+   "a",
+   "de",
+   "del",
+   "el",
+   "la",
+   "los",
+   "las",
+   "lo",
+   "un",
+   "una",
+   "que",
+   "sin",
+   "con",
+   "por",
+   "para",
+   "en",
+   "te",
+   "se",
+   "me",
+   "mi",
+   "tu",
+   "su",
+   "si",
+   "no",
+   "es",
+   "al",
+   "muy",
+   "más",
+   "mas",
+   "pero",
+   "cada"
+  ]
+ },
+ "hueco_sub": 18,
+ "animacion": {
+  "intro": 0.5,
+  "entrada": 0.3,
+  "subida": 120,
+  "guardado": 0.45
+ },
+ "destello": {
+  "antes": 0.45,
+  "despues": 0.5
+ },
+ "seguir": {
+  "alto": 84,
+  "ancho": 520,
+  "bajo_sub": 150,
+  "aro": "#E0202A",
+  "fuentes": [
+   "Figtree-Bold.ttf"
+  ],
+  "px": 30,
+  "boton": "#8FD3F7",
+  "boton_ancho": 150,
+  "px_boton": 26
+ }
+}

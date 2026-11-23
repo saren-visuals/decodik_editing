@@ -12,6 +12,7 @@ Comprueba resolución, 30 fps, duración, que hay audio, volumen (−14 LUFS ± 
 - [ ] Todo lo importante está dentro de la zona segura.
 - [ ] Una sola idea en pantalla cada vez; ningún subtítulo duplica un gráfico.
 - [ ] Ningún texto cortado por los bordes.
+- [ ] **Motion graphics:** ningún icono, texto ni gráfico se pisa con otro; todo entra en pantalla y en la zona segura; ningún texto por debajo de 26 px (si no cabe, se acorta). Ver el punto 3 de `formato-explicativo-motion.md`.
 - [ ] Subtítulos sin faltas de ortografía (relee `subtitulos.srt` entero).
 - [ ] Logos y capturas reales; colores y fuentes del estilo elegido.
 - [ ] Hay una llamada a la acción clara (si el vídeo la necesita).

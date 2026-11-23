@@ -57,6 +57,15 @@ Después, `mezclar.py` con `--video 06_trabajo/con_graficos.mp4` (ver `sonido.md
 - Ritmo short form: 16-20 cambios de escena por minuto, plano mediano ≈ 2,8 s. Long form: bloques cámara/gráfico de ≈ 8 s, capítulos con `capitulo`.
 - El script deja `06_trabajo/efectos_sugeridos.json` (whoosh en cada barrido, clic en cada palabra serif, impacto en capítulos): quita los efectos que el usuario no tenga en `05_musica/efectos/` (ver `sonido.md`) y pásalo a `mezclar.py --efectos`.
 
+## Regla para todo gráfico o motion graphic
+Ningún icono, texto ni gráfico se pisa con otro, y todo entra en pantalla y en la zona segura, con margen. Ningún texto por debajo de 26 px: si no cabe, se acorta. Se comprueba en el storyboard (avisos automáticos) y otra vez en la hoja de contacto del vídeo.
+
+## Formato «Explicativo con motion graphics · pantalla dividida»
+Igual que el de texto, pero arriba explica un dibujo animado (producto, medidor, molécula, iconos, comparativa…): ver `{SKILL}/referencias/formato-explicativo-motion.md`.
+
+## Formato «Explicativo con texto · pantalla dividida»
+Tiene sus propias reglas (texto protagonista arriba sobre la toma desenfocada, cabeza pegada a la costura, fichas y comparativa): ver `{SKILL}/referencias/formato-explicativo-texto.md`.
+
 ## Pantalla dividida: panel explicativo
 En pantalla dividida el panel de arriba se rellena con capturas o vídeos reales si el usuario los tiene; si no, con los motions explicativos de `scripts/motions.py`. Ver `avanzado.md`.
 
