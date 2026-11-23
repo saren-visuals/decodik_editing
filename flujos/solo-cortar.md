@@ -24,7 +24,7 @@ Si el script se para porque el vídeo es horizontal, mira `06_trabajo/fotograma.
 
 ## 3. Cortar
 Sigue `{SKILL}/referencias/protocolo-corte.md` entero. Resumen:
-1. Transcribir → 2. analizar → 3. enseñar transcripción y propuesta de cortes → 4. el usuario corrige → 5. `cortar.py` → 6. comprobar que no se pierde ninguna palabra.
+1. Transcribir → 2. analizar → 3. enseñar la propuesta de cortes con el storyboard visual (`storyboard_corte.py`) y la transcripción → 4. el usuario corrige → 5. `cortar.py` → 6. comprobar que no se pierde ninguna palabra.
 
 ## 4. Entrega
 ```bash

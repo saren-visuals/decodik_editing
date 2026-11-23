@@ -1,6 +1,6 @@
 # Skill `decodik-editor` · Decodik
 
-**Versión 1.0 · 22-11-2026** · `version: 1.0` · congelada: los cambios van a la 1.1 (ver `CHANGELOG.md`).
+**Versión 1.1 · 23-11-2026** · `version: 1.1` · la 1.0 (22-11-2026) es la que se grabó para los alumnos; los cambios están en `CHANGELOG.md`.
 
 Con esta skill, Claude Code edita tus vídeos verticales sin que tengas que abrir ningún editor. Corta silencios, muletillas y tomas falsas, pone subtítulos y, según tu nivel, añade estilos, gráficos animados y tu música con la marca Decodik.
 
