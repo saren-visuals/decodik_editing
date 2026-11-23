@@ -86,8 +86,17 @@ def main():
     video = Path(a.video) if a.video else tr / "vertical.mp4"
     if not video.exists():
         error(f"No encuentro {video}. Ejecuta antes preparar.py.")
+    from comun import sondear
+    voz = tr / "audio48k.wav"
+    if not sondear(video)["tiene_audio"] and voz.exists():
+        # vertical.mp4 va sin sonido (la voz se guarda aparte): para ver y oír el corte se junta en una copia
+        con_voz = tr / "vista-con-voz.mp4"
+        if not con_voz.exists() or con_voz.stat().st_mtime < video.stat().st_mtime:
+            aviso("Juntando el vídeo con la voz para poder escucharlo en el storyboard…")
+            ffmpeg(["-y", "-i", str(video), "-i", str(voz), "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy",
+                    "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", str(con_voz)])
+        video = con_voz
     if not duracion:
-        from comun import sondear
         duracion = float(sondear(video).get("duracion") or palabras[-1]["end"])
     out = Path(a.out) if a.out else tr / "storyboard-corte.html"
 
@@ -276,22 +285,42 @@ h1{{font-weight:700;font-size:26px;margin:0 0 4px}}
 const v=document.getElementById('v'),cab=document.getElementById('cab'),linea=document.getElementById('linea');
 const D={duracion:.3f};
 const escenas=[...document.querySelectorAll('.escena')].map(e=>[+e.dataset.a,+e.dataset.b]);
+const acum=[];escenas.reduce((s,[a,b],i)=>(acum[i]=s,s+b-a),0);
+const ORIG=v.getAttribute('src'), CORTE='asi-quedaria.mp4';
 let fin=null, modoCorte=false;
+function aOriginal(t){{for(let i=escenas.length-1;i>=0;i--) if(t>=acum[i]) return escenas[i][0]+(t-acum[i]);return 0;}}
+function fuente(src,t,luego){{if(v.getAttribute('src')===src){{v.currentTime=t;luego&&luego();return;}}
+  v.setAttribute('src',src);v.addEventListener('loadedmetadata',()=>{{v.currentTime=t;luego&&luego();}},{{once:true}});v.load();}}
 function marcar(t){{document.querySelectorAll('.escena,.corte').forEach(e=>e.classList.toggle('activa',t>=+e.dataset.a&&t<+e.dataset.b));}}
-function tocar(a,b){{modoCorte=false;botones();v.currentTime=a;fin=b;v.play();}}
+function tocar(a,b){{modoCorte=false;botones();fin=b;fuente(ORIG,a,()=>v.play());}}
 document.querySelectorAll('.escena,.corte').forEach(e=>e.querySelector('.play').onclick=()=>tocar(+e.dataset.a,+e.dataset.b));
-linea.onclick=ev=>{{const r=linea.getBoundingClientRect();fin=null;v.currentTime=(ev.clientX-r.left)/r.width*D;v.play();}};
+linea.onclick=ev=>{{const r=linea.getBoundingClientRect();fin=null;modoCorte=false;botones();fuente(ORIG,(ev.clientX-r.left)/r.width*D,()=>v.play());}};
 v.addEventListener('timeupdate',()=>{{
-  const t=v.currentTime;cab.style.left=(t/D*100)+'%';marcar(t);
+  const t=modoCorte?aOriginal(v.currentTime):v.currentTime;cab.style.left=(t/D*100)+'%';marcar(t);
   if(fin!==null&&t>=fin){{v.pause();fin=null;}}
-  if(modoCorte){{const i=escenas.findIndex(([a,b])=>t<b);
-    if(i<0){{v.pause();modoCorte=false;botones();}} else if(t<escenas[i][0]-0.02) v.currentTime=escenas[i][0];}}
 }});
 function botones(){{document.getElementById('m-orig').classList.toggle('on',!modoCorte);document.getElementById('m-corte').classList.toggle('on',modoCorte);}}
-document.getElementById('m-orig').onclick=()=>{{modoCorte=false;fin=null;botones();}};
-document.getElementById('m-corte').onclick=()=>{{modoCorte=true;fin=null;botones();v.currentTime=escenas[0][0];v.play();}};
+document.getElementById('m-orig').onclick=()=>{{modoCorte=false;fin=null;botones();fuente(ORIG,0);}};
+document.getElementById('m-corte').onclick=()=>{{modoCorte=true;fin=null;botones();fuente(CORTE,0,()=>v.play());}};
 </script></body></html>"""
     out.write_text(pagina, encoding="utf-8")
+    # «Así quedaría»: un vídeo con el corte hecho de verdad (saltar en directo no vale: el navegador comprueba el
+    # tiempo ~4 veces por segundo y las pausas de 0,1-0,5 s se oían igual)
+    asi = out.parent / "asi-quedaria.mp4"
+    aviso("Montando «Así quedaría»…")
+    con_audio = sondear(video)["tiene_audio"]
+    partes, n = [], len(keep)
+    for i, t in enumerate(keep):
+        partes.append(f"[0:v]trim={t['start']:.3f}:{t['end']:.3f},setpts=PTS-STARTPTS,scale=540:-2[v{i}]")
+        if con_audio:
+            dur = t["end"] - t["start"]
+            partes.append(f"[0:a]atrim={t['start']:.3f}:{t['end']:.3f},asetpts=PTS-STARTPTS,"
+                          f"afade=t=in:d=0.012,afade=t=out:st={max(dur - 0.012, 0):.3f}:d=0.012[a{i}]")
+    union = "".join(f"[v{i}]" + (f"[a{i}]" if con_audio else "") for i in range(n))
+    partes.append(f"{union}concat=n={n}:v=1:a={1 if con_audio else 0}[v]" + ("[a]" if con_audio else ""))
+    mapas = ["-map", "[v]"] + (["-map", "[a]", "-c:a", "aac", "-b:a", "128k"] if con_audio else [])
+    ffmpeg(["-y", "-i", str(video), "-filter_complex", ";".join(partes), *mapas, "-c:v", "libx264",
+            "-preset", "veryfast", "-crf", "28", "-movflags", "+faststart", str(asi)])
     aviso(f"Storyboard: {out}  ({len(keep)} escenas, {n_cortes} cortes, {duracion:.1f} s → {final:.1f} s)")
 
 

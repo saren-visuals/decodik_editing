@@ -1,5 +1,15 @@
 # Cambios · decodik-editor
 
+## 1.3 · 23-11-2026
+**Pedidos**
+- Nuevo flujo **Armar un pedido** (`flujos/pedido.md`): «arma el pedido DK-0007» lee la fila del pedido en el Google Sheet de la landing «Pide tu edición» (conector de Google Sheets), crea el proyecto, trae los brutos y el archivo, pasa el pipeline del formato pedido y deja un borrador en CapCut. El storyboard se sigue enseñando antes de construir.
+- `scripts/pedido.py`: `leer` (fila y columnas del pedido, sin la clave de seguimiento), `preparar` (proyecto `<fecha>_<talento>-<tema>`, descarga de carpetas públicas de Drive con subcarpetas, o copia de una carpeta o .zip ya descargados, y reparto en tomas, recursos y brief; se puede relanzar), `estado` (celdas que hay que escribir: «En edición», «Edición (interno)», «Proyecto en el ordenador») y `capcut` (exporta con la plantilla de `_mi-estilo/pedidos.json` y comprueba que el borrador queda registrado).
+- La configuración del editor (Sheet y borrador plantilla) va en `_mi-estilo/pedidos.json`, fuera de la skill.
+- `storyboard_corte.py`: si el vídeo de trabajo va sin sonido, crea `vista-con-voz.mp4` con la voz para poder escuchar el corte.
+- `storyboard_corte.py`: «Así quedaría» reproduce `asi-quedaria.mp4`, el corte montado de verdad. Antes saltaba las pausas en directo y, como el navegador solo mira el tiempo ~4 veces por segundo, las pausas cortas se seguían oyendo.
+- `scripts/servir.py`: sirve los storyboards por http dejando saltar dentro del vídeo (con `python -m http.server` los ▶ y «Así quedaría» no saltaban) y los abre en el navegador del usuario.
+- `exportar_capcut.py`: con la estructura «superposiciones» (por defecto) ya no hace falta `--plantilla-audio`; la voz va en la propia toma.
+
 ## 1.2 · 23-11-2026
 **Formatos**
 - Nuevo formato **Tierlist** (`referencias/formato-tierlist.md`, nivel intermedio). Título fijo arriba y tabla de niveles de colores bajo la barbilla; cada cosa que se nombra entra en foto real y baja a su nivel en la palabra del veredicto (y se mueve si cambia de opinión). La foto grande se coloca donde no hay miniaturas, subtítulos de 1-3 palabras que no acaban en «y», «la», «sin», destello al quitar la tabla y píldora de Follow. Zona propia (x 120-960, y 288-1450) porque la tabla no cabe en la banda común.
@@ -18,6 +28,8 @@
 
 - Nuevo formato **Mi historia · B-roll encima con subtítulos** (`referencias/formato-mi-historia.md`, nivel básico): el archivo de la persona entra encima en cada frase que nombra algo (vídeo vertical a pantalla completa, horizontal en recuadro arriba sobre su fondo desenfocado, fotos con zoom lento, HDR a SDR) y subtítulos simples. Storyboard visual con comprobaciones (`scripts/storyboard_historia.py`) y montaje con ffmpeg (`scripts/construir_historia.py`).
 - `storyboard_historia.py --ajustar`: mueve cada cambio de plano que cae dentro de una palabra al borde más cercano. Los tiempos de palabra para subtítulos salen de faster-whisper (los de whisper.cpp con `-ml 1` se desvían hasta ~0,7 s).
+- Recursos: `analizar_recursos.py` (actividad, cortes internos, huellas de encuadre, orientación real) y `tramos.py`: cada B-roll entra en su tramo más activo y estable, sin cruzar cortes ni barridos; lo horizontal (también fotos) en recuadro, nunca recortado.
+- `exportar_capcut.py`: exporta el montaje «Mi historia» a un borrador de CapCut editable, usando un borrador del usuario como plantilla.
 - Subtítulos con fuente propia: en el `.ass` va el nombre de familia interno de la fuente (p. ej. «HelveticaNowDisplay ExtraBold»); si no, libass pone otra sin avisar.
 
 **Regla para todo motion graphic**

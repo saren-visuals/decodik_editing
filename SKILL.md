@@ -1,6 +1,6 @@
 ---
 name: decodik-editor
-description: Editor de vídeo de Decodik para deportistas creadores. Corta, subtitula y edita vídeos verticales a cámara en tres niveles (básico, intermedio, avanzado), para la marca personal del talento o para una marca a partir de su brief, con los estilos y la paleta de Decodik. Úsala con «/decodik-editor», «edita mi vídeo», «córtame este vídeo», «edita este UGC para la marca», «ordena mis recursos» o cuando el usuario mencione Decodik y edición.
+description: Editor de vídeo de Decodik para deportistas creadores. Corta, subtitula y edita vídeos verticales a cámara en tres niveles (básico, intermedio, avanzado), para la marca personal del talento o para una marca a partir de su brief, con los estilos y la paleta de Decodik. Úsala con «/decodik-editor», «edita mi vídeo», «córtame este vídeo», «edita este UGC para la marca», «ordena mis recursos», «arma el pedido DK-0007» o cuando el usuario mencione Decodik y edición.
 ---
 
 # Editor de vídeo · Decodik
@@ -27,6 +27,8 @@ Pregunta con la herramienta de preguntas con opciones (AskUserQuestion). Pon tu 
 | **C · Vídeo para una marca (UGC)** | Una marca le ha mandado un brief | `{SKILL}/flujos/video-marca.md` |
 | **Ordenar mis recursos** | Tiene clips y fotos desordenados | `{SKILL}/flujos/ordenar-recursos.md` |
 | **Crear mi estilo** | Quiere que edites siempre con su estilo, con referencias o con preguntas | `{SKILL}/referencias/mi-estilo.md` |
+
+**Pedidos de la landing (solo el editor):** si dice «arma el pedido DK-0007» o similar, no preguntes: sigue `{SKILL}/flujos/pedido.md`.
 
 **Carga solo el flujo elegido.** No leas los demás.
 

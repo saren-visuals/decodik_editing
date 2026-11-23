@@ -41,7 +41,7 @@ Escribe primero `06_trabajo/keep.json` con tu propuesta revisada (paso 3) y gene
 python "{SKILL}/scripts/storyboard_corte.py" --trabajo 06_trabajo
 ```
 Crea `06_trabajo/storyboard-corte.html`, una página que se abre sin internet: barra de tiempo con la forma de la voz (verde se queda, rosa se quita), una tarjeta por escena con su fotograma inicial y final, su texto y su duración, y entre escenas cada corte con lo que se quita y por qué. Las palabras dudosas salen en amarillo y las que el programa quería quitar pero se quedan, subrayadas. Cada tarjeta tiene un botón ▶ para verla, y el botón «Así quedaría» reproduce solo lo que se queda.
-- Ábrelo para el usuario (en su navegador o en el panel del navegador) y explícale en una frase cómo leerlo.
+- Ábrelo en el navegador del usuario con `python "{SKILL}/scripts/servir.py" --carpeta 06_trabajo --abrir storyboard-corte.html` (en segundo plano; el servidor normal de Python no deja saltar dentro del vídeo) y explícale en una frase cómo leerlo.
 - Además, en el chat: la transcripción con lo que se quita ~~tachado~~, las palabras dudosas y la duración antes/después.
 - Pregunta si hay palabras mal escritas y si quiere conservar algo. **Espera su OK.**
 - Si corrige algo, cambia `keep.json` y vuelve a generar el storyboard antes de cortar.

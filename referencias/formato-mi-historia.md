@@ -48,3 +48,15 @@ python "{SKILL}/scripts/mezclar.py" --video 06_trabajo/historia_subs.mp4 --voz 0
 python "{SKILL}/scripts/revisar.py" --video 07_entrega/<tema>.mp4 --red todas
 ```
 6. Control de calidad (`control-calidad.md`) y un recorte del subtítulo para confirmar la fuente.
+
+## 7. Recursos: el tramo más activo y estable
+- `python "{SKILL}/scripts/analizar_recursos.py" --proyecto <proyecto>` antes del storyboard: orientación real, HDR, actividad cada 0,5 s, cortes internos y «huellas» del encuadre (`03_recursos/indice-recursos.json`).
+- En el storyboard pon `"in": "auto"` y `"modo": "auto"` (`scripts/tramos.py`): cada plano coge el tramo **más activo** del clip (la mitad de la acción, no el arranque) que sea un **plano estable** (mismo encuadre al principio, mitad y final), sin cruzar cortes internos ni barridos de cámara y sin repetir trozo; lo horizontal (vídeo o foto) va en recuadro, nunca recortado.
+- **Más B-roll seguido:** encadena recursos mientras habla (60-70 % del vídeo); la cara, al empezar, al abrir cada idea nueva, en lo emocional y en el CTA.
+- Revisión obligatoria: hoja con el primer y el último fotograma de cada plano. Si en algún plano no coinciden, la imagen «se corta» en el cambio: cambia de clip o de tramo.
+
+## 8. Llevarlo a CapCut (opcional)
+`python "{SKILL}/scripts/exportar_capcut.py" --trabajo 06_trabajo --nombre "<nombre>" --plantilla <un borrador del usuario> [--plantilla-audio <borrador con un audio importado>]`, **con CapCut cerrado** (si el proyecto está abierto, sus archivos están en uso y no se puede reemplazar).
+- **Estructura (por defecto «superposiciones»):** pista principal = la toma ENTERA, sin cortar y con su sonido. Superposición 1 = los B-roll y fotos verticales a pantalla completa y, para cada horizontal, una copia escalada a pantalla completa con «Desenfocar» aplicado al clip (copiado de un borrador del usuario que lo use así). Superposición 2 = el ORIGINAL de cada horizontal, a lo ancho y arriba. Pista de texto = un texto por subtítulo con el estilo del borrador plantilla y la clave en el color de acento. Los HDR del iPhone van como copia SDR en `03_recursos/capcut/`. (`--estructura secuencia`: todo seguido en la pista principal y la voz aparte.)
+- **Carpeta del borrador:** se copia la carpeta ENTERA de la plantilla (CapCut necesita sus archivos internos y su línea de tiempo) y se quitan solo `draft.extra` y las copias `template*.tmp`, que guardan el montaje viejo y hacen que CapCut se niegue a abrirlo. El de plantilla no se toca; se guarda copia de `root_meta_info.json`.
+- En CapCut se retocan los zooms de las fotos.

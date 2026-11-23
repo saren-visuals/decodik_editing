@@ -22,6 +22,7 @@ import subprocess
 from pathlib import Path
 
 from comun import aviso, error, herramienta, leer_json, sondear
+from tramos import resolver
 
 E = html.escape
 ANCHO = 200
@@ -71,6 +72,7 @@ def main():
                     break
         (tr / a.storyboard).write_text(json.dumps(sb, ensure_ascii=False, indent=1), encoding="utf-8")
         aviso(f"{movidos} cambios ajustados a los bordes de palabra y guardados en {a.storyboard}")
+    resolver(planos, proyecto, dur)
     for k, p in enumerate(planos):
         p["t1"] = planos[k + 1]["t0"] if k + 1 < len(planos) else dur
 
@@ -95,24 +97,24 @@ def main():
                 continue
             if p["tipo"] == "broll":
                 info = sondear(src)
-                falta = (t1 - t0) - (info["duracion"] - p.get("in", 0))
+                falta = (t1 - t0) - (info["duracion"] - p["in_usado"])
                 if falta > 0.05:
                     avisos.append(f"plano {k}: el clip se acaba {falta:.1f} s antes que el plano (baja «in» o acorta el plano)")
                 if t1 - t0 < 0.8:
                     avisos.append(f"plano {k}: {t1 - t0:.1f} s de B-roll es demasiado corto (mínimo 0,8 s)")
-                miniatura(src, p.get("in", 0) + 0.3, img, p.get("modo", "completo"))
+                miniatura(src, p["in_usado"] + (t1 - t0) / 2, img, p["modo_usado"])
             else:
-                miniatura(src, None, img, "foto")
+                miniatura(src, None, img, p["modo_usado"])
         color = {"camara": "#3a3f4a", "broll": "#FFE600", "foto": "#f0a63a"}[p["tipo"]]
         barra.append(f'<div class="seg" style="flex:{t1 - t0:.2f};background:{color}" title="{k}"></div>')
         muestra = " ".join(voz.split()[:3]).rstrip(".,;:?¿!¡").lower()
-        etiqueta = {"camara": "A CÁMARA", "broll": "B-ROLL · " + p.get("modo", "completo").upper(), "foto": "FOTO"}[p["tipo"]]
+        etiqueta = {"camara": "A CÁMARA", "broll": "B-ROLL · " + p.get("modo_usado", "completo").upper(), "foto": "FOTO" + (" · RECUADRO" if p.get("modo_usado") == "recuadro" else "")}[p["tipo"]]
         tarjetas.append(f'''<article class="esc"><div class="pant"><img src="storyboard-h/p{k:02d}.jpg">
           <div class="sub">{E(muestra)}</div></div>
           <div class="info"><div class="cab"><span class="num">{k:02d}</span><span class="tipo t-{p["tipo"]}">{etiqueta}</span>
           <span class="tiempo">{t0:.1f}–{t1:.1f} s · {t1 - t0:.1f} s</span></div>
           <p class="nota">{E(p.get("nota", ""))}</p><p class="voz">«{E(voz)}»</p>
-          {f'<p class="src">{E(Path(p["src"]).name)} · desde {p.get("in", 0):.1f} s</p>' if p.get("src") else ""}</div></article>''')
+          {f'<p class="src">{E(Path(p["src"]).name)} · {("tramo " + format(p["in_usado"], ".1f") + "–" + format(p["in_usado"] + t1 - t0, ".1f") + " s" + (" (el más activo)" if p.get("in", "auto") == "auto" else "")) if "in_usado" in p else "foto"}</p>' if p.get("src") else ""}</div></article>''')
 
     n_b = sum(1 for p in planos if p["tipo"] != "camara")
     t_b = sum(p["t1"] - p["t0"] for p in planos if p["tipo"] != "camara")
