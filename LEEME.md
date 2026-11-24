@@ -36,14 +36,16 @@ Te preguntará qué quieres hacer:
 | **Marca personal** | Tu contenido, con un estilo Decodik o el tuyo |
 | **Vídeo para una marca** | Un UGC a partir del brief de la marca |
 | **Ordenar recursos** | Ordenar tus clips y fotos |
+| **Crear mi estilo** | Que edite siempre a tu manera, a partir de tus referencias o de unas preguntas |
+| **Replicar un estilo** | Editar como un vídeo que te gusta: trae 1-3 referencias, te dice qué se puede copiar, lo guarda con nombre y te enseña una comparación lado a lado |
 
-Y luego irá pasada a pasada, enseñándote una vista previa en cada una. Si algo no te gusta, díselo con tus palabras.
+Y luego irá pasada a pasada, enseñándote una vista previa en cada una. Antes de cortar te enseña un storyboard con cada corte y su motivo, y cómo quedaría. Si algo no te gusta, díselo con tus palabras.
 
 ## Niveles
 | Nivel | Qué hace |
 |---|---|
 | **Básico** | Cortes + subtítulos estilo TikTok + sonido limpio |
-| **Intermedio** | + estilos Golpe, Editorial, Espacial y Premium, gráficos, B-roll, tu música, versiones |
+| **Intermedio** | + estilos Golpe, Editorial, Espacial, Premium y Neón lima, formatos Tierlist y explicativos, gráficos, B-roll, tu música, versiones |
 | **Avanzado** | + palabra detrás de la cabeza, pantalla dividida, recuadro, 4K |
 
 Empieza en básico. Cuando lo domines, pídele subir de nivel: instalará solo lo que falte.
@@ -54,6 +56,20 @@ Empieza en básico. Cuando lo domines, pídele subir de nivel: instalará solo l
 - **Editorial crema**: tarjetas crema, capturas reales, sin olor a IA.
 - **Espacial**: el look de Decodik, cristal oscuro y degradado menta→cian.
 - **Premium**: editorial. Fondos noche y crema con grano, etiqueta en mayúsculas + palabra serif gigante que aparece cuando la dices, llamadas en caja menta, barridos suaves y efectos sincronizados.
+- **Neón lima**: bloques de tres pisos con una palabra protagonista enorme en verde lima con resplandor y las demás pequeñas en blanco; cinco entradas animadas distintas y tachado rojo para negaciones («antes/ahora»).
+
+Y si te gusta el estilo de otro vídeo, pídele que lo replique: lo guarda en tu biblioteca de estilos junto al tuyo.
+
+## Formatos
+El formato decide dónde va cada cosa; el estilo, cómo se ve. Se combinan.
+- **Pantalla completa** (básico): tú a pantalla completa con subtítulos.
+- **Mi historia** (básico): cuentas tu historia y tus fotos y vídeos de archivo entran encima en cada frase que nombra algo.
+- **Tierlist** (intermedio): tabla de niveles de colores; cada cosa que nombras aparece en foto real y baja a su nivel cuando das el veredicto. Las fotos las busca la skill con licencia libre.
+- **Explicativo con texto** (intermedio): cuando explicas algo, la pantalla se divide con una palabra protagonista arriba y tú abajo.
+- **Explicativo con motion graphics** (intermedio): igual, pero arriba se explica con dibujos animados que cambian con tu voz.
+- **Pantalla dividida** y **recuadro** (avanzado): tus recursos o una grabación de pantalla junto a ti.
+
+Los montajes también se pueden exportar como borrador editable de **CapCut**.
 
 ## Color de cine
 LUTs propios de Decodik (`color/`: cine, cine suave y noche) con grano, viñeta y halación. Pídeselo así: «aplícale el look de cine». Los `.cube` también sirven en DaVinci, CapCut y Blackmagic Camera.

@@ -6,6 +6,9 @@
 - Biblioteca de estilos: se pueden guardar varios. En el flujo B aparecen después del estilo propio.
 - Lección afectada: clase suelta «Replica cualquier estilo».
 
+**Documentación**
+- `LEEME.md` al día: opciones Crear mi estilo y Replicar un estilo, estilo Neón lima, sección de formatos (Mi historia, Tierlist, explicativos) y exportación a CapCut.
+
 ## 1.4 · 23-11-2026
 **Subtítulos**
 - Nuevo estilo **Neón lima** (`estilos/neon-lima.json`, nivel intermedio), sacado de una referencia de captions animados analizada fotograma a fotograma. Bloques de tres pisos: una palabra protagonista enorme en verde lima `#DEFC5E` con resplandor; las palabras de antes van pequeñas en blanco arriba a la izquierda y las de después abajo a la derecha.
