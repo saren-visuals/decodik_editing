@@ -69,8 +69,20 @@ def main():
     ap.add_argument("--puerto", type=int, default=8771)
     ap.add_argument("--abrir", help="Página que se abre en el navegador del usuario")
     a = ap.parse_args()
-    srv = http.server.ThreadingHTTPServer(("127.0.0.1", a.puerto), partial(Manejador, directory=a.carpeta))
-    url = f"http://127.0.0.1:{a.puerto}/{a.abrir or ''}"
+    # En Windows, con allow_reuse_address dos servidores pueden ocupar el mismo puerto y el navegador
+    # acaba en el otro (página «no encontrada»). Sin él, si el puerto está ocupado se prueba el siguiente.
+    class Servidor(http.server.ThreadingHTTPServer):
+        allow_reuse_address = False
+
+    for puerto in range(a.puerto, a.puerto + 20):
+        try:
+            srv = Servidor(("127.0.0.1", puerto), partial(Manejador, directory=a.carpeta))
+            break
+        except OSError:
+            continue
+    else:
+        raise SystemExit(f"Los puertos {a.puerto}-{a.puerto + 19} están ocupados.")
+    url = f"http://127.0.0.1:{puerto}/{a.abrir or ''}"
     print(f"Sirviendo {a.carpeta} en {url}", flush=True)
     if a.abrir:
         webbrowser.open(url)

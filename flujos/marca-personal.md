@@ -8,7 +8,7 @@ Usa AskUserQuestion en **dos tandas de como máximo 4 preguntas**, con tu recome
 **Tanda 1**
 1. **¿Qué toma?** Las más recientes o la ruta que dé.
 2. **Nivel:** el guardado en el último `proyecto.json`; si no hay, recomienda Básico la primera vez. Ver `{SKILL}/referencias/niveles.md`.
-3. **Estilo:** si existe `_mi-estilo/reglas.md` con estilo propio, ofrécelo primero. Si no, muestra los estilos de `{SKILL}/estilos/catalogo.json` permitidos para su nivel, con su `queSeVe` en una línea.
+3. **Estilo:** si existe `_mi-estilo/reglas.md` con estilo propio, ofrécelo primero. Después, los estilos guardados en `_estilos/<nombre>/estilo.json` (replicados de una referencia, ver `{SKILL}/referencias/replicar-estilo.md`), con su nombre. Si no hay ninguno, muestra los estilos de `{SKILL}/estilos/catalogo.json` permitidos para su nivel, con su `queSeVe` en una línea.
 4. **Revisión:** guiada (recomendado: vista previa tras cada pasada) · rápida (solo apruebas transcripción, palabras clave y plan de gráficos).
 
 **Tanda 2** (solo intermedio y avanzado)

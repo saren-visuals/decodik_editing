@@ -27,6 +27,7 @@ Pregunta con la herramienta de preguntas con opciones (AskUserQuestion). Pon tu 
 | **C · Vídeo para una marca (UGC)** | Una marca le ha mandado un brief | `{SKILL}/flujos/video-marca.md` |
 | **Ordenar mis recursos** | Tiene clips y fotos desordenados | `{SKILL}/flujos/ordenar-recursos.md` |
 | **Crear mi estilo** | Quiere que edites siempre con su estilo, con referencias o con preguntas | `{SKILL}/referencias/mi-estilo.md` |
+| **Replicar un estilo** | Quiere editar como en un vídeo concreto que le gusta («quiero este estilo», «edítalo como este reel») y guardarlo con nombre | `{SKILL}/referencias/replicar-estilo.md` |
 
 **Pedidos de la landing (solo el editor):** si dice «arma el pedido DK-0007» o similar, no preguntes: sigue `{SKILL}/flujos/pedido.md`.
 
@@ -38,7 +39,7 @@ En B y C, el nivel decide qué pasadas se hacen. Detalle completo en `{SKILL}/re
 | Nivel | Qué hace | Necesita |
 |---|---|---|
 | **Básico** | Cortes + subtítulos estilo TikTok (Minimal) + sonido limpio | ffmpeg y faster-whisper |
-| **Intermedio** | + estilos Golpe, Editorial, Espacial y **Premium**, gráficos, B-roll, música, versiones | + Node.js y HyperFrames |
+| **Intermedio** | + estilos Golpe, Editorial, Espacial, **Premium** y **Neón lima**, gráficos, B-roll, música, versiones | + Node.js y HyperFrames |
 | **Avanzado** | + palabra detrás de la cabeza, pantalla dividida, recuadro, 4K | + PyTorch y modelo de recorte |
 
 Si elige un nivel cuyo equipo no tiene, **ofrece subir de nivel**: `comprobar_equipo.py --nivel <nivel>` y pide permiso para instalar lo que falte. Si no quiere, sigue en el nivel que sí puede hacer y díselo.

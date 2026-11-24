@@ -1,0 +1,112 @@
+{
+  "id": "neon-lima",
+  "nombre": "Neón lima",
+  "nivel_minimo": "intermedio",
+  "queSeVe": "Cada frase es un bloque de tres pisos: una palabra protagonista enorme en verde lima con resplandor y las palabras de enlace pequeñas en blanco, arriba a la izquierda y abajo a la derecha. Las palabras salen una a una cuando se dicen; el bloque nace fuera de escala y se asienta frenando, sin rebote, y se va de golpe con la frase siguiente.",
+  "idealPara": "Hablando a cámara con ritmo: consejos, opinión, ganchos, vídeos de marca personal con energía.",
+  "lienzo": {
+    "ancho": 1080,
+    "alto": 1920
+  },
+  "subtitulos": {
+    "motor": "bloques",
+    "fuente": "HelveticaNowDisplay ExtraBold",
+    "fuente_archivo": "HelveticaNowDisplay-ExtraBold.ttf",
+    "fuente_alternativa": "Figtree Black",
+    "fuente_alternativa_archivo": "Figtree-Black.ttf",
+    "tamano": 90,
+    "color": "#FBFAF0",
+    "contorno": "#000000",
+    "grosor_contorno": 0,
+    "sombra": 0,
+    "sombra_difusa": {
+      "color": "#000000",
+      "opacidad": 0.5,
+      "desenfoque": 14,
+      "borde": 4
+    },
+    "clave_fuente": "HelveticaNowDisplay ExtraBold",
+    "clave_tamano": 198,
+    "clave_color": "#DEFC5E",
+    "clave_interletraje": -0.025,
+    "clave_inicial_mayuscula": true,
+    "resplandor": {
+      "color": "#DEFC5E",
+      "opacidad": 0.42,
+      "borde": 12,
+      "desenfoque": 22
+    },
+    "tachado": {
+      "color": "#CC0826",
+      "grosor": 11,
+      "inclinacion": 0.08,
+      "retraso_s": 0.13,
+      "duracion_s": 0.33
+    },
+    "mayusculas": false,
+    "puntuacion": false,
+    "palabra_clave": true,
+    "posicion_y": 1120,
+    "centro_x": 540,
+    "margen_x": 60,
+    "duracion_minima_s": 0.4,
+    "salida": "corte seco del bloque entero al empezar el bloque siguiente",
+    "centro_x_nota": "el bloque se centra en X y nunca tapa la cara",
+    "palabras_max": 8,
+    "bloque": "Cada línea de frases.txt se parte por sus | en bloques de una sola protagonista, con 4 palabras como mucho arriba y 4 abajo y 2,4 s como mucho. La protagonista es la primera racha de *claves*; si un bloque no tiene, se elige la palabra con más contenido y se avisa. Otras *claves* van pequeñas en lima. ~palabra~ se tacha.",
+    "palabras_arriba_max": 6,
+    "palabras_abajo_max": 4,
+    "bloque_max_s": 2.4,
+    "dimensiones": "medidas en la referencia: la protagonista ocupa del 62 % al 86 % del ancho; las filas pequeñas caben siempre dentro de ella; fila de arriba sangrada un 15 % y montada un 12 % sobre las mayúsculas; fila de abajo alineada a la derecha (5 % hacia dentro) y separada un 24 % de la altura de mayúscula",
+    "clave_ancho_min": 0.62,
+    "clave_ancho_max": 0.86,
+    "clave_escala_min": 0.8,
+    "clave_escala_max": 1.75,
+    "sangria_arriba": 0.15,
+    "solape_arriba": 0.12,
+    "sangria_abajo": 0.05,
+    "hueco_abajo": 0.24,
+    "variantes": {
+      "golpe": "nace grande (1,22; 1,30 en el gancho) y se frena con curva exponencial (vida media 0,17 s); la protagonista entra desenfocada (0,55→1 y 12→0 px en 0,08 s)",
+      "empuje": "nace al 93 % y 16 px más abajo y sube creciendo (vida media 0,12 s); la protagonista aparece seca",
+      "caida": "cae desde 26 px más arriba mientras se reduce de 1,14 a 1 (vida media 0,12 s); protagonista 0,4→1 con desenfoque 10 px en 0,10 s",
+      "deriva": "aparece seca y crece despacio de 0,97 a 1 durante 1 s",
+      "lento": "casi sin zoom (1,03→1); cada palabra sube de opacidad desenfocada (protagonista 0,2→1 y 10 px en 0,25 s)"
+    },
+    "reglas_variantes": "[variante] al principio de la línea manda; primer bloque golpe; con tachado caida; último bloque lento; tras una pausa de ≥ 0,35 s caida; el resto rota empuje → deriva → golpe → lento sin repetir la anterior",
+    "rotacion_variantes": [
+      "empuje",
+      "deriva",
+      "golpe",
+      "lento"
+    ],
+    "entrada": "palabra a palabra en su arranque de voz, cada bloque con su variante"
+  },
+  "graficos": {
+    "densidad": "solo énfasis dentro del bloque (tachado); iconos y palabra detrás de la cabeza en avanzado",
+    "avanzado": [
+      "protagonista detrás de la cabeza (bloque arriba, recorte de la persona con recortar_sujeto.py)",
+      "icono de contorno lima que sube volando junto a la línea de abajo"
+    ]
+  },
+  "ritmo": {
+    "pausa_max_s": 0.3,
+    "zoom_max": 0,
+    "transiciones": "en los cambios de plano: desenfoque corto o destello; el bloque sale en seco",
+    "cambio_visual_s": 2
+  },
+  "sonido": {
+    "efectos": [
+      "whoosh suave opcional en los cambios de plano"
+    ],
+    "musica": "la del usuario"
+  },
+  "prohibido": [
+    "más de una protagonista por bloque",
+    "rebote o overshoot en las entradas",
+    "resaltar la palabra que suena (las anteriores se quedan)",
+    "rojo fuera del tachado",
+    "bloques encima de la cara",
+    "contorno duro en las letras"
+  ]
+}

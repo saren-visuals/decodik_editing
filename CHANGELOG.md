@@ -1,5 +1,24 @@
 # Cambios · decodik-editor
 
+## 1.5 · 24-11-2026
+**Estilos**
+- Nuevo flujo **Replicar un estilo** (`referencias/replicar-estilo.md`): con 1-3 vídeos de referencia que trae el usuario, mide ritmo de planos, subtítulos, colores, gráficos y sonido, enseña una ficha con lo que se puede replicar (sí / aproximado / no y nivel), guarda el estilo con nombre en `_estilos/<nombre>/` (`estilo.json`, `ficha.md`, `muestra.jpg`) y hace una prueba de comparación lado a lado con la referencia (`comparacion.mp4`, hasta 3 rondas de ajuste).
+- Biblioteca de estilos: se pueden guardar varios. En el flujo B aparecen después del estilo propio.
+- Lección afectada: clase suelta «Replica cualquier estilo».
+
+## 1.4 · 23-11-2026
+**Subtítulos**
+- Nuevo estilo **Neón lima** (`estilos/neon-lima.json`, nivel intermedio), sacado de una referencia de captions animados analizada fotograma a fotograma. Bloques de tres pisos: una palabra protagonista enorme en verde lima `#DEFC5E` con resplandor; las palabras de antes van pequeñas en blanco arriba a la izquierda y las de después abajo a la derecha.
+- Bloques cortos como en la referencia: cada línea de `frases.txt` se parte sola por sus `|` en bloques de una protagonista, con ≤ 4 palabras arriba y ≤ 4 abajo (6 como mucho) y ≤ 2,4 s. Elige el reparto con menos bloques sin *clave*, sin bloques de 1-2 palabras y sin bloques de menos de 0,7 s. Si un bloque no tiene *clave*, elige la palabra con más contenido (la que va tras un artículo, o la más larga) y avisa.
+- Dimensiones medidas en la referencia: la protagonista ocupa del 62 % al 86 % del ancho (crece o se reduce para ello, de 0,8× a 1,75×); las filas pequeñas caben siempre dentro de su ancho; la de arriba va sangrada un 15 % y montada un 12 % sobre las mayúsculas; la de abajo, alineada a la derecha y separada un 24 % de la altura de mayúscula.
+- Cinco entradas distintas, medidas en los bloques de la referencia: **golpe** (nace grande y se frena; protagonista desenfocada), **empuje** (nace al 93 % y más abajo y sube), **caída** (cae desde arriba mientras se reduce), **deriva** (aparece seca y crece despacio 1 s) y **lento** (fundido desenfocado de 0,25 s por palabra). El movimiento arranca cuando entra la protagonista, no con las palabras pequeñas. Reglas: primer bloque golpe, con tachado caída, tras una pausa caída, último lento y el resto rota sin repetir; `[variante]` al principio de la línea la fuerza.
+- Cada palabra sale en su arranque de voz, ya en su sitio. El bloque sale en seco, entero, cuando empieza el siguiente.
+- `~palabra~` en `frases.txt` tacha la palabra con un trazo rojo que se dibuja de izquierda a derecha en 0,33 s (para negaciones o «antes/ahora»). Otras *claves* sueltas van pequeñas en lima.
+- Nuevo `scripts/subtitulos_bloques.py`: `subtitulos.py` lo usa en los estilos con `"motor": "bloques"`. Escribe el `.ass` fotograma a fotograma durante la animación (libass no tiene escala de grupo ni curvas exponenciales) y se quema con `quemar_subtitulos.py` como siempre. Mide el texto con la misma fuente que usa libass y copia la fuente a `_fuentes` (Helvetica Now Display ExtraBold si está instalada; si no, Figtree Black).
+- En CapCut (`exportar_capcut.py`) este estilo se reproduce solo en parte: colores, resplandor (sombra lima) y palabras por trozo; el asentamiento, el tachado y la palabra detrás de la cabeza no se exportan.
+- `scripts/servir.py`: si el puerto ya lo usa otro servidor, prueba el siguiente. En Windows dos servidores podían compartir el puerto y el navegador abría la página del otro («no encontrada»).
+- Pendiente para avanzado: protagonista detrás de la cabeza (recorte de la persona con HyperFrames) e icono de contorno lima que sube volando.
+
 ## 1.3 · 23-11-2026
 **Pedidos**
 - Nuevo flujo **Armar un pedido** (`flujos/pedido.md`): «arma el pedido DK-0007» lee la fila del pedido en el Google Sheet de la landing «Pide tu edición» (conector de Google Sheets), crea el proyecto, trae los brutos y el archivo, pasa el pipeline del formato pedido y deja un borrador en CapCut. El storyboard se sigue enseñando antes de construir.

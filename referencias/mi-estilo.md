@@ -2,6 +2,8 @@
 
 Objetivo: que Claude edite siempre como el talento quiere. El estilo cabe en una lista con valores medibles.
 
+Si lo que quiere es editar **como en un vídeo concreto** y guardarlo con nombre, sigue `{SKILL}/referencias/replicar-estilo.md`.
+
 Hay dos caminos. Pregunta cuál prefiere (AskUserQuestion): **con referencias** (recomendado si tiene vídeos que le gustan) o **desde cero con preguntas**.
 
 ## Con referencias

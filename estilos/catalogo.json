@@ -96,6 +96,14 @@
    "archivo": "estilos/premium.json",
    "queSeVe": "Editorial: fondos noche y crema con grano, etiqueta en mayúsculas + palabra serif gigante que aparece cuando la dices, llamadas en caja menta.",
    "idealPara": "Contenido educativo y de autoridad, marca personal premium, vídeos largos con capítulos."
+  },
+  {
+   "id": "neon-lima",
+   "nombre": "Neón lima",
+   "nivel_minimo": "intermedio",
+   "archivo": "estilos/neon-lima.json",
+   "queSeVe": "Subtítulos en bloques de tres pisos: palabra protagonista enorme en verde lima con resplandor y palabras de enlace pequeñas en blanco. Salen palabra a palabra al decirlas, el bloque se asienta frenando y se va de golpe con la frase siguiente. ~palabra~ se tacha en rojo.",
+   "idealPara": "Hablando a cámara con ritmo: consejos, opinión, ganchos, marca personal con energía."
   }
  ]
 }

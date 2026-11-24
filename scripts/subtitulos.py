@@ -6,6 +6,7 @@ Uso:
   python subtitulos.py --palabras 06_trabajo/palabras.json --solo-srt --out 07_entrega/video.srt
 
 frases.txt: una frase por línea, trozos separados con | y la palabra clave entre *asteriscos*.
+En los estilos con tachado (Neón lima), ~palabra~ se tacha en rojo.
 """
 import argparse
 import re
@@ -40,13 +41,18 @@ def leer_frases(ruta):
         linea = linea.strip()
         if not linea:
             continue
+        variante = None
+        m = re.match(r"\[(\w+)\]\s*", linea)  # [lento], [golpe]…: entrada del bloque (estilos con bloques)
+        if m:
+            variante, linea = m.group(1).lower(), linea[m.end():]
         for i, trozo in enumerate(linea.split("|")):
             tokens = []
             for tok in trozo.split():
-                clave = tok.startswith("*") or tok.endswith("*") or "*" in tok
-                tokens.append({"texto": tok.replace("*", ""), "clave": clave})
+                clave = "*" in tok
+                tachado = "~" in tok  # ~palabra~: se tacha (solo estilos con tachado)
+                tokens.append({"texto": tok.replace("*", "").replace("~", ""), "clave": clave, "tachado": tachado})
             if tokens:
-                trozos.append({"frase": n, "tokens": tokens, "fin_frase": False})
+                trozos.append({"frase": n, "tokens": tokens, "fin_frase": False, "variante": variante})
         if trozos:
             trozos[-1]["fin_frase"] = True
     return trozos
@@ -224,7 +230,16 @@ def main():
                       for x in t["tokens"]]}
         for t in validos])
     escribir_srt(validos, out / "subtitulos.srt")
-    escribir_ass(validos, estilo, out / "subtitulos.ass", a.ancho, a.alto)
+    if sub.get("motor") == "bloques":  # Neón lima y similares: bloques animados fotograma a fotograma
+        from subtitulos_bloques import escribir_ass_bloques
+        nb, nev, fam, resumen, avisos_b = escribir_ass_bloques(validos, palabras, estilo, out / "subtitulos.ass",
+                                                              a.ancho, a.alto)
+        aviso(f"Bloques animados: {nb} bloques, {nev} eventos, fuente {fam}.")
+        for linea in resumen:
+            print("   " + linea)
+        avisos += avisos_b
+    else:
+        escribir_ass(validos, estilo, out / "subtitulos.ass", a.ancho, a.alto)
     claves = [x["texto"] for t in validos for x in t["tokens"] if x["clave"]]
     if con_clave:
         aviso(f"{len(validos)} trozos. Palabras clave ({len(claves)}): {', '.join(claves)}")
